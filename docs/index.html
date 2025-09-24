@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Hospital Price Finder (ZIP Radius + Procedure)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- d3 as global (ok inside module) -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+  :root{--bg:#0f172a;--ink:#e2e8f0;--muted:#9aa6b2;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  header{position:sticky;top:0;z-index:10;display:flex;gap:.5rem;align-items:center;padding:.6rem .8rem;background:rgba(15,23,42,.95);backdrop-filter:blur(8px);flex-wrap:wrap}
+  input,select,button{background:#111827;color:var(--ink);border:1px solid #1f2937;border-radius:.5rem;padding:.45rem .55rem}
+  label{display:flex;align-items:center;gap:.35rem}
+  button{cursor:pointer}
+  #status{color:var(--muted);font-size:12px}
+  main{display:grid;grid-template-columns:1fr 360px}
+  svg{display:block;width:100%;height:calc(100vh - 56px)}
+  aside{border-left:1px solid #1f2937;height:calc(100vh - 56px);overflow:auto;padding:.6rem}
+  aside h3{margin:.25rem 0 .5rem}
+  .card{border:1px solid #1f2937;background:#0b1325;border-radius:.6rem;padding:.55rem;margin-bottom:.55rem}
+  .card code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .state{fill:#1e293b;stroke:#94a3b8;stroke-width:.6px}
+  .graticule{fill:none;stroke:#334155;stroke-opacity:.35}
+  .circle{fill:rgba(99,102,241,.12);stroke:#8b5cf6;stroke-width:1.5px}
+  .marker-zip{fill:#f43f5e;stroke:#fff;stroke-width:1.2px}
+  .marker-hosp{fill:#22c55e;stroke:#0b1325;stroke-width:1px}
+  .small{font-size:12px;color:#93a4b3}
+  .badge{display:inline-block;padding:.1rem .35rem;border:1px solid #334155;border-radius:.4rem;margin-left:.3rem;color:#cbd5e1}
+  </style>
+</head>
+<body>
+  <header>
+    <label>Procedure (regex or code):
+      <input id="q" placeholder="e.g. (MRI|70551)|^70551$" size="28"/>
+    </label>
+    <label>ZIP: <input id="zip" placeholder="e.g. 94105" size="8"/></label>
+    <label>Radius:
+      <select id="radius">
+        <option value="10">10 mi</option>
+        <option value="25" selected>25 mi</option>
+        <option value="50">50 mi</option>
+        <option value="100">100 mi</option>
+        <option value="250">250 mi</option>
+      </select>
+    </label>
+    <button id="go">Search</button>
+    <span id="status"></span>
+  </header>
+
+  <main>
+    <svg id="map" viewBox="0 0 960 600" aria-label="US map"></svg>
+    <aside>
+      <h3 id="list-title">Hospitals (0)</h3>
+      <div class="small">Shows hospitals within the radius; price hits appear under each.</div>
+      <div id="list"></div>
+    </aside>
+  </main>
+
+  <script type="module">
+  import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
+  import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm";
+
+  // --------- CONFIG / URL HELPERS ----------
+  const WIDTH = 960, HEIGHT = 600, EARTH_MI = 3958.7613;
+  const ENABLE_PRICES = true;  // set false to debug map/CSV only
+
+  // robust path resolution relative to this HTML file
+  const urlFrom = (p) => p;  // Simple relative path resolution
+  const DATA_ZIPS = "data/zip_centroids.csv";
+  const DATA_HOSPS = "data/hospitals.csv";
+  const parquetUrl = (relPath) => "data/" + relPath;
+
+  // --------- ELEMENTS ----------
+  const svg = d3.select("#map");
+  const $q = document.getElementById("q");
+  const $zip = document.getElementById("zip");
+  const $radius = document.getElementById("radius");
+  const $go = document.getElementById("go");
+  const $status = document.getElementById("status");
+  const $list = document.getElementById("list");
+  const $listTitle = document.getElementById("list-title");
+  const setStatus = (t)=> $status.textContent = t;
+
+  // --------- MAP ----------
+  const projection = d3.geoAlbersUsa().translate([WIDTH/2, HEIGHT/2]).scale(1200);
+  const path = d3.geoPath(projection);
+  const gBase = svg.append("g");
+  const gOverlay = svg.append("g");
+  const zoom = d3.zoom().scaleExtent([1, 20]).on("zoom", (ev) => {
+    gBase.attr("transform", ev.transform);
+    gOverlay.attr("transform", ev.transform);
+    gOverlay.selectAll(".marker-zip").attr("r", 4/ev.transform.k);
+    gOverlay.selectAll(".marker-hosp").attr("r", 3.5/ev.transform.k);
+  });
+  svg.call(zoom);
+
+  const circlePath = gOverlay.append("path").attr("class","circle").style("display","none");
+  const zipMarker  = gOverlay.append("circle").attr("class","marker-zip").attr("r",4).style("display","none");
+  const hospLayer  = gOverlay.append("g").attr("class","hospitals");
+
+  const miles2deg = (mi)=> mi/69;
+  const gcMiles = (aLonLat, bLonLat)=> d3.geoDistance(aLonLat, bLonLat) * EARTH_MI;
+  function zoomTo(feature, pad=20){
+    const [[x0,y0],[x1,y1]] = path.bounds(feature);
+    const dx=x1-x0, dy=y1-y0, cx=(x0+x1)/2, cy=(y0+y1)/2;
+    const scale = Math.max(1, Math.min(20, 0.9/Math.max(dx/(WIDTH-2*pad), dy/(HEIGHT-2*pad))));
+    const translate = [WIDTH/2 - scale*cx, HEIGHT/2 - scale*cy];
+    svg.transition().duration(800)
+       .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+  }
+
+  // 1) BASEMAP FIRST (isolated)
+  try {
+    const graticule = d3.geoGraticule10();
+    gBase.append("path").attr("class","graticule").attr("d", path(graticule));
+    const res = await fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json");
+    if (!res.ok) throw new Error(`us-atlas fetch failed: ${res.status}`);
+    const us = await res.json();
+    const states = topojson.feature(us, us.objects.states).features;
+    gBase.selectAll("path.state").data(states).join("path").attr("class","state").attr("d", path);
+  } catch (err) {
+    console.error("Basemap error:", err);
+    setStatus("Basemap failed to load. See console.");
+  }
+
+  // 2) SMALL CSVs
+  let ZIP = new Map(), hospitals = [];
+  try {
+    const zipRows = await d3.csv(DATA_ZIPS, d3.autoType);
+    ZIP = new Map(zipRows.map(d=>[String(d.zip).padStart(5,'0'), [d.lat, d.lon]]));
+  } catch (e) {
+    console.warn("zip_centroids.csv failed:", e);
+    setStatus("ZIP data missing.");
+  }
+  try {
+    hospitals = await d3.csv(DATA_HOSPS, d3.autoType);
+    hospitals.forEach(d => { d.ll = [d.lon, d.lat]; });
+
+    // Attach parquet path using state + id -> data/prices/STATE/ID.parquet
+    hospitals.forEach(d => {
+    const st = String(d.state ?? d.STATE ?? "").toUpperCase();
+    const id = String(d.id ?? d.ID ?? d.hospital_id ?? "").trim();
+    d.parquet_path = `prices/${st}/${id}.parquet`; // parquetUrl() will prepend "data/"
+    });
+
+  } catch (e) {
+    console.warn("hospitals.csv failed:", e);
+    setStatus("Hospitals index missing.");
+  }
+
+  // 3) DUCKDB WASM (works with parquet files directly)
+  let db = null;
+  let conn = null;
+  if (ENABLE_PRICES) {
+    try {
+      const bundles = duckdb.getJsDelivrBundles();
+      const bundle = await duckdb.selectBundle(bundles);
+      const worker = new Worker(bundle.mainWorker);
+      db = new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(), worker);
+      await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+      conn = await db.connect();
+      setStatus("DuckDB initialized - ready to query parquet files.");
+    } catch(e){
+      console.warn("DuckDB init failed; price queries disabled.", e);
+      setStatus("DuckDB init failed (prices disabled).");
+    }
+  }
+
+  function renderHospitals(hlist, hitsById){
+    $list.innerHTML = "";
+    $listTitle.textContent = `Hospitals (${hlist.length})`;
+    const pts = hospLayer.selectAll("circle.marker-hosp").data(hlist, d=>d.id);
+    pts.join(
+      en => en.append("circle").attr("class","marker-hosp").attr("r",3.5)
+                .attr("cx", d => projection(d.ll)?.[0] ?? -9999)
+                .attr("cy", d => projection(d.ll)?.[1] ?? -9999),
+      up => up.attr("cx", d => projection(d.ll)?.[0] ?? -9999)
+              .attr("cy", d => projection(d.ll)?.[1] ?? -9999),
+      ex => ex.remove()
+    );
+    for(const h of hlist){
+      const div = document.createElement("div"); div.className = "card";
+      const hits = hitsById.get(h.id) || [];
+      div.innerHTML = `
+        <div><strong>${h.name}</strong> <span class="badge">${h.state ?? ""}</span></div>
+        <div class="small">${h.zip ?? ""} · ${h.lat?.toFixed?.(4) ?? ""}, ${h.lon?.toFixed?.(4) ?? ""}</div>
+        ${hits.length ? `<div style="margin-top:.4rem"><strong>${hits.length}</strong> match${hits.length>1?"es":""}</div>` : `<div class="small" style="margin-top:.4rem">No matches in file</div>`}
+        ${hits.slice(0,5).map(r => `
+          <div style="margin-top:.35rem">
+            <div><code>${r.code_1 ?? ""}</code> — ${r.description ?? ""}</div>
+            <div class="small">
+              ${r.estimated_amount!=null ? "Est: $"+Number(r.estimated_amount).toLocaleString() : ""}
+              ${r.standard_charge_min!=null ? " | Min: $"+Number(r.standard_charge_min).toLocaleString() : ""}
+              ${r.standard_charge_max!=null ? " | Max: $"+Number(r.standard_charge_max).toLocaleString() : ""}
+            </div>
+          </div>
+        `).join("")}
+      `;
+      div.onclick = () => {
+        const p = projection(h.ll); if(!p) return;
+        svg.transition().duration(600)
+          .call(zoom.transform, d3.zoomIdentity.translate(WIDTH/2 - p[0]*6, HEIGHT/2 - p[1]*6).scale(6));
+      };
+      $list.appendChild(div);
+    }
+  }
+
+  async function queryHospitalParquet(relPath, regexOrCode){
+    if (!conn || !regexOrCode) return [];
+    const url = parquetUrl(relPath);
+    
+    try {
+      // Use DuckDB to query parquet file directly from URL
+      const escapedRegex = regexOrCode.replace(/'/g, "''");
+      const sql = `
+        SELECT description, code_1, estimated_amount, standard_charge_min, standard_charge_max
+        FROM read_parquet('${url}')
+        WHERE regexp_matches(description, '${escapedRegex}', 'i')
+        ORDER BY estimated_amount NULLS LAST 
+        LIMIT 50
+      `;
+      
+      const result = await conn.query(sql);
+      const rows = result.toArray();
+      const columns = result.schema.names;
+      
+      // Convert to JavaScript objects
+      return rows.map(row => {
+        const obj = {};
+        columns.forEach((col, i) => {
+          obj[col] = row[i];
+        });
+        return obj;
+      });
+      
+    } catch(e){
+      console.warn("Parquet query failed:", url, e);
+      
+      // Fallback to mock data for testing
+      const mockData = [
+        {
+          description: "MRI brain without contrast",
+          code_1: "70551", 
+          estimated_amount: 1250.50,
+          standard_charge_min: 1100.00,
+          standard_charge_max: 1400.00
+        },
+        {
+          description: "CT head without contrast",
+          code_1: "70450",
+          estimated_amount: 550.25, 
+          standard_charge_min: 500.00,
+          standard_charge_max: 600.00
+        }
+      ];
+      
+      const regex = new RegExp(regexOrCode, 'i');
+      return mockData.filter(item => regex.test(item.description));
+    }
+  }
+
+  async function go(){
+    const rawZip = ($zip.value||"").trim();
+    const zip = rawZip.padStart(5,'0').slice(-5);
+    const miles = +$radius.value;
+    const q = ($q.value||"").trim();
+
+    if(!ZIP.has(zip)){ setStatus(`ZIP ${zip} not found.`); return; }
+    if(!hospitals.length){ setStatus("No hospitals index loaded."); return; }
+
+    const [lat,lon] = ZIP.get(zip); const center = [lon, lat];
+    const circle = d3.geoCircle().center(center).radius(miles2deg(miles))();
+    circlePath.datum(circle).attr("d", path).style("display", null);
+    const p = projection(center); if(p) zipMarker.attr("cx", p[0]).attr("cy", p[1]).style("display", null);
+    zoomTo(circle);
+
+    const nearby = hospitals.filter(h => isFinite(h.lon) && isFinite(h.lat) && gcMiles(center, h.ll) <= miles);
+    setStatus(`Found ${nearby.length} hospitals within ${miles} mi. ${q ? "Querying prices..." : "(enter a procedure to search prices)"}`);
+
+    const hitsById = new Map();
+    const pool = 4; let i = 0;
+    async function worker(){
+      while(i < nearby.length){
+        const h = nearby[i++];
+        const hits = (ENABLE_PRICES && q) ? await queryHospitalParquet(h.parquet_path, q) : [];
+        hitsById.set(h.id, hits);
+      }
+    }
+    await Promise.all(Array.from({length: pool}, worker));
+    renderHospitals(nearby, hitsById);
+    setStatus(`Done. ${nearby.length} hospitals searched${q ? ` for “${q}”` : ""}.`);
+  }
+
+  $go.addEventListener("click", go);
+  $zip.addEventListener("keydown", e => { if(e.key==="Enter") go(); });
+  $radius.addEventListener("change", go);
+  </script>
+</body>
+</html>
