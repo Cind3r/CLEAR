@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Healthcare Price Comparison by Payer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- d3 as global -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+  :root{--bg:#0f172a;--ink:#e2e8f0;--muted:#9aa6b2;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  header{position:sticky;top:0;z-index:10;display:flex;gap:.5rem;align-items:center;padding:.6rem .8rem;background:rgba(15,23,42,.95);backdrop-filter:blur(8px);flex-wrap:wrap}
+  input,select,button{background:#111827;color:var(--ink);border:1px solid #1f2937;border-radius:.5rem;padding:.45rem .55rem}
+  label{display:flex;align-items:center;gap:.35rem}
+  button{cursor:pointer}
+  button:hover{background:#1f2937}
+  #status{color:var(--muted);font-size:12px}
+  main{display:grid;grid-template-columns:1fr 400px}
+  svg{display:block;width:100%;height:calc(100vh - 56px)}
+  aside{border-left:1px solid #1f2937;height:calc(100vh - 56px);overflow:auto;padding:.6rem}
+  aside h3{margin:.25rem 0 .5rem}
+  .card{border:1px solid #1f2937;background:#0b1325;border-radius:.6rem;padding:.55rem;margin-bottom:.55rem}
+  .payer-card{border:1px solid #1f2937;background:#0b1325;border-radius:.6rem;padding:.55rem;margin-bottom:.55rem;cursor:pointer;transition:all 0.2s ease}
+  .payer-card:hover{transform:scale(1.02);border-color:#334155;background:rgba(15,23,42,.3)}
+  .payer-card.selected{border-color:#8b5cf6;background:rgba(139,92,246,.1)}
+  .card code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .state{fill:#1e293b;stroke:#94a3b8;stroke-width:.6px}
+  .graticule{fill:none;stroke:#334155;stroke-opacity:.35}
+  .marker-hosp{fill:#22c55e;stroke:#0b1325;stroke-width:1px}
+  .small{font-size:12px;color:#93a4b3}
+  .badge{display:inline-block;padding:.1rem .35rem;border:1px solid #334155;border-radius:.4rem;margin-left:.3rem;color:#cbd5e1}
+  .price-range{font-size:11px;color:#60a5fa}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;margin-top:.3rem}
+  .stat-item{background:#111827;padding:.3rem;border-radius:.3rem;text-align:center}
+  .legend{margin-bottom:.5rem;padding:.4rem;background:#111827;border-radius:.4rem}
+  .legend-item{display:flex;align-items:center;gap:.3rem;margin-bottom:.2rem}
+  .legend-color{width:12px;height:12px;border-radius:2px}
+  .clear-btn{background:#dc2626;border-color:#dc2626}
+  .clear-btn:hover{background:#b91c1c}
+  </style>
+</head>
+<body>
+  <header>
+    <label>Procedure Code/Name:
+      <input id="q" placeholder="e.g. MRI, 70551, or CT Scan" size="28"/>
+    </label>
+    <button id="search">Search Prices</button>
+    <button id="clear" class="clear-btn">Clear</button>
+    <span id="status">Ready to search</span>
+  </header>
+
+  <main>
+    <svg id="map" viewBox="0 0 960 600" aria-label="US map with price data by payer"></svg>
+    <aside>
+      <div class="legend" id="legend" style="display:none">
+        <h4 style="margin:0 0 .5rem">Price Legend</h4>
+        <div id="legend-content"></div>
+      </div>
+      
+      <h3 id="payer-title">Payers (0)</h3>
+      <div class="small">Click on a payer to highlight their hospitals on the map</div>
+      <div id="payer-list"></div>
+      
+      <div id="procedure-info" style="display:none">
+        <h3>Procedure Information</h3>
+        <div id="procedure-details"></div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="module">
+  import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
+
+  // --------- CONFIG ----------
+  const WIDTH = 960, HEIGHT = 600;
+  
+  // Color scale for different payers
+  const payerColors = d3.scaleOrdinal(d3.schemeSet3);
+  
+  // Data paths
+  const DATA_HOSPS = "../data/hospitals.csv";
+  const jsonUrl = (relPath) => relPath.startsWith('docs/') ? '../' + relPath.substring(5) : '../' + relPath;
+
+  // --------- ELEMENTS ----------
+  const svg = d3.select("#map");
+  const $q = document.getElementById("q");
+  const $search = document.getElementById("search");
+  const $clear = document.getElementById("clear");
+  const $status = document.getElementById("status");
+  const $payerList = document.getElementById("payer-list");
+  const $payerTitle = document.getElementById("payer-title");
+  const $legend = document.getElementById("legend");
+  const $legendContent = document.getElementById("legend-content");
+  const $procedureInfo = document.getElementById("procedure-info");
+  const $procedureDetails = document.getElementById("procedure-details");
+  const setStatus = (t)=> $status.textContent = t;
+
+  // --------- MAP SETUP ----------
+  const projection = d3.geoAlbersUsa().translate([WIDTH/2, HEIGHT/2]).scale(1200);
+  const path = d3.geoPath(projection);
+  const gBase = svg.append("g");
+  const gOverlay = svg.append("g");
+  const zoom = d3.zoom().scaleExtent([1, 8]).on("zoom", (ev) => {
+    gBase.attr("transform", ev.transform);
+    gOverlay.attr("transform", ev.transform);
+    gOverlay.selectAll(".marker-hosp").attr("r", 4/ev.transform.k);
+  });
+  svg.call(zoom);
+
+  const hospLayer = gOverlay.append("g").attr("class","hospitals");
+
+  // --------- STATE ----------
+  let hospitals = [];
+  let jsonCache = new Map();
+  let currentPayerData = new Map(); // Map of payer -> {hospitals: [], priceStats: {}}
+  let selectedPayer = null;
+
+  // --------- LOAD BASEMAP ----------
+  try {
+    const graticule = d3.geoGraticule10();
+    gBase.append("path").attr("class","graticule").attr("d", path(graticule));
+    const res = await fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json");
+    if (!res.ok) throw new Error(`us-atlas fetch failed: ${res.status}`);
+    const us = await res.json();
+    const states = topojson.feature(us, us.objects.states).features;
+    gBase.selectAll("path.state").data(states).join("path").attr("class","state").attr("d", path);
+  } catch (err) {
+    console.error("Basemap error:", err);
+    setStatus("Basemap failed to load. See console.");
+  }
+
+  // --------- LOAD HOSPITALS ----------
+  try {
+    console.log("Loading hospitals from:", DATA_HOSPS);
+    hospitals = await d3.csv(DATA_HOSPS, d3.autoType);
+    console.log("Loaded hospitals:", hospitals.length);
+    hospitals.forEach(d => { 
+      d.ll = [d.lon, d.lat]; 
+      d.json_path = d.json_path || '';
+    });
+    setStatus(`Ready to search. ${hospitals.length} hospitals loaded.`);
+  } catch (e) {
+    console.error("hospitals.csv failed:", e);
+    setStatus("Hospitals index missing. Check console for details.");
+  }
+
+  // --------- JSON LOADING FUNCTIONS ----------
+  async function loadHospitalJSON(jsonPath) {
+    if (!jsonPath) return [];
+    
+    try {
+      if (jsonCache.has(jsonPath)) {
+        return jsonCache.get(jsonPath);
+      }
+      
+      const url = jsonUrl(jsonPath);
+      console.log("Fetching:", url);
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const text = await response.text();
+      const jsonData = text.trim().split('\n').map(line => {
+        try {
+          return JSON.parse(line);
+        } catch (e) {
+          return null;
+        }
+      }).filter(obj => obj !== null);
+      
+      jsonCache.set(jsonPath, jsonData);
+      return jsonData;
+      
+    } catch(e) {
+      console.warn("JSON loading failed:", jsonPath, e);
+      return [];
+    }
+  }
+
+  async function searchProcedureAcrossAll(searchTerm) {
+    if (!searchTerm.trim()) return;
+    
+    console.log("Starting search for:", searchTerm);
+    setStatus("Searching across all hospitals...");
+    currentPayerData.clear();
+    
+    const regex = new RegExp(searchTerm, 'i');
+    const payerMap = new Map();
+    let totalMatches = 0;
+    
+    // Process hospitals in parallel batches
+    const batchSize = 10;
+    for (let i = 0; i < hospitals.length; i += batchSize) {
+      const batch = hospitals.slice(i, i + batchSize);
+      const promises = batch.map(async (hospital) => {
+        if (!hospital.json_path) return null;
+        
+        try {
+          const jsonData = await loadHospitalJSON(hospital.json_path);
+          if (jsonData.length === 0) {
+            console.warn("No data loaded for hospital:", hospital.name, hospital.json_path);
+            return null;
+          }
+          
+          const matches = jsonData.filter(record => {
+            const description = record.description || '';
+            const code = record.code || '';
+            const code2 = record.code_2 || '';
+            return regex.test(description) || regex.test(code) || regex.test(code2);
+          });
+          
+          if (matches.length > 0) {
+            console.log(`Found ${matches.length} matches at ${hospital.name}`);
+            return { hospital, matches };
+          }
+        } catch (e) {
+          console.warn("Failed to search hospital:", hospital.name, e);
+        }
+        return null;
+      });
+      
+      const results = await Promise.all(promises);
+      
+      // Process results
+      results.forEach(result => {
+        if (!result) return;
+        
+        const { hospital, matches } = result;
+        totalMatches += matches.length;
+        
+        // Group by payer
+        matches.forEach(match => {
+          const payerName = match.payer_name || 'Unknown';
+          if (!payerMap.has(payerName)) {
+            payerMap.set(payerName, {
+              hospitals: new Set(),
+              prices: [],
+              minPrice: Infinity,
+              maxPrice: -Infinity,
+              avgPrice: 0
+            });
+          }
+          
+          const payerData = payerMap.get(payerName);
+          payerData.hospitals.add(hospital);
+          
+          const price = parseFloat(match.estimated_amount) || 
+                       parseFloat(match.standard_charge_min) || 
+                       parseFloat(match.standard_charge_dollar) ||
+                       parseFloat(match.standard_charge_gross) || 0;
+          if (price > 0) {
+            payerData.prices.push(price);
+            payerData.minPrice = Math.min(payerData.minPrice, price);
+            payerData.maxPrice = Math.max(payerData.maxPrice, price);
+          }
+        });
+      });
+      
+      // Update progress
+      const progress = Math.round(((i + batchSize) / hospitals.length) * 100);
+      setStatus(`Searching... ${progress}% complete (${totalMatches} matches found)`);
+    }
+    
+    // Calculate averages and convert sets to arrays
+    payerMap.forEach((data, payerName) => {
+      if (data.prices.length > 0) {
+        data.avgPrice = d3.mean(data.prices);
+        data.hospitals = Array.from(data.hospitals);
+        currentPayerData.set(payerName, data);
+      }
+    });
+    
+    if (currentPayerData.size === 0) {
+      setStatus(`No matches found for "${searchTerm}"`);
+      return;
+    }
+    
+    setStatus(`Found ${totalMatches} matches across ${currentPayerData.size} payers`);
+    renderPayerList();
+    renderMap();
+    showProcedureInfo(searchTerm, totalMatches);
+  }
+
+  function renderPayerList() {
+    const sortedPayers = Array.from(currentPayerData.entries())
+      .sort(([,a], [,b]) => b.hospitals.length - a.hospitals.length);
+    
+    $payerTitle.textContent = `Payers (${sortedPayers.length})`;
+    $payerList.innerHTML = "";
+    
+    sortedPayers.forEach(([payerName, data]) => {
+      const div = document.createElement("div");
+      div.className = `payer-card ${selectedPayer === payerName ? 'selected' : ''}`;
+      
+      const avgPrice = data.avgPrice || 0;
+      const minPrice = data.minPrice === Infinity ? 0 : data.minPrice;
+      const maxPrice = data.maxPrice === -Infinity ? 0 : data.maxPrice;
+      
+      div.innerHTML = `
+        <div><strong>${payerName}</strong></div>
+        <div class="small">${data.hospitals.length} hospitals · ${data.prices.length} price points</div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="small">Average</div>
+            <div>$${avgPrice.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+          </div>
+          <div class="stat-item">
+            <div class="small">Range</div>
+            <div class="price-range">$${minPrice.toLocaleString()} - $${maxPrice.toLocaleString()}</div>
+          </div>
+        </div>
+      `;
+      
+      div.onclick = () => selectPayer(payerName === selectedPayer ? null : payerName);
+      $payerList.appendChild(div);
+    });
+  }
+
+  function selectPayer(payerName) {
+    selectedPayer = payerName;
+    renderPayerList();
+    renderMap();
+    
+    if (payerName) {
+      setStatus(`Showing hospitals for ${payerName}`);
+    } else {
+      setStatus(`Showing all payers`);
+    }
+  }
+
+  function renderMap() {
+    // Clear existing markers
+    hospLayer.selectAll("*").remove();
+    
+    if (currentPayerData.size === 0) return;
+    
+    let hospitalsToShow = [];
+    
+    if (selectedPayer && currentPayerData.has(selectedPayer)) {
+      // Show only selected payer's hospitals
+      const data = currentPayerData.get(selectedPayer);
+      hospitalsToShow = data.hospitals.map(h => ({
+        ...h,
+        payerName: selectedPayer,
+        color: payerColors(selectedPayer)
+      }));
+    } else {
+      // Show all hospitals with payer colors
+      currentPayerData.forEach((data, payerName) => {
+        data.hospitals.forEach(hospital => {
+          hospitalsToShow.push({
+            ...hospital,
+            payerName: payerName,
+            color: payerColors(payerName)
+          });
+        });
+      });
+    }
+    
+    // Render hospital markers
+    const markers = hospLayer.selectAll("circle.marker-hosp")
+      .data(hospitalsToShow, d => `${d.id}-${d.payerName}`);
+    
+    markers.join(
+      enter => enter.append("circle")
+        .attr("class", "marker-hosp")
+        .attr("r", 4)
+        .attr("cx", d => projection(d.ll)?.[0] ?? -9999)
+        .attr("cy", d => projection(d.ll)?.[1] ?? -9999)
+        .attr("fill", d => d.color)
+        .attr("stroke", "#0b1325")
+        .attr("stroke-width", 1)
+        .style("opacity", 0.8)
+        .on("click", (event, d) => {
+          // Zoom to hospital
+          const p = projection(d.ll);
+          if (p) {
+            svg.transition().duration(600)
+              .call(zoom.transform, d3.zoomIdentity.translate(WIDTH/2 - p[0]*4, HEIGHT/2 - p[1]*4).scale(4));
+          }
+        })
+        .append("title")
+        .text(d => `${d.name} (${d.payerName})\n${d.state} · ${d.zip}`),
+      update => update
+        .attr("cx", d => projection(d.ll)?.[0] ?? -9999)
+        .attr("cy", d => projection(d.ll)?.[1] ?? -9999)
+        .attr("fill", d => d.color),
+      exit => exit.remove()
+    );
+    
+    updateLegend();
+  }
+
+  function updateLegend() {
+    if (currentPayerData.size === 0) {
+      $legend.style.display = 'none';
+      return;
+    }
+    
+    $legend.style.display = 'block';
+    
+    const payersToShow = selectedPayer ? [selectedPayer] : Array.from(currentPayerData.keys()).slice(0, 10);
+    
+    $legendContent.innerHTML = payersToShow.map(payerName => `
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: ${payerColors(payerName)}"></div>
+        <div class="small">${payerName}</div>
+      </div>
+    `).join('');
+  }
+
+  function showProcedureInfo(searchTerm, totalMatches) {
+    $procedureInfo.style.display = 'block';
+    
+    // Calculate overall statistics
+    const allPrices = [];
+    currentPayerData.forEach(data => {
+      allPrices.push(...data.prices);
+    });
+    
+    const overallAvg = d3.mean(allPrices) || 0;
+    const overallMin = d3.min(allPrices) || 0;
+    const overallMax = d3.max(allPrices) || 0;
+    const overallMedian = d3.median(allPrices) || 0;
+    
+    $procedureDetails.innerHTML = `
+      <div class="card">
+        <div><strong>Search:</strong> "${searchTerm}"</div>
+        <div class="small">${totalMatches} total matches across ${currentPayerData.size} payers</div>
+        <div style="margin-top:.5rem">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="small">Overall Average</div>
+              <div>$${overallAvg.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+            </div>
+            <div class="stat-item">
+              <div class="small">Median</div>
+              <div>$${overallMedian.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+            </div>
+          </div>
+          <div style="margin-top:.3rem;text-align:center;padding:.2rem;background:#111827;border-radius:.3rem">
+            <div class="small">Price Range</div>
+            <div class="price-range">$${overallMin.toLocaleString()} - $${overallMax.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function clearResults() {
+    currentPayerData.clear();
+    selectedPayer = null;
+    $payerList.innerHTML = "";
+    $payerTitle.textContent = "Payers (0)";
+    $legend.style.display = 'none';
+    $procedureInfo.style.display = 'none';
+    hospLayer.selectAll("*").remove();
+    $q.value = "";
+    
+    // Reset zoom
+    svg.transition().duration(600)
+      .call(zoom.transform, d3.zoomIdentity);
+    
+    setStatus("Ready to search");
+  }
+
+  // --------- EVENT HANDLERS ----------
+  $search.addEventListener("click", () => {
+    const searchTerm = $q.value?.trim();
+    if (searchTerm) {
+      searchProcedureAcrossAll(searchTerm);
+    }
+  });
+
+  $clear.addEventListener("click", clearResults);
+
+  $q.addEventListener("keydown", e => { 
+    if (e.key === "Enter") {
+      const searchTerm = $q.value?.trim();
+      if (searchTerm) {
+        searchProcedureAcrossAll(searchTerm);
+      }
+    }
+  });
+
+  </script>
+</body>
+</html>

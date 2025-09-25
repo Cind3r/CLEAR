@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>3D Healthcare Price Visualization by Payer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- d3 and three.js for 3D visualization -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <style>
+  :root{--bg:#0f172a;--ink:#e2e8f0;--muted:#9aa6b2;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px system-ui,Segoe UI,Roboto,Helvetica,Arial;overflow:hidden}
+  header{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;gap:.5rem;align-items:center;padding:.6rem .8rem;background:rgba(15,23,42,.95);backdrop-filter:blur(8px);flex-wrap:wrap}
+  input,select,button{background:#111827;color:var(--ink);border:1px solid #1f2937;border-radius:.5rem;padding:.45rem .55rem}
+  label{display:flex;align-items:center;gap:.35rem}
+  button{cursor:pointer}
+  button:hover{background:#1f2937}
+  #status{color:var(--muted);font-size:12px}
+  main{display:grid;grid-template-columns:1fr 400px;height:100vh;padding-top:60px;gap:0}
+  #map-container{position:relative;width:100%;height:100%;overflow:hidden}
+  aside{border-left:1px solid #1f2937;height:100%;overflow:auto;padding:.6rem;background:rgba(15,23,42,.8)}
+  aside h3{margin:.25rem 0 .5rem}
+  .card{border:1px solid #1f2937;background:#0b1325;border-radius:.6rem;padding:.55rem;margin-bottom:.55rem}
+  .payer-card{border:1px solid #1f2937;background:#0b1325;border-radius:.6rem;padding:.55rem;margin-bottom:.55rem;cursor:pointer;transition:all 0.2s ease}
+  .payer-card:hover{transform:scale(1.02);border-color:#334155;background:rgba(15,23,42,.3)}
+  .payer-card.selected{border-color:#8b5cf6;background:rgba(139,92,246,.1)}
+  .card code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .small{font-size:12px;color:#93a4b3}
+  .badge{display:inline-block;padding:.1rem .35rem;border:1px solid #334155;border-radius:.4rem;margin-left:.3rem;color:#cbd5e1}
+  .price-range{font-size:11px;color:#60a5fa}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;margin-top:.3rem}
+  .stat-item{background:#111827;padding:.3rem;border-radius:.3rem;text-align:center}
+  .legend{margin-bottom:.5rem;padding:.4rem;background:#111827;border-radius:.4rem}
+  .legend-item{display:flex;align-items:center;gap:.3rem;margin-bottom:.2rem}
+  .legend-color{width:12px;height:12px;border-radius:2px}
+  .clear-btn{background:#dc2626;border-color:#dc2626}
+  .clear-btn:hover{background:#b91c1c}
+  .controls{position:fixed;bottom:20px;left:20px;z-index:1000;background:rgba(15,23,42,.9);padding:.8rem;border-radius:.6rem;border:1px solid #1f2937}
+  .controls h4{margin:0 0 .5rem;font-size:12px;color:var(--muted)}
+  .control-item{margin-bottom:.3rem;font-size:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <label>Procedure Code/Name:
+      <input id="q" placeholder="e.g. MRI, 70551, or CT Scan" size="28"/>
+    </label>
+    <button id="search">Search Prices</button>
+    <button id="clear" class="clear-btn">Clear</button>
+    <span id="status">Ready to search</span>
+  </header>
+
+  <main>
+    <div id="map-container"></div>
+    <aside>
+      <div class="legend" id="legend" style="display:none">
+        <h4 style="margin:0 0 .5rem">Price Legend</h4>
+        <div id="legend-content"></div>
+      </div>
+      
+      <h3 id="payer-title">Payers (0)</h3>
+      <div class="small">Click on a payer to highlight their hospitals in 3D</div>
+      <div id="payer-list"></div>
+      
+      <div id="procedure-info" style="display:none">
+        <h3>Procedure Information</h3>
+        <div id="procedure-details"></div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="controls">
+    <h4>3D Controls</h4>
+    <div class="control-item">🖱️ Drag to rotate</div>
+    <div class="control-item">🔍 Scroll to zoom</div>
+    <div class="control-item">📏 Height = Price Amount</div>
+    <div class="control-item">🎨 Color = Payer</div>
+  </div>
+
+  <script type="module">
+  import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
+
+  // --------- CONFIG ----------
+  const WIDTH = window.innerWidth - 400, HEIGHT = window.innerHeight - 60; // Full width minus sidebar
+  
+  // Color scale for different payers
+  const payerColors = d3.scaleOrdinal(d3.schemeSet3);
+  
+  // Data paths
+  const DATA_HOSPS = "../data/hospitals.csv";
+  const jsonUrl = (relPath) => relPath.startsWith('docs/') ? '../' + relPath.substring(5) : '../' + relPath;
+
+  // --------- ELEMENTS ----------
+  const mapContainer = document.getElementById("map-container");
+  const $q = document.getElementById("q");
+  const $search = document.getElementById("search");
+  const $clear = document.getElementById("clear");
+  const $status = document.getElementById("status");
+  const $payerList = document.getElementById("payer-list");
+  const $payerTitle = document.getElementById("payer-title");
+  const $legend = document.getElementById("legend");
+  const $legendContent = document.getElementById("legend-content");
+  const $procedureInfo = document.getElementById("procedure-info");
+  const $procedureDetails = document.getElementById("procedure-details");
+  const setStatus = (t)=> $status.textContent = t;
+
+  // --------- 3D SCENE SETUP ----------
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(WIDTH, HEIGHT);
+  renderer.setClearColor(0x0f172a, 1);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  mapContainer.appendChild(renderer.domElement);
+
+  // Orbit controls for 3D navigation
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.screenSpacePanning = false;
+  controls.minDistance = 10;
+  controls.maxDistance = 800;
+  controls.maxPolarAngle = Math.PI / 2;
+
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+  scene.add(ambientLight);
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  directionalLight.position.set(50, 100, 50);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.mapSize.width = 2048;
+  directionalLight.shadow.mapSize.height = 2048;
+  scene.add(directionalLight);
+
+  // Map projection for converting lat/lon to 3D coordinates
+  const projection = d3.geoAlbersUsa().translate([0, 0]).scale(200);
+  
+  // Groups for organizing 3D objects
+  const mapGroup = new THREE.Group();
+  const priceGroup = new THREE.Group();
+  scene.add(mapGroup);
+  scene.add(priceGroup);
+
+  // Camera initial position (isometric-like view)
+  camera.position.set(0, 120, 150);
+  camera.lookAt(0, 0, 0);
+
+  // --------- STATE ----------
+  let hospitals = [];
+  let jsonCache = new Map();
+  let currentPayerData = new Map();
+  let selectedPayer = null;
+  let currentPriceBars = [];
+
+  // --------- 3D US MAP CREATION ----------
+  async function create3DMap() {
+    try {
+      const res = await fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json");
+      if (!res.ok) throw new Error(`us-atlas fetch failed: ${res.status}`);
+      const us = await res.json();
+      const states = topojson.feature(us, us.objects.states).features;
+
+      // Create a simple flat plane for the US outline first
+      const planeGeometry = new THREE.PlaneGeometry(400, 240);
+      const planeMaterial = new THREE.MeshLambertMaterial({ 
+        color: 0x1a1a2e, 
+        transparent: true, 
+        opacity: 0.6,
+        side: THREE.DoubleSide
+      });
+      const basePlane = new THREE.Mesh(planeGeometry, planeMaterial);
+      basePlane.rotation.x = -Math.PI / 2; // Make it horizontal
+      basePlane.position.y = -1;
+      basePlane.receiveShadow = true;
+      mapGroup.add(basePlane);
+
+      // Create state outlines as lines instead of filled polygons
+      states.forEach(state => {
+        const coords = state.geometry.coordinates;
+
+        function createOutline(coordArray, depth = 0) {
+          if (depth === 0 && Array.isArray(coordArray[0][0])) {
+            coordArray.forEach(ring => createOutline(ring, depth + 1));
+          } else if (depth === 1 && Array.isArray(coordArray[0])) {
+            // This is a polygon ring
+            const points = [];
+            coordArray.forEach(point => {
+              const projected = projection(point);
+              if (projected) {
+                points.push(new THREE.Vector3(projected[0], 0, projected[1]));
+              }
+            });
+            
+            if (points.length > 2) {
+              // Close the polygon
+              points.push(points[0]);
+              
+              const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+              const lineMaterial = new THREE.LineBasicMaterial({ 
+                color: 0x94a3b8, 
+                transparent: true, 
+                opacity: 0.8 
+              });
+              const line = new THREE.Line(lineGeometry, lineMaterial);
+              mapGroup.add(line);
+            }
+          }
+        }
+
+        if (state.geometry.type === 'Polygon') {
+          createOutline(state.geometry.coordinates);
+        } else if (state.geometry.type === 'MultiPolygon') {
+          state.geometry.coordinates.forEach(polygon => {
+            createOutline(polygon);
+          });
+        }
+      });
+
+      // Grid removed for cleaner appearance
+
+      console.log("3D Map created successfully");
+
+    } catch (err) {
+      console.error("3D Map creation error:", err);
+      setStatus("3D Map failed to load. See console.");
+    }
+  }
+
+  // --------- LOAD HOSPITALS ----------
+  try {
+    console.log("Loading hospitals from:", DATA_HOSPS);
+    hospitals = await d3.csv(DATA_HOSPS, d3.autoType);
+    console.log("Loaded hospitals:", hospitals.length);
+    hospitals.forEach(d => { 
+      d.ll = [d.lon, d.lat]; 
+      d.json_path = d.json_path || '';
+    });
+    setStatus(`Ready to search. ${hospitals.length} hospitals loaded.`);
+  } catch (e) {
+    console.error("hospitals.csv failed:", e);
+    setStatus("Hospitals index missing. Check console for details.");
+  }
+
+  // Initialize 3D map
+  await create3DMap();
+
+  // --------- JSON LOADING FUNCTIONS ----------
+  async function loadHospitalJSON(jsonPath) {
+    if (!jsonPath) return [];
+    
+    try {
+      if (jsonCache.has(jsonPath)) {
+        return jsonCache.get(jsonPath);
+      }
+      
+      const url = jsonUrl(jsonPath);
+      console.log("Fetching:", url);
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const text = await response.text();
+      const jsonData = text.trim().split('\n').map(line => {
+        try {
+          return JSON.parse(line);
+        } catch (e) {
+          return null;
+        }
+      }).filter(obj => obj !== null);
+      
+      jsonCache.set(jsonPath, jsonData);
+      return jsonData;
+      
+    } catch(e) {
+      console.warn("JSON loading failed:", jsonPath, e);
+      return [];
+    }
+  }
+
+  async function searchProcedureAcrossAll(searchTerm) {
+    if (!searchTerm.trim()) return;
+    
+    console.log("Starting search for:", searchTerm);
+    setStatus("Searching across all hospitals...");
+    currentPayerData.clear();
+    
+    const regex = new RegExp(searchTerm, 'i');
+    const payerMap = new Map();
+    let totalMatches = 0;
+    
+    // Process hospitals in parallel batches
+    const batchSize = 10;
+    for (let i = 0; i < hospitals.length; i += batchSize) {
+      const batch = hospitals.slice(i, i + batchSize);
+      const promises = batch.map(async (hospital) => {
+        if (!hospital.json_path) return null;
+        
+        try {
+          const jsonData = await loadHospitalJSON(hospital.json_path);
+          if (jsonData.length === 0) {
+            console.warn("No data loaded for hospital:", hospital.name, hospital.json_path);
+            return null;
+          }
+          
+          const matches = jsonData.filter(record => {
+            const description = record.description || '';
+            const code = record.code || '';
+            const code2 = record.code_2 || '';
+            return regex.test(description) || regex.test(code) || regex.test(code2);
+          });
+          
+          if (matches.length > 0) {
+            console.log(`Found ${matches.length} matches at ${hospital.name}`);
+            return { hospital, matches };
+          }
+        } catch (e) {
+          console.warn("Failed to search hospital:", hospital.name, e);
+        }
+        return null;
+      });
+      
+      const results = await Promise.all(promises);
+      
+      // Process results
+      results.forEach(result => {
+        if (!result) return;
+        
+        const { hospital, matches } = result;
+        totalMatches += matches.length;
+        
+        // Group by payer
+        matches.forEach(match => {
+          const payerName = match.payer_name || 'Unknown';
+          if (!payerMap.has(payerName)) {
+            payerMap.set(payerName, {
+              hospitals: new Set(),
+              prices: [],
+              priceData: [], // Store price data with hospital info
+              minPrice: Infinity,
+              maxPrice: -Infinity,
+              avgPrice: 0
+            });
+          }
+          
+          const payerData = payerMap.get(payerName);
+          payerData.hospitals.add(hospital);
+          
+          const price = parseFloat(match.estimated_amount) || 
+                       parseFloat(match.standard_charge_min) || 
+                       parseFloat(match.standard_charge_dollar) ||
+                       parseFloat(match.standard_charge_gross) || 0;
+          
+          if (price > 0) {
+            payerData.prices.push(price);
+            payerData.priceData.push({ hospital, price, match });
+            payerData.minPrice = Math.min(payerData.minPrice, price);
+            payerData.maxPrice = Math.max(payerData.maxPrice, price);
+          }
+        });
+      });
+      
+      // Update progress
+      const progress = Math.round(((i + batchSize) / hospitals.length) * 100);
+      setStatus(`Searching... ${progress}% complete (${totalMatches} matches found)`);
+    }
+    
+    // Calculate averages and convert sets to arrays
+    payerMap.forEach((data, payerName) => {
+      if (data.prices.length > 0) {
+        data.avgPrice = d3.mean(data.prices);
+        data.hospitals = Array.from(data.hospitals);
+        currentPayerData.set(payerName, data);
+      }
+    });
+    
+    if (currentPayerData.size === 0) {
+      setStatus(`No matches found for "${searchTerm}"`);
+      return;
+    }
+    
+    setStatus(`Found ${totalMatches} matches across ${currentPayerData.size} payers`);
+    renderPayerList();
+    render3DPrices();
+    showProcedureInfo(searchTerm, totalMatches);
+    autoFrameData();
+  }
+
+  function render3DPrices() {
+    // Clear existing price bars
+    currentPriceBars.forEach(bar => priceGroup.remove(bar));
+    currentPriceBars = [];
+    
+    if (currentPayerData.size === 0) return;
+    
+    // Get max price for scaling
+    let maxPrice = 0;
+    currentPayerData.forEach(data => {
+      maxPrice = Math.max(maxPrice, data.maxPrice);
+    });
+    
+    const priceScale = d3.scaleLinear().domain([0, maxPrice]).range([0, 30]); // Scale to 30 units height
+    
+    if (selectedPayer && currentPayerData.has(selectedPayer)) {
+      // Single payer view with clustering
+      renderClusteredPrices(selectedPayer, currentPayerData.get(selectedPayer), priceScale);
+    } else {
+      // Multiple payers view - create clusters with highest price per payer at each location
+      renderMultiPayerClusters(priceScale);
+    }
+  }
+
+  function renderClusteredPrices(payerName, data, priceScale) {
+    const color = new THREE.Color(payerColors(payerName));
+    
+    // Group price data by hospital location
+    const hospitalGroups = new Map();
+    data.priceData.forEach(({ hospital, price, match }) => {
+      const key = `${hospital.lat}-${hospital.lon}`;
+      if (!hospitalGroups.has(key)) {
+        hospitalGroups.set(key, {
+          hospital,
+          prices: [],
+          projected: projection([hospital.lon, hospital.lat])
+        });
+      }
+      hospitalGroups.get(key).prices.push({ price, match });
+    });
+    
+    // Create clustered bars for each hospital location
+    hospitalGroups.forEach(({ hospital, prices, projected }) => {
+      if (!projected || prices.length === 0) return;
+      
+      // Sort prices by amount (highest first)
+      prices.sort((a, b) => b.price - a.price);
+      
+      // Calculate cluster parameters
+      const maxPriceInGroup = prices[0].price;
+      const tallestHeight = priceScale(maxPriceInGroup);
+      
+      if (tallestHeight < 0.1) return;
+      
+      // Create main (tallest) square tower at center
+      const mainGeometry = new THREE.BoxGeometry(0.4, tallestHeight, 0.4);
+      const mainMaterial = new THREE.MeshLambertMaterial({ 
+        color: color,
+        transparent: true,
+        opacity: 0.9
+      });
+      const mainTower = new THREE.Mesh(mainGeometry, mainMaterial);
+      
+      mainTower.position.x = projected[0];
+      mainTower.position.y = tallestHeight / 2;
+      mainTower.position.z = projected[1];
+      mainTower.castShadow = true;
+      
+      mainTower.userData = {
+        hospital: hospital.name,
+        payer: payerName,
+        price: maxPriceInGroup,
+        state: hospital.state,
+        isMain: true
+      };
+      
+      priceGroup.add(mainTower);
+      currentPriceBars.push(mainTower);
+      
+      // Create smaller clustered square towers around the main one
+      if (prices.length > 1) {
+        const clusterRadius = 0.5; // Distance from center (closer together)
+        const angleStep = (2 * Math.PI) / Math.min(prices.length - 1, 8); // Max 8 satellites
+        
+        for (let i = 1; i < prices.length && i < 9; i++) { // Skip first (main) and limit to 8 satellites
+          const price = prices[i].price;
+          const height = priceScale(price);
+          
+          if (height < 0.05) continue; // Skip very small prices
+          
+          // Calculate position in cluster
+          const angle = angleStep * (i - 1);
+          const offsetX = Math.cos(angle) * clusterRadius;
+          const offsetZ = Math.sin(angle) * clusterRadius;
+          
+          // Create smaller satellite square tower
+          const satGeometry = new THREE.BoxGeometry(0.4, height, 0.4);
+          const satMaterial = new THREE.MeshLambertMaterial({ 
+            color: color,
+            transparent: true,
+            opacity: 0.7
+          });
+          const satTower = new THREE.Mesh(satGeometry, satMaterial);
+          
+          satTower.position.x = projected[0] + offsetX;
+          satTower.position.y = height / 2;
+          satTower.position.z = projected[1] + offsetZ;
+          satTower.castShadow = true;
+          
+          satTower.userData = {
+            hospital: hospital.name,
+            payer: payerName,
+            price: price,
+            state: hospital.state,
+            isMain: false,
+            clusterIndex: i
+          };
+          
+          priceGroup.add(satTower);
+          currentPriceBars.push(satTower);
+        }
+        
+        // Add connecting lines between main and satellites for visual clarity
+        if (prices.length > 2) {
+          const lineGeometry = new THREE.BufferGeometry();
+          const linePositions = [];
+          
+          // Lines from center to each satellite
+          for (let i = 1; i < prices.length && i < 9; i++) {
+            const angle = angleStep * (i - 1);
+            const offsetX = Math.cos(angle) * clusterRadius;
+            const offsetZ = Math.sin(angle) * clusterRadius;
+            
+            // Line from center base to satellite base
+            linePositions.push(projected[0], 0.1, projected[1]);
+            linePositions.push(projected[0] + offsetX, 0.1, projected[1] + offsetZ);
+          }
+          
+          lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+          const lineMaterial = new THREE.LineBasicMaterial({ 
+            color: color, 
+            transparent: true, 
+            opacity: 0.3 
+          });
+          const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+          
+          priceGroup.add(lines);
+          currentPriceBars.push(lines);
+        }
+      }
+    });
+  }
+
+  function renderMultiPayerClusters(priceScale) {
+    // Group all price data by hospital location
+    const hospitalGroups = new Map();
+    
+    currentPayerData.forEach((data, payerName) => {
+      data.priceData.forEach(({ hospital, price, match }) => {
+        const key = `${hospital.lat}-${hospital.lon}`;
+        if (!hospitalGroups.has(key)) {
+          hospitalGroups.set(key, {
+            hospital,
+            payerData: new Map(),
+            projected: projection([hospital.lon, hospital.lat])
+          });
+        }
+        
+        const group = hospitalGroups.get(key);
+        if (!group.payerData.has(payerName) || group.payerData.get(payerName).price < price) {
+          group.payerData.set(payerName, { price, match, payerName });
+        }
+      });
+    });
+    
+    // Create clustered towers for each hospital location
+    hospitalGroups.forEach(({ hospital, payerData, projected }) => {
+      if (!projected || payerData.size === 0) return;
+      
+      // Convert to array and sort by price (highest first)
+      const payerArray = Array.from(payerData.values()).sort((a, b) => b.price - a.price);
+      
+      // Get the overall highest price for center tower
+      const maxPriceData = payerArray[0];
+      const tallestHeight = priceScale(maxPriceData.price);
+      
+      if (tallestHeight < 0.1) return;
+      
+      // Create main (tallest) tower at center with highest price payer's color
+      const mainColor = new THREE.Color(payerColors(maxPriceData.payerName));
+      const mainGeometry = new THREE.BoxGeometry(0.4, tallestHeight, 0.4);
+      const mainMaterial = new THREE.MeshLambertMaterial({ 
+        color: mainColor,
+        transparent: true,
+        opacity: 0.9
+      });
+      const mainTower = new THREE.Mesh(mainGeometry, mainMaterial);
+      
+      mainTower.position.x = projected[0];
+      mainTower.position.y = tallestHeight / 2;
+      mainTower.position.z = projected[1];
+      mainTower.castShadow = true;
+      
+      mainTower.userData = {
+        hospital: hospital.name,
+        payer: maxPriceData.payerName,
+        price: maxPriceData.price,
+        state: hospital.state,
+        isMain: true
+      };
+      
+      priceGroup.add(mainTower);
+      currentPriceBars.push(mainTower);
+      
+      // Create satellite towers for other payers
+      if (payerArray.length > 1) {
+        const clusterRadius = 0.5;
+        const angleStep = (2 * Math.PI) / Math.min(payerArray.length - 1, 8);
+        
+        for (let i = 1; i < payerArray.length && i < 9; i++) {
+          const payerData = payerArray[i];
+          const height = priceScale(payerData.price);
+          
+          if (height < 0.05) continue;
+          
+          // Calculate position in cluster
+          const angle = angleStep * (i - 1);
+          const offsetX = Math.cos(angle) * clusterRadius;
+          const offsetZ = Math.sin(angle) * clusterRadius;
+          
+          // Create satellite tower with payer's color
+          const satColor = new THREE.Color(payerColors(payerData.payerName));
+          const satGeometry = new THREE.BoxGeometry(0.4, height, 0.4);
+          const satMaterial = new THREE.MeshLambertMaterial({ 
+            color: satColor,
+            transparent: true,
+            opacity: 0.7
+          });
+          const satTower = new THREE.Mesh(satGeometry, satMaterial);
+          
+          satTower.position.x = projected[0] + offsetX;
+          satTower.position.y = height / 2;
+          satTower.position.z = projected[1] + offsetZ;
+          satTower.castShadow = true;
+          
+          satTower.userData = {
+            hospital: hospital.name,
+            payer: payerData.payerName,
+            price: payerData.price,
+            state: hospital.state,
+            isMain: false,
+            clusterIndex: i
+          };
+          
+          priceGroup.add(satTower);
+          currentPriceBars.push(satTower);
+        }
+        
+        // Add connecting lines between main and satellites
+        if (payerArray.length > 2) {
+          const lineGeometry = new THREE.BufferGeometry();
+          const linePositions = [];
+          
+          for (let i = 1; i < payerArray.length && i < 9; i++) {
+            const angle = angleStep * (i - 1);
+            const offsetX = Math.cos(angle) * clusterRadius;
+            const offsetZ = Math.sin(angle) * clusterRadius;
+            
+            linePositions.push(projected[0], 0.1, projected[1]);
+            linePositions.push(projected[0] + offsetX, 0.1, projected[1] + offsetZ);
+          }
+          
+          lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+          const lineMaterial = new THREE.LineBasicMaterial({ 
+            color: mainColor, 
+            transparent: true, 
+            opacity: 0.3 
+          });
+          const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+          
+          priceGroup.add(lines);
+          currentPriceBars.push(lines);
+        }
+      }
+    });
+  }
+
+  function renderPayerList() {
+    const sortedPayers = Array.from(currentPayerData.entries())
+      .sort(([,a], [,b]) => b.hospitals.length - a.hospitals.length);
+    
+    $payerTitle.textContent = `Payers (${sortedPayers.length})`;
+    $payerList.innerHTML = "";
+    
+    sortedPayers.forEach(([payerName, data]) => {
+      const div = document.createElement("div");
+      div.className = `payer-card ${selectedPayer === payerName ? 'selected' : ''}`;
+      
+      const avgPrice = data.avgPrice || 0;
+      const minPrice = data.minPrice === Infinity ? 0 : data.minPrice;
+      const maxPrice = data.maxPrice === -Infinity ? 0 : data.maxPrice;
+      
+      div.innerHTML = `
+        <div><strong>${payerName}</strong></div>
+        <div class="small">${data.hospitals.length} hospitals · ${data.prices.length} price points</div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="small">Average</div>
+            <div>$${avgPrice.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+          </div>
+          <div class="stat-item">
+            <div class="small">Range</div>
+            <div class="price-range">$${minPrice.toLocaleString()} - $${maxPrice.toLocaleString()}</div>
+          </div>
+        </div>
+      `;
+      
+      div.onclick = () => selectPayer(payerName === selectedPayer ? null : payerName);
+      $payerList.appendChild(div);
+    });
+  }
+
+  function selectPayer(payerName) {
+    selectedPayer = payerName;
+    renderPayerList();
+    render3DPrices();
+    updateLegend();
+    
+    if (payerName) {
+      setStatus(`Showing 3D prices for ${payerName}`);
+    } else {
+      setStatus(`Showing all payers in 3D`);
+    }
+    
+    // Auto-frame the visible data
+    autoFrameData();
+  }
+
+  function updateLegend() {
+    if (currentPayerData.size === 0) {
+      $legend.style.display = 'none';
+      return;
+    }
+    
+    $legend.style.display = 'block';
+    
+    const payersToShow = selectedPayer ? [selectedPayer] : Array.from(currentPayerData.keys()).slice(0, 10);
+    
+    $legendContent.innerHTML = payersToShow.map(payerName => `
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: ${payerColors(payerName)}"></div>
+        <div class="small">${payerName}</div>
+      </div>
+    `).join('');
+  }
+
+  function showProcedureInfo(searchTerm, totalMatches) {
+    $procedureInfo.style.display = 'block';
+    
+    // Calculate overall statistics
+    const allPrices = [];
+    currentPayerData.forEach(data => {
+      allPrices.push(...data.prices);
+    });
+    
+    const overallAvg = d3.mean(allPrices) || 0;
+    const overallMin = d3.min(allPrices) || 0;
+    const overallMax = d3.max(allPrices) || 0;
+    const overallMedian = d3.median(allPrices) || 0;
+    
+    $procedureDetails.innerHTML = `
+      <div class="card">
+        <div><strong>Search:</strong> "${searchTerm}"</div>
+        <div class="small">${totalMatches} total matches across ${currentPayerData.size} payers</div>
+        <div style="margin-top:.5rem">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="small">Overall Average</div>
+              <div>$${overallAvg.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+            </div>
+            <div class="stat-item">
+              <div class="small">Median</div>
+              <div>$${overallMedian.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+            </div>
+          </div>
+          <div style="margin-top:.3rem;text-align:center;padding:.2rem;background:#111827;border-radius:.3rem">
+            <div class="small">Price Range</div>
+            <div class="price-range">$${overallMin.toLocaleString()} - $${overallMax.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function clearResults() {
+    currentPayerData.clear();
+    selectedPayer = null;
+    $payerList.innerHTML = "";
+    $payerTitle.textContent = "Payers (0)";
+    $legend.style.display = 'none';
+    $procedureInfo.style.display = 'none';
+    
+    // Clear 3D price bars
+    currentPriceBars.forEach(bar => priceGroup.remove(bar));
+    currentPriceBars = [];
+    
+    $q.value = "";
+    setStatus("Ready to search");
+  }
+
+  function autoFrameData() {
+    if (currentPriceBars.length === 0) return;
+    
+    // Calculate bounding box of all visible towers
+    const box = new THREE.Box3();
+    currentPriceBars.forEach(tower => {
+      if (tower.geometry) { // Skip lines and non-geometric objects
+        const towerBox = new THREE.Box3().setFromObject(tower);
+        box.union(towerBox);
+      }
+    });
+    
+    if (box.isEmpty()) return;
+    
+    // Get the center and size of the bounding box
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    
+    // Calculate the maximum dimension for proper framing
+    const maxDim = Math.max(size.x, size.y, size.z);
+    
+    // Calculate optimal camera distance for isometric view
+    const distance = maxDim * 2.5; // Adjust multiplier for desired framing
+    
+    // Isometric angles (45 degrees horizontal, 35.264 degrees vertical)
+    const horizontalAngle = Math.PI / 4; // 45 degrees
+    const verticalAngle = Math.atan(Math.sin(Math.PI / 4)); // ~35.264 degrees for true isometric
+    
+    // Calculate camera position for isometric view
+    const cameraX = center.x + distance * Math.cos(verticalAngle) * Math.cos(horizontalAngle);
+    const cameraY = center.y + distance * Math.sin(verticalAngle);
+    const cameraZ = center.z + distance * Math.cos(verticalAngle) * Math.sin(horizontalAngle);
+    
+    // Smooth animation to the new camera position
+    const startPosition = camera.position.clone();
+    const targetPosition = new THREE.Vector3(cameraX, cameraY, cameraZ);
+    const startTarget = controls.target.clone();
+    const targetTarget = center.clone();
+    
+    // Animate camera movement
+    const duration = 1500; // 1.5 seconds
+    const startTime = Date.now();
+    
+    function animateCamera() {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Use easing function for smooth animation
+      const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      
+      // Interpolate camera position
+      camera.position.lerpVectors(startPosition, targetPosition, easeProgress);
+      
+      // Interpolate look-at target
+      const currentTarget = new THREE.Vector3().lerpVectors(startTarget, targetTarget, easeProgress);
+      controls.target.copy(currentTarget);
+      camera.lookAt(currentTarget);
+      
+      controls.update();
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateCamera);
+      }
+    }
+    
+    animateCamera();
+  }
+
+  // --------- 3D ANIMATION LOOP ----------
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    const newWidth = window.innerWidth - 400; // Full width minus sidebar
+    const newHeight = window.innerHeight - 60;
+    camera.aspect = newWidth / newHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(newWidth, newHeight);
+  });
+
+  // --------- EVENT HANDLERS ----------
+  $search.addEventListener("click", () => {
+    const searchTerm = $q.value?.trim();
+    if (searchTerm) {
+      searchProcedureAcrossAll(searchTerm);
+    }
+  });
+
+  $clear.addEventListener("click", clearResults);
+
+  $q.addEventListener("keydown", e => { 
+    if (e.key === "Enter") {
+      const searchTerm = $q.value?.trim();
+      if (searchTerm) {
+        searchProcedureAcrossAll(searchTerm);
+      }
+    }
+  });
+
+  </script>
+</body>
+</html>
