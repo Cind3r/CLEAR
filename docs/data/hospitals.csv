@@ -1,4 +1,4 @@
-id,name,lat,lon,zip,city,state,address,parquet_path
-cwmo7l4t,Duke University Hospital,36.0070213,-78.9373479,27710,Durham,NC,2301 Erwin Road,prices/NC/cwmo7l4t.parquet
-1r6ycd9n,AdventHealth,35.3897946,-82.4879233,28792,Hendersonville,NC,100 Hospital Dr,prices/NC/1r6ycd9n.parquet
-aiiwx6bt,AdventHealth,28.0714907,-82.4218972,33613,Tampa,FL,3100 E Fletcher Ave,prices/FL/aiiwx6bt.parquet
+id,name,lat,lon,zip,city,state,address,json_path
+cwmo7l4t,Duke University Hospital,36.0070213,-78.9373479,27710,Durham,NC,2301 Erwin Road,docs/data/prices/NC/cwmo7l4t.json
+1r6ycd9n,AdventHealth,35.3897946,-82.4879233,28792,Hendersonville,NC,100 Hospital Dr,docs/data/prices/NC/1r6ycd9n.json
+aiiwx6bt,AdventHealth,28.0714907,-82.4218972,33613,Tampa,FL,3100 E Fletcher Ave,docs/data/prices/FL/aiiwx6bt.json

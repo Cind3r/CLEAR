@@ -45,6 +45,11 @@
         <option value="250">250 mi</option>
       </select>
     </label>
+    <label>Payer:
+      <select id="payer">
+        <option value="">All Payers</option>
+      </select>
+    </label>
     <button id="go">Search</button>
     <span id="status"></span>
   </header>
@@ -60,7 +65,6 @@
 
   <script type="module">
   import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
-  import * as duckdb from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.29.0/+esm";
 
   // --------- CONFIG / URL HELPERS ----------
   const WIDTH = 960, HEIGHT = 600, EARTH_MI = 3958.7613;
@@ -70,13 +74,14 @@
   const urlFrom = (p) => p;  // Simple relative path resolution
   const DATA_ZIPS = "data/zip_centroids.csv";
   const DATA_HOSPS = "data/hospitals.csv";
-  const parquetUrl = (relPath) => "data/" + relPath;
+  const jsonUrl = (relPath) => relPath.startsWith('docs/') ? relPath.substring(5) : relPath;
 
   // --------- ELEMENTS ----------
   const svg = d3.select("#map");
   const $q = document.getElementById("q");
   const $zip = document.getElementById("zip");
   const $radius = document.getElementById("radius");
+  const $payer = document.getElementById("payer");
   const $go = document.getElementById("go");
   const $status = document.getElementById("status");
   const $list = document.getElementById("list");
@@ -136,13 +141,10 @@
   }
   try {
     hospitals = await d3.csv(DATA_HOSPS, d3.autoType);
-    hospitals.forEach(d => { d.ll = [d.lon, d.lat]; });
-
-    // Attach parquet path using state + id -> data/prices/STATE/ID.parquet
-    hospitals.forEach(d => {
-    const st = String(d.state ?? d.STATE ?? "").toUpperCase();
-    const id = String(d.id ?? d.ID ?? d.hospital_id ?? "").trim();
-    d.parquet_path = `prices/${st}/${id}.parquet`; // parquetUrl() will prepend "data/"
+    hospitals.forEach(d => { 
+      d.ll = [d.lon, d.lat]; 
+      // Use json_path from CSV
+      d.json_path = d.json_path || '';
     });
 
   } catch (e) {
@@ -150,23 +152,12 @@
     setStatus("Hospitals index missing.");
   }
 
-  // 3) DUCKDB WASM (works with parquet files directly)
-  let db = null;
-  let conn = null;
-  if (ENABLE_PRICES) {
-    try {
-      const bundles = duckdb.getJsDelivrBundles();
-      const bundle = await duckdb.selectBundle(bundles);
-      const worker = new Worker(bundle.mainWorker);
-      db = new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(), worker);
-      await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-      conn = await db.connect();
-      setStatus("DuckDB initialized - ready to query parquet files.");
-    } catch(e){
-      console.warn("DuckDB init failed; price queries disabled.", e);
-      setStatus("DuckDB init failed (prices disabled).");
-    }
-  }
+  // 3) JSON Loading Cache
+  const jsonCache = new Map(); // Cache loaded JSON files
+  
+
+  
+  setStatus("Ready to search JSON price files.");
 
   function renderHospitals(hlist, hitsById){
     $list.innerHTML = "";
@@ -187,13 +178,17 @@
         <div><strong>${h.name}</strong> <span class="badge">${h.state ?? ""}</span></div>
         <div class="small">${h.zip ?? ""} · ${h.lat?.toFixed?.(4) ?? ""}, ${h.lon?.toFixed?.(4) ?? ""}</div>
         ${hits.length ? `<div style="margin-top:.4rem"><strong>${hits.length}</strong> match${hits.length>1?"es":""}</div>` : `<div class="small" style="margin-top:.4rem">No matches in file</div>`}
-        ${hits.slice(0,5).map(r => `
+        ${hits.slice(0,hits.length).map(r => `
           <div style="margin-top:.35rem">
-            <div><code>${r.code_1 ?? ""}</code> — ${r.description ?? ""}</div>
+            <div><code>${r.code_2 ?? ""}</code> — ${r.description ?? ""}</div>
             <div class="small">
               ${r.estimated_amount!=null ? "Est: $"+Number(r.estimated_amount).toLocaleString() : ""}
               ${r.standard_charge_min!=null ? " | Min: $"+Number(r.standard_charge_min).toLocaleString() : ""}
               ${r.standard_charge_max!=null ? " | Max: $"+Number(r.standard_charge_max).toLocaleString() : ""}
+            </div>
+            <div class="small" style="color:#93a4b3; margin-top:.2rem">
+              ${r.payer_name ? "Payer: " + r.payer_name : ""}
+              ${r.plan_name ? " | Plan: " + r.plan_name : ""}
             </div>
           </div>
         `).join("")}
@@ -207,57 +202,118 @@
     }
   }
 
-  async function queryHospitalParquet(relPath, regexOrCode){
-    if (!conn || !regexOrCode) return [];
-    const url = parquetUrl(relPath);
+  async function loadHospitalJSON(jsonPath) {
+    if (!jsonPath) return [];
     
     try {
-      // Use DuckDB to query parquet file directly from URL
-      const escapedRegex = regexOrCode.replace(/'/g, "''");
-      const sql = `
-        SELECT description, code_1, estimated_amount, standard_charge_min, standard_charge_max
-        FROM read_parquet('${url}')
-        WHERE regexp_matches(description, '${escapedRegex}', 'i')
-        ORDER BY estimated_amount NULLS LAST 
-        LIMIT 50
-      `;
+      // Check cache first
+      if (jsonCache.has(jsonPath)) {
+        return jsonCache.get(jsonPath);
+      }
       
-      const result = await conn.query(sql);
-      const rows = result.toArray();
-      const columns = result.schema.names;
+      // Load JSON file
+      const url = jsonUrl(jsonPath);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
       
-      // Convert to JavaScript objects
-      return rows.map(row => {
-        const obj = {};
-        columns.forEach((col, i) => {
-          obj[col] = row[i];
-        });
-        return obj;
+      const text = await response.text();
+      // Parse JSON lines format (each line is a separate JSON object)
+      const jsonData = text.trim().split('\n').map(line => {
+        try {
+          return JSON.parse(line);
+        } catch (e) {
+          console.warn("Failed to parse JSON line:", line.substring(0, 100));
+          return null;
+        }
+      }).filter(obj => obj !== null);
+      
+      // Cache the parsed data
+      jsonCache.set(jsonPath, jsonData);
+      return jsonData;
+      
+    } catch(e) {
+      console.warn("JSON loading failed:", jsonPath, e);
+      return [];
+    }
+  }
+
+  async function queryHospitalJSON(jsonPath, regexOrCode, selectedPayer = null){
+    if (!jsonPath || !regexOrCode) return [];
+    
+    try {
+      const jsonData = await loadHospitalJSON(jsonPath);
+      
+      // Create regex for searching
+      const regex = new RegExp(regexOrCode, 'i');
+      
+      // Search through descriptions and return matching records
+      let matches = jsonData.filter(record => {
+        const description = record.description || '';
+        const matchesRegex = regex.test(description);
+        const matchesPayer = !selectedPayer || (record.payer_name && record.payer_name === selectedPayer);
+        return matchesRegex && matchesPayer;
+      }).slice(0, 50); // Limit to 50 results
+      
+      // Sort by estimated_amount if available
+      matches.sort((a, b) => {
+        const aAmount = parseFloat(a.estimated_amount) || 0;
+        const bAmount = parseFloat(b.estimated_amount) || 0;
+        return aAmount - bAmount;
       });
       
+      return matches;
+      
     } catch(e){
-      console.warn("Parquet query failed:", url, e);
+      console.warn("JSON query failed:", jsonPath, e);
+      return [];
+    }
+  }
+
+  async function getUniquePayers(hospitalList) {
+    const payerSet = new Set();
+    
+    // Load all JSON files for hospitals in the list and extract unique payers
+    const promises = hospitalList.map(async (hospital) => {
+      if (!hospital.json_path) return;
       
-      // Fallback to mock data for testing
-      const mockData = [
-        {
-          description: "MRI brain without contrast",
-          code_1: "70551", 
-          estimated_amount: 1250.50,
-          standard_charge_min: 1100.00,
-          standard_charge_max: 1400.00
-        },
-        {
-          description: "CT head without contrast",
-          code_1: "70450",
-          estimated_amount: 550.25, 
-          standard_charge_min: 500.00,
-          standard_charge_max: 600.00
-        }
-      ];
-      
-      const regex = new RegExp(regexOrCode, 'i');
-      return mockData.filter(item => regex.test(item.description));
+      try {
+        const jsonData = await loadHospitalJSON(hospital.json_path);
+        jsonData.forEach(record => {
+          if (record.payer_name && record.payer_name.trim()) {
+            payerSet.add(record.payer_name.trim());
+          }
+        });
+      } catch (e) {
+        console.warn("Failed to load payers from:", hospital.json_path);
+      }
+    });
+    
+    await Promise.all(promises);
+    
+    // Convert set to sorted array
+    return Array.from(payerSet).sort();
+  }
+
+  function populatePayerDropdown(payers) {
+    // Save the currently selected payer
+    const currentSelection = $payer.value;
+    
+    // Clear existing options except "All Payers"
+    $payer.innerHTML = '<option value="">All Payers</option>';
+    
+    // Add unique payers
+    payers.forEach(payer => {
+      const option = document.createElement('option');
+      option.value = payer;
+      option.textContent = payer;
+      $payer.appendChild(option);
+    });
+    
+    // Restore the previous selection if it still exists in the new list
+    if (currentSelection && payers.includes(currentSelection)) {
+      $payer.value = currentSelection;
     }
   }
 
@@ -266,6 +322,7 @@
     const zip = rawZip.padStart(5,'0').slice(-5);
     const miles = +$radius.value;
     const q = ($q.value||"").trim();
+    const selectedPayer = $payer.value || null;
 
     if(!ZIP.has(zip)){ setStatus(`ZIP ${zip} not found.`); return; }
     if(!hospitals.length){ setStatus("No hospitals index loaded."); return; }
@@ -277,14 +334,24 @@
     zoomTo(circle);
 
     const nearby = hospitals.filter(h => isFinite(h.lon) && isFinite(h.lat) && gcMiles(center, h.ll) <= miles);
-    setStatus(`Found ${nearby.length} hospitals within ${miles} mi. ${q ? "Querying prices..." : "(enter a procedure to search prices)"}`);
+    setStatus(`Found ${nearby.length} hospitals within ${miles} mi. Loading payers...`);
+
+    // Load unique payers from hospitals in radius
+    try {
+      const uniquePayers = await getUniquePayers(nearby);
+      populatePayerDropdown(uniquePayers);
+      setStatus(`Found ${nearby.length} hospitals within ${miles} mi. ${q ? "Querying prices..." : "(enter a procedure to search prices)"}`);
+    } catch (e) {
+      console.warn("Failed to load payers:", e);
+      setStatus(`Found ${nearby.length} hospitals within ${miles} mi. ${q ? "Querying prices..." : "(enter a procedure to search prices)"}`);
+    }
 
     const hitsById = new Map();
     const pool = 4; let i = 0;
     async function worker(){
       while(i < nearby.length){
         const h = nearby[i++];
-        const hits = (ENABLE_PRICES && q) ? await queryHospitalParquet(h.parquet_path, q) : [];
+        const hits = (ENABLE_PRICES && q && h.json_path) ? await queryHospitalJSON(h.json_path, q, selectedPayer) : [];
         hitsById.set(h.id, hits);
       }
     }
@@ -296,6 +363,7 @@
   $go.addEventListener("click", go);
   $zip.addEventListener("keydown", e => { if(e.key==="Enter") go(); });
   $radius.addEventListener("change", go);
+  $payer.addEventListener("change", go);
   </script>
 </body>
 </html>
