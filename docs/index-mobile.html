@@ -12,9 +12,9 @@
   body{margin:0;background:var(--bg);color:var(--ink);font:16px system-ui,Segoe UI,Roboto,Helvetica,Arial;overflow-x:hidden}
   
   /* Mobile-optimized header */
-  header{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.95);backdrop-filter:blur(8px);padding:1rem}
-  .header-section{margin-bottom:1rem}
-  .header-row{display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap}
+  header{background:rgba(15,23,42,.95);padding:1rem;text-align:center}
+  .header-section{margin-bottom:1rem;display:flex;flex-direction:column;align-items:center}
+  .header-row{display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap;justify-content:center}
   .header-row:last-child{margin-bottom:0}
   
   /* Mobile-friendly form elements */
@@ -354,11 +354,11 @@
   const gBase = svg.append("g");
   const gOverlay = svg.append("g");
   
-  // Mobile-optimized zoom behavior
+  // Mobile-optimized zoom behavior - disabled panning, only programmatic zoom
   const zoom = d3.zoom().scaleExtent([1, 20])
     .filter(event => {
-      // Enable touch interactions, disable mouse wheel
-      return event.type !== 'wheel';
+      // Disable all user interactions - no touch pan/zoom
+      return false;
     })
     .on("zoom", (ev) => {
       gBase.attr("transform", ev.transform);
