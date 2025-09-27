@@ -33,14 +33,14 @@
   /* Map section */
   .map-container{position:relative;height:50vh;min-height:300px;margin-bottom:1rem;border:1px solid #1f2937;border-radius:.5rem;overflow:hidden}
   svg{display:block;width:100%;height:100%}
-  .reset-zoom-btn{position:absolute;bottom:1rem;left:1rem;background:#1f2937;color:var(--ink);border:1px solid #374151;border-radius:.5rem;padding:.75rem;cursor:pointer;font-size:14px;z-index:5;transition:all 0.2s ease;min-height:44px}
+  .reset-zoom-btn{position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);background:#1f2937;color:var(--ink);border:1px solid #374151;border-radius:.5rem;padding:.5rem 1rem;cursor:pointer;font-size:12px;z-index:5;transition:all 0.2s ease;min-height:36px}
   .reset-zoom-btn:active{background:#374151;border-color:#4b5563}
   
   /* Results section */
   .results-section{padding:1rem;border-top:1px solid #1f2937}
-  .results-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+  .results-header{margin-bottom:1rem}
   #list-title{margin:0;font-size:18px}
-  .toggle-all-btn{background:#374151;border:1px solid #4b5563;color:var(--ink);padding:.5rem 1rem;border-radius:.5rem;cursor:pointer;font-size:14px}
+  .toggle-all-btn{background:#374151;border:1px solid #4b5563;color:var(--ink);padding:.75rem 1.5rem;border-radius:.5rem;cursor:pointer;font-size:14px;min-height:44px}
   
   /* Visualization section - mobile adapted */
   .visualization-section{padding:1rem;border-top:1px solid #1f2937;background:#0a0f1c}
@@ -164,7 +164,7 @@
           <option value="50">50 mi</option>
           <option value="100">100 mi</option>
           <option value="250">250 mi</option>
-          <option value="500">500+</option>
+          <option value="500">500 mi+</option>
         </select>
       </label>
     </div>
@@ -197,10 +197,12 @@
     
     <div class="results-section">
       <div class="results-header">
-        <h3 id="list-title">Hospitals (0)</h3>
-        <button class="toggle-all-btn" onclick="toggleAllHospitals()">Expand All</button>
+        <h3 id="list-title" style="text-align:center;margin-bottom:0.5rem;">Hospitals (0)</h3>
+        <div style="text-align:center;margin-bottom:1rem;">
+          <button class="toggle-all-btn" onclick="toggleAllHospitals()">Expand All</button>
+        </div>
       </div>
-      <div class="small" style="margin-bottom:1rem;">Shows hospitals within the radius; price matches appear under each hospital.</div>
+      <div class="small" style="margin-bottom:1rem;text-align:center;">Shows hospitals within the radius; price matches appear under each hospital.</div>
       <div id="list"></div>
     </div>
   </main>
@@ -704,18 +706,51 @@
     const xPositions = [0, width];
 
     // Draw lines with touch-friendly interaction
-    g.selectAll(".slope-line")
+    const lines = g.selectAll(".slope-line")
       .data(processedData)
       .join("path")
       .attr("d", d => d3.line()([[xPositions[0], yScale(d.minAvg)], [xPositions[1], yScale(d.maxAvg)]]))
       .style("stroke", d => colorScale(d.hospital))
-      .style("stroke-width", "3px")
+      .style("stroke-width", "4px")
       .style("fill", "none")
       .style("opacity", 0.8)
+      .style("cursor", "pointer");
+
+    // Add invisible hit areas for better touch interaction
+    g.selectAll(".slope-hit-area")
+      .data(processedData)
+      .join("path")
+      .attr("class", "slope-hit-area")
+      .attr("d", d => d3.line()([[xPositions[0], yScale(d.minAvg)], [xPositions[1], yScale(d.maxAvg)]]))
+      .style("stroke", "transparent")
+      .style("stroke-width", "12px")
+      .style("fill", "none")
       .style("cursor", "pointer")
       .on("touchstart", function(event, d) {
         event.preventDefault();
+        // Highlight the corresponding line
+        const lineIndex = processedData.indexOf(d);
+        lines.style("opacity", (_, i) => i === lineIndex ? 1 : 0.3);
+        
         alert(`${d.hospital}\nMin Avg: $${Math.round(d.minAvg).toLocaleString()}\nMax Avg: $${Math.round(d.maxAvg).toLocaleString()}`);
+        
+        // Reset highlighting after a delay
+        setTimeout(() => {
+          lines.style("opacity", 0.8);
+        }, 2000);
+      })
+      .on("click", function(event, d) {
+        event.preventDefault();
+        // Highlight the corresponding line
+        const lineIndex = processedData.indexOf(d);
+        lines.style("opacity", (_, i) => i === lineIndex ? 1 : 0.3);
+        
+        alert(`${d.hospital}\nMin Avg: $${Math.round(d.minAvg).toLocaleString()}\nMax Avg: $${Math.round(d.maxAvg).toLocaleString()}`);
+        
+        // Reset highlighting after a delay
+        setTimeout(() => {
+          lines.style("opacity", 0.8);
+        }, 2000);
       });
 
     // Draw dots
