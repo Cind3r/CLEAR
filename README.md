@@ -14,9 +14,11 @@ The Hospital Price Finder helps you discover and compare healthcare procedure co
 - Scroll down to analyze price distributions and hospital comparisons
 - Use the reset zoom button to return to the full map view
 
-Hospitals that have been added to this 'web-app' are stored in a `.csv` file for quick look up and ease of access. This points to the loc of it's Charge Master `.json` file which is then queried for the specific procedure. Hospitals are gathered from the CSV list based on a radius look-up provided by the user. If a hospital in the radius does not offer the service, it will not display the price point compared to others in the radius. 
+Hospitals that have been added to this 'web-app' are stored in a `.csv` file for quick look up and ease of access**. This points to the loc of it's Charge Master `.json` file which is then queried for the specific procedure. Hospitals are gathered from the CSV list based on a radius look-up provided by the user. If a hospital in the radius does not offer the service, it will not display the price point compared to others in the radius. 
 
 Currently limited to 500 procedures due to file size limits and me not wanting to set up a server/database for this. Parquet only works server side so i can't do iterative testing before publishing to pages, and pages deployments can take a while. Will consider moving to parquet system after front-end is stable and working as envisioned.
+
+**Note: The `hospitals.csv` will need to be updated with the hospital name, city, zip, and address before running code to add a new hospital. The notebook will autopopulate the .json path structure, unique filename, and latitude/longitude, but these other elements NEED TO BE PRESENT FIRST TO WORK. 
 
 ## List of Hospitals
 
