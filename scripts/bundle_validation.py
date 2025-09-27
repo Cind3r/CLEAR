@@ -101,8 +101,23 @@ def ValidateJSON(
     if not os.path.isfile(service_config_path):
         raise FileNotFoundError(f"service_config.json not found at: {service_config_path}")
 
-    with open(json_path, "r", encoding="utf-8") as f:
-        data_in = json.load(f)
+    # Try to load as standard JSON first, then fallback to JSONL
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            data_in = json.load(f)
+    except json.JSONDecodeError:
+        # If standard JSON fails, try JSONL format (one JSON object per line)
+        data_in = []
+        with open(json_path, "r", encoding="utf-8") as f:
+            for line_num, line in enumerate(f, 1):
+                line = line.strip()
+                if line:  # Skip empty lines
+                    try:
+                        data_in.append(json.loads(line))
+                    except json.JSONDecodeError as e:
+                        print(f"Warning: Invalid JSON on line {line_num}: {e}")
+                        continue
+    
     rows = _read_rows(data_in)
 
     with open(service_config_path, "r", encoding="utf-8") as f:
