@@ -2,121 +2,190 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Hospital Price Finder (ZIP Radius + Procedure)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Mobile device detection and redirect -->
-  <script>
-    (function() {
-      // Check if user is on mobile device
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const isSmallScreen = window.innerWidth <= 768;
-      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      
-      // Redirect to mobile version if mobile device detected
-      if ((isMobile || (isSmallScreen && hasTouch)) && !window.location.search.includes('desktop=1')) {
-        window.location.href = 'index-mobile.html';
-      }
-    })();
-  </script>
+  <title>Hospital Price Finder - Mobile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   <!-- d3 as global (ok inside module) -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
   :root{--bg:#0f172a;--ink:#e2e8f0;--muted:#9aa6b2;}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:14px system-ui,Segoe UI,Roboto,Helvetica,Arial}
-  header{position:sticky;top:0;z-index:10;display:flex;gap:.5rem;align-items:center;padding:.6rem .8rem;background:rgba(15,23,42,.95);backdrop-filter:blur(8px);flex-wrap:wrap}
-  input,select,button{background:#111827;color:var(--ink);border:1px solid #1f2937;border-radius:.5rem;padding:.45rem .55rem}
-  label{display:flex;align-items:center;gap:.35rem}
-  button{cursor:pointer}
-  #status{color:var(--muted);font-size:12px}
-  main{display:flex;height:calc(100vh - 56px)}
-  .map-container{flex:1;display:flex;flex-direction:column;position:relative}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px system-ui,Segoe UI,Roboto,Helvetica,Arial;overflow-x:hidden}
+  
+  /* Mobile-optimized header */
+  header{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.95);backdrop-filter:blur(8px);padding:1rem}
+  .header-section{margin-bottom:1rem}
+  .header-row{display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap}
+  .header-row:last-child{margin-bottom:0}
+  
+  /* Mobile-friendly form elements */
+  input,select,button{background:#111827;color:var(--ink);border:1px solid #1f2937;border-radius:.5rem;padding:.75rem;font-size:16px;min-height:44px}
+  label{display:block;margin-bottom:.5rem;font-weight:500}
+  label span{display:block;margin-bottom:.25rem;font-size:14px}
+  input[type="checkbox"]{width:auto;height:auto;margin-right:.5rem}
+  button{cursor:pointer;background:#374151;font-weight:600;width:100%;margin-top:.75rem}
+  button:active{background:#4b5563}
+  #status{color:var(--muted);font-size:14px;margin-top:.5rem}
+  
+  /* Mobile layout - stacked instead of side-by-side */
+  main{display:block}
+  
+  /* Map section */
+  .map-container{position:relative;height:50vh;min-height:300px;margin-bottom:1rem;border:1px solid #1f2937;border-radius:.5rem;overflow:hidden}
   svg{display:block;width:100%;height:100%}
-  .reset-zoom-btn{position:absolute;bottom:1rem;left:1rem;background:#1f2937;color:var(--ink);border:1px solid #374151;border-radius:.5rem;padding:.5rem .75rem;cursor:pointer;font-size:12px;z-index:5;transition:all 0.2s ease}
-  .reset-zoom-btn:hover{background:#374151;border-color:#4b5563}
-  aside{border-left:1px solid #1f2937;width:360px;height:100%;overflow:auto;padding:.6rem}
-  .visualization-section{border-top:1px solid #1f2937;padding:.8rem;height:70vh}
-  .viz-container{display:grid;grid-template-columns:1fr 1fr;gap:1rem;height:100%}
-  .viz-panel{border:1px solid #1f2937;border-radius:.6rem;padding:.6rem;background:#0b1325}
-  .info-section{border-top:1px solid #1f2937;padding:2rem;background:#0a0f1c}
-  .info-container{max-width:1000px;margin:0 auto;line-height:1.6}
-  .info-section h2{color:#e2e8f0;font-size:24px;margin-bottom:1rem;text-align:center}
-  .info-section h3{color:#cbd5e1;font-size:18px;margin:1.5rem 0 .75rem;display:flex;align-items:center;gap:.5rem}
+  .reset-zoom-btn{position:absolute;bottom:1rem;left:1rem;background:#1f2937;color:var(--ink);border:1px solid #374151;border-radius:.5rem;padding:.75rem;cursor:pointer;font-size:14px;z-index:5;transition:all 0.2s ease;min-height:44px}
+  .reset-zoom-btn:active{background:#374151;border-color:#4b5563}
+  
+  /* Results section */
+  .results-section{padding:1rem;border-top:1px solid #1f2937}
+  .results-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+  #list-title{margin:0;font-size:18px}
+  .toggle-all-btn{background:#374151;border:1px solid #4b5563;color:var(--ink);padding:.5rem 1rem;border-radius:.5rem;cursor:pointer;font-size:14px}
+  
+  /* Visualization section - mobile adapted */
+  .visualization-section{padding:1rem;border-top:1px solid #1f2937;background:#0a0f1c}
+  .viz-container{display:block;gap:1rem}
+  .viz-panel{border:1px solid #1f2937;border-radius:.6rem;padding:1rem;background:#0b1325;margin-bottom:1rem;min-height:300px}
+  .viz-panel h3{margin:0 0 1rem;color:#e2e8f0;font-size:16px}
+  .viz-svg{width:100%;height:250px}
+  
+  /* Info section - mobile adapted */
+  .info-section{padding:1rem;background:#0a0f1c}
+  .info-container{line-height:1.6}
+  .info-section h2{color:#e2e8f0;font-size:20px;margin-bottom:1rem;text-align:center}
+  .info-section h3{color:#cbd5e1;font-size:16px;margin:1.5rem 0 .75rem;display:flex;align-items:center;gap:.5rem}
   .info-section h4{color:#9ca3af;font-size:14px;margin:1rem 0 .5rem}
   .info-section p{color:#d1d5db;margin-bottom:1rem}
   .info-section ol{color:#d1d5db;padding-left:1.5rem}
   .info-section li{margin-bottom:.5rem}
-  .plot-explanations{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin:2rem 0}
-  .plot-explanation{background:#0f172a;border:1px solid #1f2937;border-radius:.8rem;padding:1.5rem}
+  .plot-explanations{display:block;margin:2rem 0}
+  .plot-explanation{background:#0f172a;border:1px solid #1f2937;border-radius:.8rem;padding:1.5rem;margin-bottom:1rem}
   .technical-note{background:#1e293b;border-left:3px solid #3b82f6;padding:1rem;margin:1rem 0;border-radius:0 .5rem .5rem 0}
   .technical-note ul{margin:.5rem 0;padding-left:1.5rem}
   .technical-note li{margin-bottom:.25rem}
   .usage-guide{background:#0f172a;border:1px solid #1f2937;border-radius:.8rem;padding:1.5rem;margin-top:2rem}
-  .viz-panel h3{margin:0 0 .5rem;color:#e2e8f0;font-size:14px}
-  .viz-svg{width:100%;height:calc(100% - 2rem)}
-  .axis{color:#94a3b8;font-size:10px}
-  .axis line,.axis path{stroke:#94a3b8}
-  .distribution-bar{fill:#8b5cf6;opacity:0.7}
-  .distribution-bar:hover{opacity:1}
-  .slope-dot{fill:#22c55e;stroke:#fff;stroke-width:1}
-  .hospital-label{fill:#e2e8f0;font-size:9px}
-  aside h3{margin:.25rem 0 .5rem}
-  .card{border:1px solid #1f2937;background:#0b1325;border-radius:.6rem;padding:.55rem;margin-bottom:.55rem}
-  .card code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  
+  /* Mobile-optimized cards */
+  .card{border:1px solid #1f2937;background:#0b1325;border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+  .card code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px}
+  
+  /* Map styling */
   .state{fill:#1e293b;stroke:#94a3b8;stroke-width:.6px}
   .graticule{fill:none;stroke:#334155;stroke-opacity:.35}
   .circle{fill:rgba(99,102,241,.12);stroke:#8b5cf6;stroke-width:1.5px}
   .marker-zip{fill:#f43f5e;stroke:#fff;stroke-width:1.2px}
   .marker-hosp{fill:#22c55e;stroke:#0b1325;stroke-width:1px}
-  .small{font-size:12px;color:#93a4b3}
-  .badge{display:inline-block;padding:.1rem .35rem;border:1px solid #334155;border-radius:.4rem;margin-left:.3rem;color:#cbd5e1}
-  .price-item{border:1px solid #1f2937;border-radius:.4rem;padding:.35rem;margin-top:.35rem;transition:all 0.2s ease}
-  .price-item:hover{border-color:#334155;background:rgba(15,23,42,.3)}
-  .hospital-header{cursor:pointer;transition:background 0.2s ease}
-  .hospital-header:hover{background:rgba(15,23,42,.5)}
-  .hospital-prices{display:none;margin-top:.5rem;border-top:1px solid #1f2937;padding-top:.5rem}
+  
+  /* Mobile-friendly text */
+  .small{font-size:14px;color:#93a4b3}
+  .badge{display:inline-block;padding:.2rem .5rem;border:1px solid #334155;border-radius:.4rem;margin-left:.3rem;color:#cbd5e1;font-size:12px}
+  
+  /* Price items - mobile optimized */
+  .price-item{border:1px solid #1f2937;border-radius:.4rem;padding:1rem;margin-top:1rem;transition:all 0.2s ease}
+  .price-item:active{border-color:#334155;background:rgba(15,23,42,.3)}
+  .hospital-header{cursor:pointer;transition:background 0.2s ease;padding:1rem;border-radius:.4rem}
+  .hospital-header:active{background:rgba(15,23,42,.5)}
+  .hospital-prices{display:none;margin-top:1rem;border-top:1px solid #1f2937;padding-top:1rem}
   .hospital-prices.expanded{display:block}
-  .toggle-indicator{float:right;font-size:16px;transition:transform 0.2s ease}
+  .toggle-indicator{float:right;font-size:20px;transition:transform 0.2s ease;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
   .toggle-indicator.expanded{transform:rotate(90deg)}
-  .payer-info{font-weight:bold;margin-bottom:.3rem;color:#cbd5e1}
-  .price-table{width:100%;border-collapse:collapse;margin-top:.3rem;font-size:12px}
-  .price-table th{background:#1f2937;color:#e2e8f0;padding:.3rem .5rem;text-align:left;border:1px solid #374151;font-weight:600}
-  .price-table td{padding:.25rem .5rem;border:1px solid #374151;color:#d1d5db}
+  .payer-info{font-weight:bold;margin-bottom:.5rem;color:#cbd5e1}
+  
+  /* Mobile-optimized price table */
+  .price-table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:14px}
+  .price-table th{background:#1f2937;color:#e2e8f0;padding:.75rem;text-align:left;border:1px solid #374151;font-weight:600}
+  .price-table td{padding:.75rem;border:1px solid #374151;color:#d1d5db}
   .price-table tr:nth-child(even){background:rgba(31,41,55,.3)}
   .price-table .price-type{font-weight:500;color:#93c5fd}
+  
+  /* Visualization styling */
+  .axis{color:#94a3b8;font-size:12px}
+  .axis line,.axis path{stroke:#94a3b8}
+  .distribution-bar{fill:#8b5cf6;opacity:0.7}
+  .distribution-bar:hover{opacity:1}
+  .slope-dot{fill:#22c55e;stroke:#fff;stroke-width:1}
+  .hospital-label{fill:#e2e8f0;font-size:10px}
+  
+  /* Touch-friendly improvements */
+  .clickable{min-height:44px;min-width:44px}
+  
+  /* Hide desktop link on mobile */
+  .desktop-link{display:none}
+  
+  /* Mobile navigation */
+  .mobile-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,23,42,.95);backdrop-filter:blur(8px);border-top:1px solid #1f2937;padding:1rem;z-index:20;display:none}
+  .mobile-nav.show{display:block}
+  .nav-buttons{display:flex;gap:.5rem}
+  .nav-btn{flex:1;padding:.75rem;background:#374151;color:var(--ink);border:1px solid #4b5563;border-radius:.5rem;text-align:center;cursor:pointer;font-size:14px}
+  .nav-btn:active{background:#4b5563}
+  
+  /* Smooth scrolling */
+  html{scroll-behavior:smooth}
+  
+  /* Loading states */
+  .loading{opacity:0.7;pointer-events:none}
+  .loading::after{content:"Loading...";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(15,23,42,.9);padding:1rem;border-radius:.5rem;z-index:100}
   </style>
 </head>
 <body>
+  <!-- Desktop redirect notification -->
+  <div id="desktop-redirect" style="display:none;position:fixed;top:0;left:0;right:0;background:#1e40af;color:white;padding:1rem;text-align:center;z-index:1000;">
+    <p style="margin:0;">For the best experience on larger screens, <a href="index.html" style="color:#93c5fd;text-decoration:underline;">switch to desktop version</a></p>
+    <button onclick="document.getElementById('desktop-redirect').style.display='none'" style="position:absolute;top:0.5rem;right:1rem;background:none;border:none;color:white;font-size:20px;">×</button>
+  </div>
+
   <header>
-    <label>Service:
-      <select id="service">
-        <option value="">(Select Group)</option>
-      </select>
-    </label>
-    <label id="procedure-label" style="display: none;">Procedure (regex or code):
-      <input id="q" placeholder="e.g. (MRI|70551)|^70551$" size="28"/>
-    </label>
-    <label>ZIP: <input id="zip" placeholder="e.g. 94105" size="8"/></label>
-    <label>Radius:
-      <select id="radius">
-        <option value="10">10 mi</option>
-        <option value="25" selected>25 mi</option>
-        <option value="50">50 mi</option>
-        <option value="100">100 mi</option>
-        <option value="250">250 mi</option>
-        <option value="500">500+</option>
-      </select>
-    </label>
-    <label>Payer:
-      <select id="payer">
-        <option value="">All Payers</option>
-      </select>
-    </label>
-    <label>
-      <input id="unit" type="checkbox" /> Show as ratio-to-Medicare
-    </label>
-    <button id="go">Search</button>
-    <span id="status"></span>
+    <div class="header-section">
+      <label>
+        <span>Service Group:</span>
+        <select id="service">
+          <option value="">(Select Group)</option>
+        </select>
+      </label>
+    </div>
+    
+    <div class="header-section" id="procedure-section" style="display: none;">
+      <label>
+        <span>Procedure (regex or code):</span>
+        <input id="q" placeholder="e.g. (MRI|70551)|^70551$"/>
+      </label>
+    </div>
+    
+    <div class="header-row">
+      <label style="flex:1">
+        <span>ZIP Code:</span>
+        <input id="zip" placeholder="e.g. 94105"/>
+      </label>
+      <label style="flex:1">
+        <span>Radius:</span>
+        <select id="radius">
+          <option value="10">10 mi</option>
+          <option value="25" selected>25 mi</option>
+          <option value="50">50 mi</option>
+          <option value="100">100 mi</option>
+          <option value="250">250 mi</option>
+          <option value="500">500+</option>
+        </select>
+      </label>
+    </div>
+    
+    <div class="header-section">
+      <label>
+        <span>Insurance Payer:</span>
+        <select id="payer">
+          <option value="">All Payers</option>
+        </select>
+      </label>
+    </div>
+    
+    <div class="header-section">
+      <label style="display:flex;align-items:center">
+        <input id="unit" type="checkbox" />
+        <span>Show as ratio-to-Medicare</span>
+      </label>
+    </div>
+    
+    <button id="go">Search Hospitals</button>
+    <div id="status"></div>
   </header>
 
   <main>
@@ -124,21 +193,25 @@
       <svg id="map" viewBox="0 0 960 600" aria-label="US map"></svg>
       <button id="reset-zoom" class="reset-zoom-btn">🔍 Reset Zoom</button>
     </div>
-    <aside>
-      <h3 id="list-title">Hospitals (0)</h3>
-      <div class="small">Shows hospitals within the radius; price hits appear under each.</div>
+    
+    <div class="results-section">
+      <div class="results-header">
+        <h3 id="list-title">Hospitals (0)</h3>
+        <button class="toggle-all-btn" onclick="toggleAllHospitals()">Expand All</button>
+      </div>
+      <div class="small" style="margin-bottom:1rem;">Shows hospitals within the radius; price matches appear under each hospital.</div>
       <div id="list"></div>
-    </aside>
+    </div>
   </main>
 
   <div class="visualization-section">
     <div class="viz-container">
       <div class="viz-panel">
-        <h3>Price Distribution</h3>
+        <h3>📊 Price Distribution</h3>
         <svg id="distribution-chart" class="viz-svg"></svg>
       </div>
       <div class="viz-panel">
-        <h3>Hospital Price Comparison</h3>
+        <h3>📈 Hospital Price Comparison</h3>
         <svg id="slopegraph-chart" class="viz-svg"></svg>
       </div>
     </div>
@@ -157,16 +230,16 @@
         
         <div class="plot-explanation">
           <h3>📈 Hospital Price Comparison (Slope Chart)</h3>
-          <p>Compares average minimum vs. maximum prices per hospital. Each colored line represents one hospital, connecting the average of all minimum prices (left) to the average of all maximum prices (right) for matching procedures. Hover over lines to see hospital names and exact values.</p>
+          <p>Compares average minimum vs. maximum prices per hospital. Each colored line represents one hospital, connecting the average of all minimum prices (left) to the average of all maximum prices (right) for matching procedures. Tap lines to see hospital names and exact values.</p>
           
           <div class="technical-note">
             <h4>📋 Data Calculation Details</h4>
             <ul>
               <li><strong>Slope Chart:</strong> Averages multiple procedures per hospital into single min/max values</li>
-              <li><strong>Sidebar:</strong> Shows individual procedure records with specific min/max prices</li>
+              <li><strong>Results List:</strong> Shows individual procedure records with specific min/max prices</li>
               <li><strong>Histogram:</strong> Plots every individual price point from all procedures</li>
             </ul>
-            <p><em>Note: If a hospital appears in multiple matching procedures, the slope chart shows averages while the sidebar displays each individual procedure separately. This explains why slope chart values may not exactly match individual sidebar entries.</em></p>
+            <p><em>Note: If a hospital appears in multiple matching procedures, the slope chart shows averages while the results list displays each individual procedure separately. This explains why slope chart values may not exactly match individual result entries.</em></p>
           </div>
         </div>
       </div>
@@ -177,7 +250,7 @@
           <li>Select a predefined service or enter a custom procedure pattern (regex supported)</li>
           <li>Enter a ZIP code and choose your search radius</li>
           <li>Optionally filter by insurance payer or view prices as ratios to Medicare rates</li>
-          <li>Click search to see hospitals on the map and pricing data in the sidebar</li>
+          <li>Tap search to see hospitals on the map and pricing data in the results</li>
           <li>Scroll down to analyze price distributions and hospital comparisons</li>
           <li>Use the reset zoom button to return to the full map view</li>
         </ol>
@@ -185,8 +258,65 @@
     </div>
   </div>
 
+  <!-- Mobile navigation (hidden by default) -->
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="nav-buttons">
+      <div class="nav-btn" onclick="scrollToSection('map')">Map</div>
+      <div class="nav-btn" onclick="scrollToSection('results')">Results</div>
+      <div class="nav-btn" onclick="scrollToSection('charts')">Charts</div>
+      <div class="nav-btn" onclick="scrollToSection('info')">Info</div>
+    </div>
+  </div>
+
   <script type="module">
   import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
+
+  // Mobile-specific initialization
+  let allExpanded = false;
+  
+  // Check if user should see desktop version suggestion
+  if (window.innerWidth >= 1024) {
+    document.getElementById('desktop-redirect').style.display = 'block';
+  }
+  
+  // Mobile navigation functions
+  window.scrollToSection = function(section) {
+    const sections = {
+      'map': document.querySelector('.map-container'),
+      'results': document.querySelector('.results-section'),
+      'charts': document.querySelector('.visualization-section'),
+      'info': document.querySelector('.info-section')
+    };
+    
+    if (sections[section]) {
+      sections[section].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+  
+  // Toggle all hospitals function
+  window.toggleAllHospitals = function() {
+    const allPrices = document.querySelectorAll('.hospital-prices');
+    const allToggles = document.querySelectorAll('.toggle-indicator');
+    const toggleBtn = document.querySelector('.toggle-all-btn');
+    
+    allExpanded = !allExpanded;
+    
+    allPrices.forEach((pricesDiv, index) => {
+      const toggle = allToggles[index];
+      
+      if (allExpanded) {
+        pricesDiv.classList.add('expanded');
+        toggle.classList.add('expanded');
+        toggle.textContent = '▼';
+      } else {
+        pricesDiv.classList.remove('expanded');
+        toggle.classList.remove('expanded');
+        toggle.textContent = '▶';
+      }
+    });
+    
+    toggleBtn.textContent = allExpanded ? 'Collapse All' : 'Expand All';
+  };
 
   // --------- CONFIG / URL HELPERS ----------
   const WIDTH = 960, HEIGHT = 600, EARTH_MI = 3958.7613;
@@ -223,10 +353,12 @@
   const path = d3.geoPath(projection);
   const gBase = svg.append("g");
   const gOverlay = svg.append("g");
+  
+  // Mobile-optimized zoom behavior
   const zoom = d3.zoom().scaleExtent([1, 20])
     .filter(event => {
-      // Disable mouse wheel zoom, but allow other interactions (drag, programmatic)
-      return !event.ctrlKey && event.type !== 'wheel';
+      // Enable touch interactions, disable mouse wheel
+      return event.type !== 'wheel';
     })
     .on("zoom", (ev) => {
       gBase.attr("transform", ev.transform);
@@ -395,7 +527,7 @@
   const distributionSvg = d3.select("#distribution-chart");
   const slopegraphSvg = d3.select("#slopegraph-chart");
 
-  // Create distribution histogram
+  // Create distribution histogram - mobile optimized
   function createDistributionChart(allHits) {
     distributionSvg.selectAll("*").remove();
     
@@ -405,13 +537,14 @@
         .attr("y", "50%")
         .attr("text-anchor", "middle")
         .attr("fill", "#94a3b8")
+        .style("font-size", "14px")
         .text("No data to display");
       return;
     }
 
-    const margin = {top: 20, right: 30, bottom: 40, left: 60};
-    const containerWidth = parseInt(distributionSvg.style("width")) || 400;
-    const containerHeight = parseInt(distributionSvg.style("height")) || 300;
+    const margin = {top: 20, right: 20, bottom: 50, left: 50};
+    const containerWidth = parseInt(distributionSvg.style("width")) || 300;
+    const containerHeight = parseInt(distributionSvg.style("height")) || 250;
     const width = containerWidth - margin.left - margin.right;
     const height = containerHeight - margin.top - margin.bottom;
 
@@ -432,6 +565,7 @@
         .attr("y", height/2)
         .attr("text-anchor", "middle")
         .attr("fill", "#94a3b8")
+        .style("font-size", "14px")
         .text("No price data available");
       return;
     }
@@ -444,7 +578,7 @@
     const histogram = d3.histogram()
       .value(d => d)
       .domain(xScale.domain())
-      .thresholds(Math.min(20, Math.ceil(Math.sqrt(prices.length))));
+      .thresholds(Math.min(15, Math.ceil(Math.sqrt(prices.length))));
 
     const bins = histogram(prices);
 
@@ -452,7 +586,7 @@
       .domain([0, d3.max(bins, d => d.length)])
       .range([height, 0]);
 
-    // Add bars
+    // Add bars with touch-friendly interaction
     g.selectAll("rect")
       .data(bins)
       .join("rect")
@@ -461,39 +595,43 @@
       .attr("width", d => Math.max(0, xScale(d.x1) - xScale(d.x0) - 1))
       .attr("y", d => yScale(d.length))
       .attr("height", d => height - yScale(d.length))
-      .append("title")
-      .text(d => `$${d.x0.toLocaleString()} - $${d.x1.toLocaleString()}: ${d.length} prices`);
+      .style("cursor", "pointer")
+      .on("touchstart", function(event, d) {
+        event.preventDefault();
+        // Show tooltip for mobile
+        alert(`Price Range: $${d.x0.toLocaleString()} - $${d.x1.toLocaleString()}\nCount: ${d.length} prices`);
+      });
 
     // Add axes
     g.append("g")
       .attr("class", "axis")
       .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(xScale).tickFormat(d => `$${d/1000}k`));
+      .call(d3.axisBottom(xScale).tickFormat(d => `$${d/1000}k`).ticks(5));
 
     g.append("g")
       .attr("class", "axis")
-      .call(d3.axisLeft(yScale));
+      .call(d3.axisLeft(yScale).ticks(5));
 
     // Add labels
     g.append("text")
       .attr("x", width/2)
-      .attr("y", height + 35)
+      .attr("y", height + 40)
       .attr("text-anchor", "middle")
       .attr("fill", "#e2e8f0")
-      .style("font-size", "11px")
-      .text($unit.checked ? "Price Distribution (All Types)" : "Price Distribution");
+      .style("font-size", "12px")
+      .text("Price Range");
 
     g.append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", -40)
+      .attr("y", -35)
       .attr("x", -height/2)
       .attr("text-anchor", "middle")
       .attr("fill", "#e2e8f0")
-      .style("font-size", "11px")
+      .style("font-size", "12px")
       .text("Count");
   }
 
-  // Create slopegraph
+  // Create slopegraph - mobile optimized
   function createSlopegraph(hospitalData) {
     slopegraphSvg.selectAll("*").remove();
     
@@ -503,13 +641,14 @@
         .attr("y", "50%")
         .attr("text-anchor", "middle")
         .attr("fill", "#94a3b8")
+        .style("font-size", "14px")
         .text("No data to display");
       return;
     }
 
-    const margin = {top: 20, right: 80, bottom: 40, left: 80};
-    const containerWidth = parseInt(slopegraphSvg.style("width")) || 400;
-    const containerHeight = parseInt(slopegraphSvg.style("height")) || 300;
+    const margin = {top: 20, right: 60, bottom: 40, left: 60};
+    const containerWidth = parseInt(slopegraphSvg.style("width")) || 300;
+    const containerHeight = parseInt(slopegraphSvg.style("height")) || 250;
     const width = containerWidth - margin.left - margin.right;
     const height = containerHeight - margin.top - margin.bottom;
 
@@ -522,7 +661,7 @@
       const minPrices = hits.filter(hit => hit.standard_charge_min != null);
       const maxPrices = hits.filter(hit => hit.standard_charge_max != null);
       return minPrices.length > 0 && maxPrices.length > 0;
-    }).slice(0, 10); // Limit to 10 hospitals for readability
+    }).slice(0, 8); // Limit to 8 hospitals for mobile readability
 
     if (slopeData.length === 0) {
       g.append("text")
@@ -530,6 +669,7 @@
         .attr("y", height/2)
         .attr("text-anchor", "middle")
         .attr("fill", "#94a3b8")
+        .style("font-size", "14px")
         .text("No min/max price data available");
       return;
     }
@@ -562,21 +702,7 @@
 
     const xPositions = [0, width];
 
-    // Create tooltip div for hospital names
-    const tooltip = d3.select("body").selectAll(".slope-tooltip").data([0]).join("div")
-      .attr("class", "slope-tooltip")
-      .style("position", "absolute")
-      .style("background", "rgba(15, 23, 42, 0.95)")
-      .style("color", "#e2e8f0")
-      .style("padding", "8px 12px")
-      .style("border-radius", "6px")
-      .style("border", "1px solid #374151")
-      .style("font-size", "12px")
-      .style("pointer-events", "none")
-      .style("opacity", 0)
-      .style("z-index", 1000);
-
-    // Draw lines with hover functionality
+    // Draw lines with touch-friendly interaction
     g.selectAll(".slope-line")
       .data(processedData)
       .join("path")
@@ -584,24 +710,11 @@
       .style("stroke", d => colorScale(d.hospital))
       .style("stroke-width", "3px")
       .style("fill", "none")
-      .style("opacity", 0.7)
+      .style("opacity", 0.8)
       .style("cursor", "pointer")
-      .on("mouseover", function(event, d) {
-        d3.select(this).style("opacity", 1).style("stroke-width", "4px");
-        tooltip
-          .style("opacity", 1)
-          .html(`<strong>${d.hospital}</strong><br/>Min: $${Math.round(d.minAvg).toLocaleString()}<br/>Max: $${Math.round(d.maxAvg).toLocaleString()}`)
-          .style("left", (event.pageX + 10) + "px")
-          .style("top", (event.pageY - 10) + "px");
-      })
-      .on("mousemove", function(event) {
-        tooltip
-          .style("left", (event.pageX + 10) + "px")
-          .style("top", (event.pageY - 10) + "px");
-      })
-      .on("mouseout", function() {
-        d3.select(this).style("opacity", 0.7).style("stroke-width", "3px");
-        tooltip.style("opacity", 0);
+      .on("touchstart", function(event, d) {
+        event.preventDefault();
+        alert(`${d.hospital}\nMin Avg: $${Math.round(d.minAvg).toLocaleString()}\nMax Avg: $${Math.round(d.maxAvg).toLocaleString()}`);
       });
 
     // Draw dots
@@ -611,10 +724,10 @@
       .attr("class", "slope-dot")
       .attr("cx", xPositions[0])
       .attr("cy", d => yScale(d.minAvg))
-      .attr("r", 3)
+      .attr("r", 4)
       .attr("fill", d => colorScale(d.hospital))
       .attr("stroke", "#fff")
-      .attr("stroke-width", 1);
+      .attr("stroke-width", 2);
 
     g.selectAll(".slope-dot-max")
       .data(processedData)
@@ -622,27 +735,27 @@
       .attr("class", "slope-dot")
       .attr("cx", xPositions[1])
       .attr("cy", d => yScale(d.maxAvg))
-      .attr("r", 3)
+      .attr("r", 4)
       .attr("fill", d => colorScale(d.hospital))
       .attr("stroke", "#fff")
-      .attr("stroke-width", 1);
+      .attr("stroke-width", 2);
 
     // Add labels
     g.append("text")
       .attr("x", xPositions[0])
-      .attr("y", -10)
+      .attr("y", -5)
       .attr("text-anchor", "middle")
       .attr("fill", "#e2e8f0")
-      .style("font-size", "11px")
-      .text("Min Price");
+      .style("font-size", "12px")
+      .text("Min");
 
     g.append("text")
       .attr("x", xPositions[1])
-      .attr("y", -10)
+      .attr("y", -5)
       .attr("text-anchor", "middle")
       .attr("fill", "#e2e8f0")
-      .style("font-size", "11px")
-      .text("Max Price");
+      .style("font-size", "12px")
+      .text("Max");
 
     // Add y-axis with better formatting
     const yAxisFormat = d => {
@@ -653,7 +766,7 @@
     
     g.append("g")
       .attr("class", "axis")
-      .call(d3.axisLeft(yScale).tickFormat(yAxisFormat));
+      .call(d3.axisLeft(yScale).tickFormat(yAxisFormat).ticks(4));
   }
 
   // Update all visualizations
@@ -673,24 +786,24 @@
 
   // Service selector change handler
   $service.addEventListener('change', () => {
-    const procedureLabel = document.getElementById('procedure-label');
+    const procedureSection = document.getElementById('procedure-section');
     if ($service.value === 'custom') {
       // Show search bar for custom pattern
-      procedureLabel.style.display = '';
+      procedureSection.style.display = 'block';
       $q.placeholder = "e.g. (MRI|70551)|^70551$";
       $q.value = '';
     } else if ($service.value) {
       // Hide search bar for predefined services
-      procedureLabel.style.display = 'none';
+      procedureSection.style.display = 'none';
       $q.value = ''; // Clear custom pattern when service is selected
     } else {
       // Hide search bar when no selection
-      procedureLabel.style.display = 'none';
+      procedureSection.style.display = 'none';
       $q.value = '';
     }
   });
 
-  setStatus("Ready to search JSON price files.");
+  setStatus("Ready to search hospital price data.");
 
   function renderHospitals(hlist, hitsById){
     $list.innerHTML = "";
@@ -711,13 +824,15 @@
       
       div.innerHTML = `
         <div class="hospital-header" onclick="toggleHospitalPrices('${hospitalId}')">
-          <div>
-            <strong>${h.name}</strong> 
-            <span class="badge">${h.state ?? ""}</span>
-            <span class="toggle-indicator" id="toggle-${hospitalId}">▶</span>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <strong>${h.name}</strong> 
+              <span class="badge">${h.state ?? ""}</span>
+            </div>
+            <div class="toggle-indicator clickable" id="toggle-${hospitalId}">▶</div>
           </div>
           <div class="small">${h.zip ?? ""} · ${h.lat?.toFixed?.(4) ?? ""}, ${h.lon?.toFixed?.(4) ?? ""}</div>
-          ${hits.length ? `<div style="margin-top:.4rem"><strong>${hits.length}</strong> match${hits.length>1?"es":""} found - click to view</div>` : `<div class="small" style="margin-top:.4rem">No matches in file</div>`}
+          ${hits.length ? `<div style="margin-top:.5rem"><strong>${hits.length}</strong> match${hits.length>1?"es":""} found - tap to view</div>` : `<div class="small" style="margin-top:.5rem">No matches in price data</div>`}
         </div>
         ${hits.length ? `
           <div class="hospital-prices" id="${hospitalId}">
@@ -728,7 +843,7 @@
                     ${r.payer_name ? r.payer_name : ""}${r.payer_name && r.plan_name ? " - " : ""}${r.plan_name ? r.plan_name : ""}
                   </div>
                 ` : ""}
-                <div style="margin-bottom:.4rem"><code>${r.code ?? ""}</code> — ${r.description ?? ""}</div>
+                <div style="margin-bottom:.5rem"><code>${r.code ?? ""}</code> — ${r.description ?? ""}</div>
                 ${generatePriceTable(r)}
               </div>
             `).join("")}
@@ -737,10 +852,11 @@
       `;
       
       // Add click handler for map zoom (only on hospital name area, not the toggle)
-      const hospitalNameArea = div.querySelector('.hospital-header > div:first-child strong');
+      const hospitalNameArea = div.querySelector('.hospital-header > div:first-child > div:first-child strong');
       if (hospitalNameArea) {
         hospitalNameArea.style.cursor = 'pointer';
-        hospitalNameArea.onclick = (e) => {
+        hospitalNameArea.ontouchstart = (e) => {
+          e.preventDefault();
           e.stopPropagation(); // Prevent triggering the toggle
           const p = projection(h.ll); if(!p) return;
           svg.transition().duration(600)
@@ -755,6 +871,10 @@
     currentHospitalList = hlist;
     currentHitsById = hitsById;
     updateVisualizations(hlist, hitsById);
+    
+    // Reset the expand all state when new results come in
+    allExpanded = false;
+    document.querySelector('.toggle-all-btn').textContent = 'Expand All';
   }
 
   async function loadHospitalJSON(jsonPath) {
@@ -811,7 +931,7 @@
         const matchesRegex = regex.test(description) || regex.test(code) || regex.test(code2);
         const matchesPayer = !selectedPayer || (record.payer_name && record.payer_name === selectedPayer);
         return matchesRegex && matchesPayer;
-      }).slice(0, 50); // Limit to 50 results
+      }).slice(0, 30); // Limit to 30 results for mobile performance
       
       // Sort by estimated_amount if available
       matches.sort((a, b) => {
@@ -832,7 +952,7 @@
     const payerSet = new Set();
     
     // Load all JSON files for hospitals in the list and extract unique payers
-    const promises = hospitalList.map(async (hospital) => {
+    const promises = hospitalList.slice(0, 20).map(async (hospital) => { // Limit for mobile performance
       if (!hospital.json_path) return;
       
       try {
@@ -919,20 +1039,21 @@
       populatePayerDropdown(uniquePayers);
       const searchDesc = svcName || q;
       const statusMsg = miles >= 500 
-        ? `Showing all ${nearby.length} hospitals. ${searchDesc ? "Querying prices..." : "(select a service or enter a procedure to search prices)"}`
-        : `Found ${nearby.length} hospitals within ${miles} mi. ${searchDesc ? "Querying prices..." : "(select a service or enter a procedure to search prices)"}`;
+        ? `Showing all ${nearby.length} hospitals. ${searchDesc ? "Searching prices..." : "(select a service or enter a procedure to search prices)"}`
+        : `Found ${nearby.length} hospitals within ${miles} mi. ${searchDesc ? "Searching prices..." : "(select a service or enter a procedure to search prices)"}`;
       setStatus(statusMsg);
     } catch (e) {
       console.warn("Failed to load payers:", e);
       const searchDesc = svcName || q;
       const statusMsg = miles >= 500 
-        ? `Showing all ${nearby.length} hospitals. ${searchDesc ? "Querying prices..." : "(select a service or enter a procedure to search prices)"}`
-        : `Found ${nearby.length} hospitals within ${miles} mi. ${searchDesc ? "Querying prices..." : "(select a service or enter a procedure to search prices)"}`;
+        ? `Showing all ${nearby.length} hospitals. ${searchDesc ? "Searching prices..." : "(select a service or enter a procedure to search prices)"}`
+        : `Found ${nearby.length} hospitals within ${miles} mi. ${searchDesc ? "Searching prices..." : "(select a service or enter a procedure to search prices)"}`;
       setStatus(statusMsg);
     }
 
     const hitsById = new Map();
-    const pool = 4; let i = 0;
+    const pool = 2; // Reduced for mobile performance
+    let i = 0;
     async function worker(){
       while(i < nearby.length){
         const h = nearby[i++];
@@ -973,6 +1094,7 @@
   let currentHospitalList = [];
   let currentHitsById = new Map();
 
+  // Event listeners with mobile optimizations
   $go.addEventListener("click", go);
   $zip.addEventListener("keydown", e => { if(e.key==="Enter") go(); });
   $radius.addEventListener("change", go);
@@ -981,6 +1103,22 @@
   $unit.addEventListener("change", () => {
     go(); // This will refresh both tables and visualizations
   });
+
+  // Prevent zoom on double-tap
+  document.addEventListener('touchstart', function(e) {
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, false);
   </script>
 </body>
 </html>
