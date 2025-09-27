@@ -183,7 +183,7 @@
         ${hits.length ? `<div style="margin-top:.4rem"><strong>${hits.length}</strong> match${hits.length>1?"es":""}</div>` : `<div class="small" style="margin-top:.4rem">No matches in file</div>`}
         ${hits.slice(0,hits.length).map(r => `
           <div class="price-item">
-            <div><code>${r.code_2 ?? ""}</code> — ${r.description ?? ""}</div>
+            <div><code>${r.code ?? ""}</code> — ${r.description ?? ""}</div>
             <div class="small">
               ${r.estimated_amount!=null ? "Est: $"+Number(r.estimated_amount).toLocaleString() : ""}
               ${r.standard_charge_min!=null ? " | Min: $"+Number(r.standard_charge_min).toLocaleString() : ""}

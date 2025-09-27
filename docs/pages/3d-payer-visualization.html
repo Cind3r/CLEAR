@@ -310,7 +310,6 @@
           const matches = jsonData.filter(record => {
             const description = record.description || '';
             const code = record.code || '';
-            const code2 = record.code_2 || '';
             return regex.test(description) || regex.test(code) || regex.test(code2);
           });
           
