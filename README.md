@@ -18,7 +18,7 @@ Hospitals that have been added to this 'web-app' are stored in a `.csv` file for
 
 Currently limited to 500 procedures due to file size limits and me not wanting to set up a server/database for this. Parquet only works server side so i can't do iterative testing before publishing to pages, and pages deployments can take a while. Will consider moving to parquet system after front-end is stable and working as envisioned.
 
-**Note: The `hospitals.csv` will need to be updated with the hospital name, city, zip, and address before running code to add a new hospital. The notebook will autopopulate the .json path structure, unique filename, and latitude/longitude, but these other elements NEED TO BE PRESENT FIRST TO WORK. 
+>**Note: The `hospitals.csv` will need to be updated with the hospital name, city, zip, and address before running code to add a new hospital. The notebook will autopopulate the .json path structure, unique filename, and >latitude/longitude, but these other elements NEED TO BE PRESENT FIRST TO WORK. 
 
 ## List of Hospitals
 
