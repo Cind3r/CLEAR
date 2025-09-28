@@ -1,0 +1,470 @@
+code,desc,source
+0037U,TRGT GEN SEQ DNA 324 GENES,Lab
+0108U,GI BARRETT ESOPH 9 PRTN BMRK,Lab
+0239U,TRGT GEN SEQ ALYS PNL 311+,Lab
+0241U,NFCT DS VIR RESP RNA 4 TRGT,Lab
+0242U,TRGT GEN SEQ ALYS PNL 55-74,Lab
+0315U,ONC CUTAN SQ CLL CA MRNA 40,Lab
+0326U,TRGT GEN SEQ ALYS PNL 83+,Lab
+0340U,ONC PAN CA ALYS MRD PLASMA,Lab
+0345U,PSYC GENOM ALYS PNL 15 GEN,Lab
+11042,Dbrdmt subq tis 1st 20sqcm/<,CPT
+11043,Dbrdmt musc&/fsca 1st 20/<,CPT
+11056,Parng/cutg b9 hyprkr les 2-4,CPT
+11102,Tangntl bx skin single les,CPT
+11721,Debride nail 6 or more,CPT
+12032,Intmd rpr s/a/t/ext 2.6-7.5,CPT
+13132,Cmplx rpr f/c/c/m/n/ax/g/h/f,CPT
+15823,Blepharp upr eyelid xcsv skn,CPT
+17000,Destruct premalg lesion,CPT
+17003,Destruct premalg les 2-14,CPT
+17004,Destroy premal lesions 15/>,CPT
+17110,Destruct b9 lesion 1-14,CPT
+17311,Mohs 1 stage h/n/hf/g,CPT
+17312,Mohs addl stage,CPT
+17313,Mohs 1 stage t/a/l,CPT
+20610,Drain/inj joint/bursa w/o us,CPT
+20611,Drain/inj joint/bursa w/us,CPT
+22612,Arthrd pst tq 1ntrspc lumbar,CPT
+23472,Reconstruct shoulder joint,CPT
+27130,Total hip arthroplasty,CPT
+27245,Treat thigh fracture,CPT
+27447,Total knee arthroplasty,CPT
+29827,Sho arthrs srg rt8tr cuf rpr,CPT
+31231,Nasal endoscopy dx,CPT
+33285,Insj subq car rhythm mntr,CPT
+33361,Replace aortic valve perq,CPT
+33533,Cabg arterial single,CPT
+36415,Coll venous bld venipuncture,CPT
+36465,Njx noncmpnd sclrsnt 1 vein,CPT
+36475,Endovenous rf 1st vein,CPT
+36482,Endoven ther chem adhes 1st,CPT
+36902,Intro cath dialysis circuit,CPT
+37225,Fem/popl revas w/ather,CPT
+37227,Fem/popl revasc stnt & ather,CPT
+37229,Tib/per revasc w/ather,CPT
+43239,Egd biopsy single/multiple,CPT
+45378,Diagnostic colonoscopy,CPT
+45380,Colonoscopy and biopsy,CPT
+45385,Colonoscopy w/lesion removal,CPT
+52000,Cystourethroscopy,CPT
+62323,Njx interlaminar lmbr/sac,CPT
+63047,Lam facetec & foramot lumbar,CPT
+63650,Implant neuroelectrodes,CPT
+63685,Ins/rplc spi npg/rcvr pocket,CPT
+64483,Njx aa&/strd tfrm epi l/s 1,CPT
+64493,Inj paravert f jnt l/s 1 lev,CPT
+64561,Implant neuroelectrodes,CPT
+64590,Ins/rpl prph sac/gstr npg/r,CPT
+64635,Destroy lumb/sac facet jnt,CPT
+64721,Carpal tunnel surgery,CPT
+65778,Cover eye w/membrane,CPT
+65820,Goniotomy,CPT
+66821,After cataract laser surgery,CPT
+66982,Xcapsl ctrc rmvl cplx wo ecp,CPT
+66984,Xcapsl ctrc rmvl w/o ecp,CPT
+66991,Xcapsl ctrc rmvl insj 1+,CPT
+67028,Injection eye drug,CPT
+70450,Ct head/brain w/o dye,CPT
+70551,Mri brain stem w/o dye,CPT
+70553,Mri brain stem w/o & w/dye,CPT
+71045,X-ray exam chest 1 view,CPT
+71046,X-ray exam chest 2 views,CPT
+71250,Ct thorax dx c-,CPT
+71260,Ct thorax dx c+,CPT
+71275,Ct angiography chest,CPT
+72125,Ct neck spine w/o dye,CPT
+72148,Mri lumbar spine w/o dye,CPT
+72197,Mri pelvis w/o & w/dye,CPT
+73721,Mri jnt of lwr extre w/o dye,CPT
+74176,Ct abd & pelvis w/o contrast,CPT
+74177,Ct abd & pelvis w/contrast,CPT
+74178,Ct abd&plv wo cntr flwd cntr,CPT
+74183,Mri abd w/o cntr flwd cntr,CPT
+76770,Us exam abdo back wall comp,CPT
+77014,Ct scan for therapy guide,CPT
+77063,Breast tomosynthesis bi,CPT
+77067,Scr mammo bi incl cad,CPT
+77280,Ther rad simulaj field smpl,CPT
+77301,Radiotherapy dose plan imrt,CPT
+77427,Radiation tx management x5,CPT
+78431,Myocrd img pet rst&strs ct,CPT
+78452,Ht muscle image spect mult,CPT
+78492,Myocrd img pet mlt rst&strs,CPT
+78815,Pet image w/ct skull-thigh,CPT
+80048,METABOLIC PANEL TOTAL CA,Lab
+80053,Comprehen metabolic panel,CPT
+80061,Lipid panel,CPT
+80307,Drug test prsmv chem anlyzr,CPT
+81001,URINALYSIS AUTO W/SCOPE,Lab
+81223,CFTR GENE FULL SEQUENCE,Lab
+81238,F9 FULL GENE SEQUENCE,Lab
+81249,G6PD FULL GENE SEQUENCE,Lab
+81307,PALB2 GENE FULL GENE SEQ,Lab
+81419,Epilepsy gen seq alys panel,CPT
+81440,MITOCHONDRIAL GENE,Lab
+81443,GENETIC TSTG SEVERE INH COND,Lab
+81455,SO/HL 51/>GSAP DNA/DNA&RNA,Lab
+81456,SO/HL 51/>GSAP RNA ALYS,Lab
+81459,SO NEO GSAP DNA/DNA&RNA,Lab
+81464,SO GSAP CLL FR MCRSTL INS,Lab
+81479,Unlisted molecular pathology,CPT
+81518,ONC BRST MRNA 11 GENES,Lab
+81519,Oncology breast mrna,CPT
+81528,Oncology colorectal scr,CPT
+81529,ONC CUTAN MLNMA MRNA 31 GENE,Lab
+81541,ONC PROSTATE MRNA 46 GENES,Lab
+81542,Onc prostate mrna 22 cnt gen,CPT
+81546,"ONC THYR MRNA 10,196 GEN ALG",Lab
+81595,CARDIOLOGY HRT TRNSPL MRNA,Lab
+82043,UR ALBUMIN QUANTITATIVE,Lab
+82306,Vitamin d 25 hydroxy,CPT
+82570,ASSAY OF URINE CREATININE,Lab
+82607,VITAMIN B-12,Lab
+82728,ASSAY OF FERRITIN,Lab
+82746,ASSAY OF FOLIC ACID SERUM,Lab
+82784,ASSAY IGA/IGD/IGG/IGM EACH,Lab
+83036,Hemoglobin glycosylated a1c,CPT
+83540,ASSAY OF IRON,Lab
+83550,IRON BINDING TEST,Lab
+83735,ASSAY OF MAGNESIUM,Lab
+83880,ASSAY OF NATRIURETIC PEPTIDE,Lab
+83970,Assay of parathormone,CPT
+84153,ASSAY OF PSA TOTAL,Lab
+84165,PROTEIN E-PHORESIS SERUM,Lab
+84403,ASSAY OF TOTAL TESTOSTERONE,Lab
+84439,ASSAY OF FREE THYROXINE,Lab
+84443,Assay thyroid stim hormone,CPT
+84481,FREE ASSAY (FT-3),Lab
+85025,Complete cbc w/auto diff wbc,CPT
+85027,COMPLETE CBC AUTOMATED,Lab
+86235,NUCLEAR ANTIGEN ANTIBODY,Lab
+86334,IMMUNOFIX E-PHORESIS SERUM,Lab
+87086,URINE CULTURE/COLONY COUNT,Lab
+87150,DNA/RNA AMPLIFIED PROBE,Lab
+87186,MICROBE SUSCEPTIBLE MIC,Lab
+87426,SARSCOV CORONAVIRUS AG IA,Lab
+87428,SARSCOV & INF VIR A&B AG IA,Lab
+87481,Candida dna amp probe,CPT
+87500,VANOMYCIN DNA AMP PROBE,Lab
+87502,INFLUENZA DNA AMP PROBE,Lab
+87631,RESP VIRUS 3-5 TARGETS,Lab
+87635,SARS-COV-2 COVID-19 AMP PRB,Lab
+87636,SARSCOV2 & INF A&B AMP PRB,Lab
+87637,SARSCOV2&INF A&B&RSV AMP PRB,Lab
+87640,STAPH A DNA AMP PROBE,Lab
+87651,STREP A DNA AMP PROBE,Lab
+87653,STREP B DNA AMP PROBE,Lab
+87798,Detect agent nos dna amp,CPT
+87801,DETECT AGNT MULT DNA AMPLI,Lab
+87804,INFLUENZA ASSAY W/OPTIC,Lab
+87811,SARS-COV-2 COVID19 W/OPTIC,Lab
+88112,CYTOPATH CELL ENHANCE TECH,Lab
+88120,CYTP URNE 3-5 PROBES EA SPEC,Lab
+88173,CYTOPATH EVAL FNA REPORT,Lab
+88185,FLOWCYTOMETRY/TC ADD-ON,Lab
+88189,FLOWCYTOMETRY/READ 16 & >,Lab
+88305,Tissue exam by pathologist,CPT
+88307,Tissue exam by pathologist,CPT
+88309,TISSUE EXAM BY PATHOLOGIST,Lab
+88312,Special stains group 1,CPT
+88313,SPECIAL STAINS GROUP 2,Lab
+88331,PATH CONSLTJ SURG 1 BLK 1SPC,Lab
+88341,Imhchem/imcytchm ea add antb,CPT
+88342,Imhchem/imcytchm 1st antb,CPT
+88344,IMHCHEM/IMCYTCHM EA MLT ANTB,Lab
+88360,TUMOR IMMUNOHISTOCHEM/MANUAL,Lab
+88374,M/PHMTRC ALYS ISHQUANT/SEMIQ,Lab
+88377,M/PHMTRC ALYS ISHQUANT/SEMIQ,Lab
+90480,Admn sarscov2 vacc 1 dose,CPT
+90653,Iiv adjuvant vaccine im,CPT
+90662,Iiv no prsv increased ag im,CPT
+90677,Pcv20 vaccine im,CPT
+90791,Psych diagnostic evaluation,CPT
+90792,Psych diag eval w/med srvcs,CPT
+90832,Psytx w pt 30 minutes,CPT
+90833,Psytx w pt w e/m 30 min,CPT
+90834,Psytx w pt 45 minutes,CPT
+90837,Psytx w pt 60 minutes,CPT
+90960,Esrd srv 4 visits p mo 20+,CPT
+90961,Esrd srv 2-3 vsts p mo 20+,CPT
+90966,Esrd home pt serv p mo 20+,CPT
+91320,Sarscv2 vac 30mcg trs-suc im,CPT
+91322,Sarscov2 vac 50 mcg/0.5ml im,CPT
+92004,Compre oph exam new pt 1/>,CPT
+92012,Intrm oph exam est patient,CPT
+92014,Compre oph exam est pt 1/>,CPT
+92083,Extended visual field xm,CPT
+92133,Cptrzd oph dx img pst sgm on,CPT
+92134,Cptrz oph dx img pst sgm rta,CPT
+92250,Fundus photography w/i&r,CPT
+92928,Prq card stent w/angio 1 vsl,CPT
+93000,Electrocardiogram complete,CPT
+93010,Electrocardiogram report,CPT
+93229,Remote 30 day ecg tech supp,CPT
+93243,Ext ecg>48hr<7d scan a/r,CPT
+93247,Ext ecg>7d<15d scan a/r,CPT
+93298,Rem interrog dev eval scrms,CPT
+93306,Tte w/doppler complete,CPT
+93458,L hrt artery/ventricle angio,CPT
+93656,Compre ep eval abltj atr fib,CPT
+93880,Extracranial bilat study,CPT
+93925,Lower extremity study,CPT
+93970,Extremity study,CPT
+93971,Extremity study,CPT
+95165,Antigen therapy services,CPT
+95251,CONT GLUC MNTR ANALYSIS I&R,Lab
+95886,Musc test done w/n test comp,CPT
+96365,Ther/proph/diag iv inf init,CPT
+96372,Ther/proph/diag inj sc/im,CPT
+96413,Chemo iv infusion 1 hr,CPT
+97110,Therapeutic exercises,CPT
+97112,Neuromuscular reeducation,CPT
+97116,Gait training therapy,CPT
+97140,Manual therapy 1/> regions,CPT
+97161,Pt eval low complex 20 min,CPT
+97162,Pt eval mod complex 30 min,CPT
+97530,Therapeutic activities,CPT
+97535,Self care mngment training,CPT
+97610,Low frequency non-thermal us,CPT
+98940,Chiropract manj 1-2 regions,CPT
+98941,Chiropract manj 3-4 regions,CPT
+99203,Office o/p new low 30 min,CPT
+99204,Office o/p new mod 45 min,CPT
+99205,Office o/p new hi 60 min,CPT
+99212,Office o/p est sf 10 min,CPT
+99213,Office o/p est low 20 min,CPT
+99214,Office o/p est mod 30 min,CPT
+99215,Office o/p est hi 40 min,CPT
+99222,1st hosp ip/obs moderate 55,CPT
+99223,1st hosp ip/obs high 75,CPT
+99231,Sbsq hosp ip/obs sf/low 25,CPT
+99232,Sbsq hosp ip/obs moderate 35,CPT
+99233,Sbsq hosp ip/obs high 50,CPT
+99238,Hosp ip/obs dschrg mgmt 30/<,CPT
+99239,Hosp ip/obs dschrg mgmt >30,CPT
+99284,Emergency dept visit mod mdm,CPT
+99285,Emergency dept visit hi mdm,CPT
+99291,Critical care first hour,CPT
+99305,1st nf care moderate mdm 35,CPT
+99306,1st nf care high mdm 50,CPT
+99308,Sbsq nf care low mdm 20,CPT
+99309,Sbsq nf care moderate mdm 30,CPT
+99310,Sbsq nf care high mdm 45,CPT
+99348,Home/res vst est low mdm 30,CPT
+99349,Home/res vst est mod mdm 40,CPT
+99350,Home/res vst est high mdm 60,CPT
+99439,Chrnc care mgmt staf ea addl,CPT
+99454,Rem mntr physiol param dev,CPT
+99457,Rem physiol mntr 1st 20 min,CPT
+99458,Rem physiol mntr ea addl 20,CPT
+99487,Cplx chrnc care 1st 60 min,CPT
+99489,Cplx chrnc care ea addl 30,CPT
+99490,Chrnc care mgmt staff 1st 20,CPT
+99495,Transj care mgmt mod f2f 14d,CPT
+99496,Transj care mgmt high f2f 7d,CPT
+99497,Advncd care plan 30 min,CPT
+A0425,"Ground mileage, per statute mile Ground mileage 52 A C O1A D 02001010120010101 N",HCPCS
+A0427,"Ambulance service, advanced life support, emergency transport, level 1 (als 1 - Als1-emergency 52 A C O1A D 02001010120010101 N",HCPCS
+A0428,"Ambulance service, basic life support, non-emergency transport, (bls) Bls 52 A C O1A D 02001010120010101 N",HCPCS
+A0429,"Ambulance service, basic life support, emergency transport (bls-emergency) Bls-emergency 52 A C O1A D 02001010120010101 N",HCPCS
+A0435,"Fixed wing air mileage, per statute mile Fixed wing air mileage 52 A C O1A D 02001010120010101 N",HCPCS
+A0436,"Rotary wing air mileage, per statute mile Rotary wing air mileage 52 A C O1A D 02001010120010101 N",HCPCS
+A4225,"Supplies for external insulin infusion pump, syringe type cartridge, sterile, Sup/ext insulin inf pump syr34 A 60-14 D D1E P 02017010120170101 N",HCPCS
+A4239,"Supply allowance for non-adjunctive, non-implanted continuous glucose monitor Non-adju cgm supply allow 34 A C D1E 9 02023010120230101 N",HCPCS
+A4253,"Blood glucose test or reagent strips for home blood glucose monitor, per 50 Blood glucose/reagent strips32 A60-11 D D1E P 01986010119980701 N",HCPCS
+A4332,"Lubricant, individual sterile packet, each Lube sterile packet 37 A 2130 D D1F P 02001010120050101 N",HCPCS
+A4349,"Male external catheter, with or without adhesive, disposable, each Disposable male external cat37 A 2130 D D1A P 02005010120050101 N",HCPCS
+A4351,"Intermittent urinary catheter; straight tip, with or without coating (teflon, Straight tip urine catheter 37 A 2130 D D1F P 01990010120020101 N",HCPCS
+A4352,"Intermittent urinary catheter; coude (curved) tip, with or without coating Coude tip urinary catheter 37 A 2130 D D1F P 01990010120020101 N",HCPCS
+A4353,"Intermittent urinary catheter, with insertion supplies Intermittent urinary cath 37 A 2130 D D1F P 01997010120030101 N",HCPCS
+A4362,"Skin barrier; solid, 4 x 4 or equivalent; each Solid skin barrier 37 A 2130 D D1F P 01985010119900101 N",HCPCS
+A4385,"Ostomy skin barrier, solid 4 x 4 or equivalent, extended wear, without built-in Ost skn barrier sld ext wear37 A 2130 D D1F P 02000010120030101 N",HCPCS
+A4394,"Ostomy deodorant, with or without lubricant, for use in ostomy pouch, per fluid Ostomy pouch liq deodorant 37 A 2130 D D1F P 02000010120070101 N",HCPCS
+A4407,"Ostomy skin barrier, with flange (solid, flexible, or accordion), extended Ext wear ost skn barr <=4sq""37 A 2130 D D1F P 02003010120030101 N",HCPCS
+A4409,"Ostomy skin barrier, with flange (solid, flexible or accordion), extended wear, Ost skn barr convex <=4 sq i37 A 2130 D D1F P 02003010120060101 N",HCPCS
+A4419,"Ostomy pouch, closed; for use on barrier with non-locking flange, with filter Ost pch for bar w flange/flt37 A C D1F P 02004010120040101 N",HCPCS
+A4425,"Ostomy pouch, drainable; for use on barrier with non-locking flange, with Ost pch drain for barrier fl37 A C D1F P 02004010120040101 N",HCPCS
+A4450,"Tape, non-waterproof, per 18 square inches Non-waterproof tape 37 A 2130 D D1F LP 02003010120030101 N",HCPCS
+A4452,"Tape, waterproof, per 18 square inches Waterproof tape 37 A 2130 D D1F LP 02003010120030101 N",HCPCS
+A4456,"Adhesive remover, wipes, any type, each Adhesive remover, wipes 37 A 2130 D D1F P 02010010120100101 N",HCPCS
+A4604,Tubing with integrated heating element for use with positive airway pressure Tubing with heating element 32 A C D1E P 02006010120060101 N,HCPCS
+A5057,"Ostomy pouch, drainable, with extended wear barrier attached, with built in 1 pc ost pou w built-in conv37 A 2130 D D1F P 02012010120120101 N",HCPCS
+A5063,"Ostomy pouch, drainable; for use on barrier with flange (2 piece system), each Drain ostomy pouch w/flange 37 A 2130 D D1F P 01990010120030101 N",HCPCS
+A5120,"Skin barrier, wipes or swabs, each Skin barrier, wipe or swab 37 A 2130 D D1F P 02006010120060101 N",HCPCS
+A6021,"Collagen dressing, sterile, size 16 sq. in. or less, each Collagen dressing <=16 sq in35 A 2079 D D1A S 02001010120130101 N",HCPCS
+A6196,"Alginate or other fiber gelling dressing, wound cover, sterile, pad size 16 sq. Alginate dressing <=16 sq in35 A 2079 D D1A S 01997010120090101 N",HCPCS
+A6197,"Alginate or other fiber gelling dressing, wound cover, sterile, pad size more Alginate drsg >16 <=48 sq in35 A 2079 D D1A S 01997010120090101 N",HCPCS
+A6216,"Gauze, non-impregnated, non-sterile, pad size 16 sq. in. or less, without Non-sterile gauze<=16 sq in 35 A 2079 D D1A S 01997010120030101 N",HCPCS
+A6219,"Gauze, non-impregnated, sterile, pad size 16 sq. in. or less, with any size Gauze <= 16 sq in w/border 35 A 2079 D D1A S 01997010120090101 N",HCPCS
+A6402,"Gauze, non-impregnated, sterile, pad size 16 sq. in. or less, without adhesive Sterile gauze <= 16 sq in 35 A 2079 D D1A LS 01997010120060101 N",HCPCS
+A6446,"Conforming bandage, non-elastic, knitted/woven, sterile, width greater than or Conform band s w>=3"" <5""/yd 35 A C D1A S 02004010120040101 N",HCPCS
+A7031,"Face mask interface, replacement for full face mask, each Replacement facemask interfa32 A C D1E APR 02003010120030101 N",HCPCS
+A7032,"Cushion for use on nasal mask interface, replacement only, each Replacement nasal cushion 32 A C D1E APR 02003010120060101 N",HCPCS
+A7033,"Pillow for use on nasal cannula type interface, replacement only, pair Replacement nasal pillows 32 A C D1E APR 02003010120060101 N",HCPCS
+A7034,Nasal interface (mask or cannula type) used with positive airway pressure Nasal application device 32 A C D1E APR 02003010120030101 N,HCPCS
+A7035,Headgear used with positive airway pressure device Pos airway press headgear 32 A C D1E APR 02003010120030101 N,HCPCS
+A7038,"Filter, disposable, used with positive airway pressure device Pos airway pressure filter 32 A C D1E APR 02003010120030101 N",HCPCS
+A9575,"Injection, gadoterate meglumine, 0.1 ml Inj gadoterate meglumi 0.1ml57 A C I1E 4 02014010120140101 N",HCPCS
+A9585,"Injection, gadobutrol, 0.1 ml Gadobutrol injection 57 A C I1E 4 02012010120120101 N",HCPCS
+B4034,"Enteral feeding supply kit; syringe fed, per day, includes but not limited to Enter feed supkit syr by day39 A65-10 2130 4450 D O1C E 01986010120110101 N",HCPCS
+B4035,"Enteral feeding supply kit; pump fed, per day, includes but not limited to Enteral feed supp pump per d39 A65-10 2130 4450 D O1C E 01986010120110101 N",HCPCS
+B4149,"Enteral formula, manufactured blenderized natural foods with intact nutrients, Ef blenderized foods 39 A65-10 2130 4450 D O1C E 02005010120060101 N",HCPCS
+B4150,"Enteral formula, nutritionally complete with intact nutrients, includes Ef complet w/intact nutrient39 A65-10 2130 4450 D O1C E 01986010120050101 N",HCPCS
+B4152,"Enteral formula, nutritionally complete, calorically dense (equal to or greater Ef calorie dense>/=1.5kcal 39 A65-10 2130 4450 D O1C E 01984010120050101 N",HCPCS
+B4153,"Enteral formula, nutritionally complete, hydrolyzed proteins (amino acids and Ef hydrolyzed/amino acids 39 A65-10 2130 4450 D O1C E 01986010120050101 N",HCPCS
+B4154,"Enteral formula, nutritionally complete, for special metabolic needs, excludes Ef spec metabolic noninherit39 A65-10 2130 4450 D O1C E 01984010120050101 N",HCPCS
+B4185,"Parenteral nutrition solution, not otherwise specified, 10 grams lipids Pn soln nos 10 grams lipids 39 A D 0126O1C E 02006010120200101 N",HCPCS
+C9290,"Injection, bupivacaine liposome, 1 mg Inj, bupivacaine liposome 53 A 1833(t) D O1E 1 0201204012025010120241231D",HCPCS
+E0431,"Portable gaseous oxygen system, rental; includes portable container, regulator, Portable gaseous 02 33 A60-4 4107.9 D D1C R 01993010120010101 N",HCPCS
+E0601,Continuous positive airway pressure (cpap) device Cont airway pressure device 36 A60-17 D D1E R 01988010120140101 N,HCPCS
+E1390,"Oxygen concentrator, single delivery port, capable of delivering 85 percent or Oxygen concentrator 33 A60-4 D D1C R 02000010120040101 N",HCPCS
+G0008,Administration of influenza virus vaccine Admin influenza virus vac 54 A C O1G V 01994010119960101 N,HCPCS
+G0103,PSA SCREENING,Lab
+G0283,"Electrical stimulation (unattended), to one or more areas for indication(s) Elec stim other than wound 11 A C P5E 1UW 02003010120030101 N",HCPCS
+G0416,"PROSTATE BIOPSY, ANY MTHD",Lab
+G0439,"Annual wellness visit, includes a personalized prevention plan of service Ppps, subseq visit 13 A C M5D 1 02011010120110101 N",HCPCS
+G0444,"Annual depression screening, 5 to 15 minutes Depression screen annual 13 A C Y1 1 02011101420230101 N",HCPCS
+G0480,DRUG TEST DEF 1-7 CLASSES,Lab
+G0481,DRUG TEST DEF 8-14 CLASSES,Lab
+G0482,DRUG TEST DEF 15-21 CLASSES,Lab
+G0483,DRUG TEST DEF 22+ CLASSES,Lab
+G2211,Visit complexity inherent to evaluation and management associated with medical Complex e/m visit add on 00 9 C Z2 1 02021010120210101 N,HCPCS
+J0129,"Injection, abatacept, 10 mg (code may be used for medicare when drug Abatacept injection 51 A CYY20080101 O1E 1P 02007010120120101 N",HCPCS
+J0174,"Injection, lecanemab-irmb, 1 mg Inj, lecanemab-irmb, 1 mg 00 9 CYY20230706 O1E 1P 02023070620230706 N",HCPCS
+J0178,"Injection, aflibercept, 1 mg Aflibercept injection 51 A CYY20130101 O1E 1P 02013010120130101 N",HCPCS
+J0185,"Injection, aprepitant, 1 mg Inj., aprepitant, 1 mg 51 A CYY20190101 O1E 1 02019010120190101 N",HCPCS
+J0256,"Injection, alpha 1 proteinase inhibitor (human), not otherwise specified, 10 mg Alpha 1 proteinase inhibitor51 A 2049 DYY20080101 O1E 1P 01989010120120101 N",HCPCS
+J0461,"Injection, atropine sulfate, 0.01 mg Atropine sulfate injection 51 A 2049 D O1E 1P 02010010120100101 N",HCPCS
+J0485,"Injection, belatacept, 1 mg Belatacept injection 51 A CYY20130101 O1E 1P 02013010120130101 N",HCPCS
+J0491,"Injection, anifrolumab-fnia, 1 mg Inj anifrolumab-fnia 1mg 51 A CYY20220401 O1E 1P 02022040120220401 N",HCPCS
+J0585,"Injection, onabotulinumtoxina, 1 unit Injection,onabotulinumtoxina51 A 2049 DYY20080101 O1E 1P 01991010120100101 N",HCPCS
+J0588,"Injection, incobotulinumtoxin a, 1 unit Incobotulinumtoxin a 51 A CYY20120101 O1E 1P 02012010120120101 N",HCPCS
+J0665,"Injection, bupivicaine, not otherwise specified, 0.5 mg Inj, bupivacaine, nos, 0.5mg51 A CYY20240101 O1E 1 02023070120240101 N",HCPCS
+J0696,"Injection, ceftriaxone sodium, per 250 mg Ceftriaxone sodium injection51 A 2049 D O1E 1P 01990010119970101 N",HCPCS
+J0702,"Injection, betamethasone acetate 3 mg and betamethasone sodium phosphate 3 mg Betamethasone acet&sod phosp51 A 2049 D O1E 1P 01995010120080101 N",HCPCS
+J0717,"Injection, certolizumab pegol, 1 mg (code may be used for medicare when drug Certolizumab pegol inj 1mg 51 A CYY20140101 O1E 1P 02014010120140101 N",HCPCS
+J0872,"Injection, daptomycin (xellia), unrefrigerated, not therapeutically equivalent Daptomycin (xellia) unrefrig51 A CYY20240701 O1E 1P 02024070120240701 N",HCPCS
+J0878,"Injection, daptomycin, 1 mg Daptomycin injection 51 A C O1E 1P 02005010120240101 N",HCPCS
+J0881,"Injection, darbepoetin alfa, 1 microgram (non-esrd use) Darbepoetin alfa, non-esrd 51 A DYY20080101 0132O1E 1L 02006010120060101 N",HCPCS
+J0885,"Injection, epoetin alfa, (for non-esrd use), 1000 units Epoetin alfa, non-esrd 51 A 2049 DYY20080101 O1E 9 02006010120060101 N",HCPCS
+J0896,"Injection, luspatercept-aamt, 0.25 mg Inj luspatercept-aamt 0.25mg51 A CYY20200701 O1E 1 02020070120200701 N",HCPCS
+J0897,"Injection, denosumab, 1 mg Denosumab injection 51 A CYY20120101 O1E 1P 02012010120120101 N",HCPCS
+J1010,"Injection, methylprednisolone acetate, 1 mg Inj, methylpred acetate 1 mg51 A 2049 D O1E 1P 02024040120240401 N",HCPCS
+J1071,"Injection, testosterone cypionate, 1 mg Inj testosterone cypionate 51 A D 0194O1E 1P 02015010120150101 N",HCPCS
+J1100,"Injection, dexamethasone sodium phosphate, 1 mg Dexamethasone sodium phos 51 A 2049 D O1E 1P 01982010120010101 N",HCPCS
+J1306,"Injection, inclisiran, 1 mg Injection, inclisiran, 1 mg 51 A CYY20220701 O1E 1 02022070120220701 N",HCPCS
+J1437,"Injection, ferric derisomaltose, 10 mg Inj. fe derisomaltose 10 mg 51 A C O1E 1P 02020100120230101 N",HCPCS
+J1439,"Injection, ferric carboxymaltose, 1 mg Inj ferric carboxymaltos 1mg51 A CYY20150101 O1E 1P 02015010120150101 N",HCPCS
+J1442,"Injection, filgrastim (g-csf), excludes biosimilars, 1 microgram Inj filgrastim excl biosimil51 A DYY20140101 0187O1E 1P 02014010120160101 N",HCPCS
+J1448,"Injection, trilaciclib, 1mg Injection, trilaciclib, 1mg 51 A CYY20211001 O1E 1P 02021100120211001 N",HCPCS
+J1449,"Injection, eflapegrastim-xnst, 0.1 mg Inj eflapegrastim-xnst 0.1mg51 A CYY20230401 O1E 1P 02023040120230401 N",HCPCS
+J1453,"Injection, fosaprepitant, 1 mg Fosaprepitant injection 51 A C O1E 1P 02009010120220101 N",HCPCS
+J1555,"Injection, immune globulin (cuvitru), 100 mg Inj cuvitru, 100 mg 51 A CYY20180101 D1G 1P 02018010120180101 N",HCPCS
+J1558,"Injection, immune globulin (xembify), 100 mg Inj. xembify, 100 mg 51 A CYY20200701 O1E 1P 02020070120200701 N",HCPCS
+J1559,"Injection, immune globulin (hizentra), 100 mg Hizentra injection 51 A CYY20110101 O1E 1P 02011010120110101 N",HCPCS
+J1561,"Injection, immune globulin, (gamunex-c/gammaked), non-lyophilized (e.g., Gamunex-c/gammaked 51 A 2049 DYY20080101 O1E 1P 02008010120130101 N",HCPCS
+J1568,"Injection, immune globulin, (octagam), intravenous, non-lyophilized (e.g., Octagam injection 51 A CYY20080101 O1E 1P 02008010120080101 N",HCPCS
+J1569,"Injection, immune globulin, (gammagard liquid), non-lyophilized, (e.g., Gammagard liquid injection 51 A 2049 DYY20080101 O1E 1P 02008010120130101 N",HCPCS
+J1575,"Injection, immune globulin/hyaluronidase, (hyqvia), 100 mg immuneglobulin Hyqvia 100mg immuneglobulin 51 A CYY20160101 O1E 1P 02016010120160101 N",HCPCS
+J1602,"Injection, golimumab, 1 mg, for intravenous use Golimumab for iv use 1mg 51 A CYY20140101 O1E 1P 02014010120140101 N",HCPCS
+J1745,"Injection, infliximab, excludes biosimilar, 10 mg Infliximab not biosimil 10mg51 A 2049 DYY20080101 O1E 1P 02000010120170101 N",HCPCS
+J1756,"Injection, iron sucrose, 1 mg Iron sucrose injection 51 A C O1E 1P 02003010120030101 N",HCPCS
+J1817,"Insulin for administration through dme (i.e., insulin pump) per 50 units Insulin for insulin pump use51 A C D1G 1P 02003010120030101 N",HCPCS
+J1930,"Injection, lanreotide, 1 mg Lanreotide injection 51 A CYY20150101 O1E 1P 02009010120090101 N",HCPCS
+J2182,"Injection, mepolizumab, 1 mg Injection, mepolizumab, 1mg 51 A CYY20170101 O1E 1 02017010120170101 N",HCPCS
+J2323,"Injection, natalizumab, 1 mg Natalizumab injection 51 A CYY20080101 O1E 1P 02008010120080101 N",HCPCS
+J2327,"Injection, risankizumab-rzaa, intravenous, 1 mg Inj risankizumab-rzaa 1 mg 51 A CYY20230101 O1E 1P 02023010120230101 N",HCPCS
+J2350,"Injection, ocrelizumab, 1 mg Injection, ocrelizumab, 1 mg51 A CYY20180101 O1E 1P 02018010120180101 N",HCPCS
+J2356,"Injection, tezepelumab-ekko, 1 mg Inj tezepelumab-ekko, 1mg 51 A CYY20220701 O1E 1 02022070120220701 N",HCPCS
+J2357,"Injection, omalizumab, 5 mg Omalizumab injection 51 A CYY20080101 O1E 1P 02005010120050101 N",HCPCS
+J2403,"Chloroprocaine hcl ophthalmic, 3% gel, 1 mg Chloroprocaine opht gel, 1mg51 A CYY20230401 O1E 1 02023040120230401 N",HCPCS
+J2469,"Injection, palonosetron hcl, 25 mcg Palonosetron hcl 51 A C O1E 1P 02005010120240101 N",HCPCS
+J2777,"Injection, faricimab-svoa, 0.1 mg Inj, faricimab-svoa, 0.1mg 51 A CYY20221001 O1E 1 02022100120221001 N",HCPCS
+J2781,"Injection, pegcetacoplan, intravitreal, 1 mg Inj, pegcetacoplan, 1mg 51 A CYY20231001 O1E 1 02023100120231001 N",HCPCS
+J2785,"Injection, regadenoson, 0.1 mg Regadenoson injection 51 A C O1E 1P 02009010120140101 N",HCPCS
+J2919,"Injection, methylprednisolone sodium succinate, 5 mg Inj, methylpred sod succ 5mg51 A 2049 D O1E 1G 02024040120240401 N",HCPCS
+J3032,"Injection, eptinezumab-jjmr, 1 mg Inj. eptinezumab-jjmr 1 mg 51 A CYY20201001 O1E 1P 02020100120201001 N",HCPCS
+J3111,"Injection, romosozumab-aqqg, 1 mg Inj. romosozumab-aqqg 1 mg 51 A CYY20191001 0120O1E 1 02019100120191001 N",HCPCS
+J3145,"Injection, testosterone undecanoate, 1 mg Testosterone undecanoate 1mg51 A DYY20150101 0127O1E 1 02015010120150101 N",HCPCS
+J3245,"Injection, tildrakizumab, 1 mg Inj., tildrakizumab, 1 mg 51 A C O1E 1P 02019010120190101 N",HCPCS
+J3247,"Injection, secukinumab, intravenous, 1 mg Inj secukinumab intrav 1mg 51 A CYY20240701 O1E 1P 02024070120240701 N",HCPCS
+J3262,"Injection, tocilizumab, 1 mg Tocilizumab injection 51 A CYY20110101 O1E 1P 02011010120110101 N",HCPCS
+J3285,"Injection, treprostinil, 1 mg Treprostinil injection 51 A CYY20080101 O1E 1P 02006010120060101 N",HCPCS
+J3301,"Injection, triamcinolone acetonide, not otherwise specified, 10 mg Triamcinolone acet inj nos 51 A 2049 D O1E 1P 01991010120090101 N",HCPCS
+J3304,"Injection, triamcinolone acetonide, preservative-free, extended-release, Inj triamcinolone ace xr 1mg51 A DYY20190101 0127O1E 1P 02019010120190101 N",HCPCS
+J3380,"Injection, vedolizumab, intravenous, 1 mg Inj vedolizumab iv 1 mg 51 A DYY20160101 0127O1E 1P 02016010120240401 N",HCPCS
+J7170,"Injection, emicizumab-kxwh, 0.5 mg Inj., emicizumab-kxwh 0.5 mg51 A CYY20190101 O1E 1 02019010120190101 N",HCPCS
+J7179,"Injection, von willebrand factor (recombinant), (vonvendi), 1 i.u. vwf:rco Vonvendi inj 1 iu vwf:rco 51 A DYY20170101 0211O1E 1 02017010120170101 N",HCPCS
+J7185,"Injection, factor viii (antihemophilic factor, recombinant) (xyntha), per i.u. Xyntha inj 51 A CYY20100101 O1E 1P 02010010120100101 N",HCPCS
+J7187,"Injection, von willebrand factor complex (humate-p), per iu vwf:rco Humate-p, inj 51 A 2049 DYY20080101 O1E 1P 02007010120080101 N",HCPCS
+J7189,"Factor viia (antihemophilic factor, recombinant), (novoseven rt), 1 microgram Factor viia recomb novoseven51 A 2049 DYY20080101 O1E 1P 02006010120210101 N",HCPCS
+J7190,"Factor viii (antihemophilic factor, human) per i.u. Factor viii 51 A 2049 DYY20080101 O1E 1P 01986010119990101 N",HCPCS
+J7192,"Factor viii (antihemophilic factor, recombinant) per i.u., not otherwise Factor viii recombinant nos 51 A 2049 DYY20080101 O1E 1P 01994010120100101 N",HCPCS
+J7195,"Injection, factor ix (antihemophilic factor, recombinant) per iu, not otherwise Factor ix recombinant nos 51 A 2049 DYY20080101 O1E 1P 02002010120150101 N",HCPCS
+J7200,"Injection, factor ix, (antihemophilic factor, recombinant), rixubis, per iu Factor ix recombinan rixubis51 A 2049 DYY20150101 O1E 1P 02015010120150101 N",HCPCS
+J7201,"Injection, factor ix, fc fusion protein, (recombinant), alprolix, 1 i.u. Factor ix alprolix recomb 51 A 2049 DYY20150101 O1E 1P 02015010120170101 N",HCPCS
+J7202,"Injection, factor ix, albumin fusion protein, (recombinant), idelvion, 1 i.u. Factor ix idelvion inj 51 A DYY20170101 0211O1E 1 02017010120170101 N",HCPCS
+J7205,"Injection, factor viii fc fusion protein (recombinant), per iu Factor viii fc fusion recomb51 A DYY20160101 0127O1E 1P 02016010120160101 N",HCPCS
+J7207,"Injection, factor viii, (antihemophilic factor, recombinant), pegylated, 1 i.u. Factor viii pegylated recomb51 A DYY20170101 0127O1E 1 02017010120170101 N",HCPCS
+J7208,"Injection, factor viii, (antihemophilic factor, recombinant), pegylated-aucl, Inj. jivi 1 iu 51 A DYY20190701 0127O1E 1 02019070120190701 N",HCPCS
+J7209,"Injection, factor viii, (antihemophilic factor, recombinant), (nuwiq), 1 i.u. Factor viii nuwiq recomb 1iu51 A CYY20170101 O1E 1 02017010120170101 N",HCPCS
+J7211,"Injection, factor viii, (antihemophilic factor, recombinant), (kovaltry), 1 i.u.Inj, kovaltry, 1 i.u. 51 A CYY20180101 O1E 1 02018010120180101 N",HCPCS
+J7214,"Injection, factor viii/von willebrand factor complex, recombinant (altuviiio), Altuviiio per factor viii iu51 A CYY20231001 O1E 1 02023100120231001 N",HCPCS
+J7318,"Hyaluronan or derivative, durolane, for intra-articular injection, 1 mg Inj, durolane 1 mg 51 A CYY20190101 O1E 1 02019010120190101 N",HCPCS
+J7320,"Hyaluronan or derivitive, genvisc 850, for intra-articular injection, 1 mg Genvisc 850, inj, 1mg 51 A CYY20180101 O1E 1 02017010120180101 N",HCPCS
+J7325,"Hyaluronan or derivative, synvisc or synvisc-one, for intra-articular Synvisc or synvisc-one 51 A CYY20100101 O1E 1 02010010120170101 N",HCPCS
+J7328,"Hyaluronan or derivative, gelsyn-3, for intra-articular injection, 0.1 mg Gelsyn-3 injection 0.1 mg 51 A CYY20180101 O1E 1 02016010120180101 N",HCPCS
+J7329,"Hyaluronan or derivative, trivisc, for intra-articular injection, 1 mg Inj, trivisc 1 mg 51 A CYY20190101 O1E 1 02019010120190101 N",HCPCS
+J7336,"Capsaicin 8% patch, per square centimeter Capsaicin 8% patch 51 A CYY20150101 O1E 9 02015010120150101 N",HCPCS
+J7345,"Aminolevulinic acid hcl for topical administration, 10% gel, 10 mg Aminolevulinic acid, 10% gel51 A DYY20180101 0213O1E 1 02018010120180101 N",HCPCS
+J7503,"Tacrolimus, extended release, (envarsus xr), oral, 0.25 mg Tacrol envarsus ex rel oral 51 A 2049.5 D O1E 1G 02016010120190101 N",HCPCS
+J7507,"Tacrolimus, immediate release, oral, 1 mg Tacrolimus imme rel oral 1mg51 A 2049.5 D O1E 1G 01995010120140101 N",HCPCS
+J7508,"Tacrolimus, extended release, (astagraf xl), oral, 0.1 mg Tacrol astagraf ex rel oral 51 A 2049.5 D O1E 1G 02014010120180101 N",HCPCS
+J7512,"Prednisone, immediate release or delayed release, oral, 1 mg Prednisone ir or dr oral 1mg51 A 2049.5 D O1E 1G 02016010120160101 N",HCPCS
+J7515,"Cyclosporine, oral, 25 mg Cyclosporine oral 25 mg 51 A C O1E 1G 02000010120000101 N",HCPCS
+J7517,"Mycophenolate mofetil, oral, 250 mg Mycophenolate mofetil oral 51 A C O1E 1G 02000010120000101 N",HCPCS
+J7518,"Mycophenolic acid, oral, 180 mg Mycophenolic acid 51 A 2050.5 4471 5249 D O1E 1G 02005010120050101 N",HCPCS
+J7520,"Sirolimus, oral, 1 mg Sirolimus, oral 51 A 2049.5 D O1E 1G 02001010120010101 N",HCPCS
+J7527,"Everolimus, oral, 0.25 mg Oral everolimus 51 A 2049.5 D O1G 1G 02013010120140101 N",HCPCS
+J7605,"Arformoterol, inhalation solution, fda approved final product, non-compounded, Arformoterol non-comp unit 51 A C D1G 1P 02008010120080101 N",HCPCS
+J7606,"Formoterol fumarate, inhalation solution, fda approved final product, Formoterol fumarate, inh 51 A C D1G 1P 02009010120090101 N",HCPCS
+J7613,"Albuterol, inhalation solution, fda-approved final product, non-compounded, Albuterol non-comp unit 00 9 2100.5 D D1G 1P 02005010120090701 N",HCPCS
+J7614,"Levalbuterol, inhalation solution, fda-approved final product, non-compounded, Levalbuterol non-comp unit 00 9 2100.5 D D1G 1P 02005010120090701 N",HCPCS
+J7620,"Albuterol, up to 2.5 mg and ipratropium bromide, up to 0.5 mg, fda-approved Albuterol ipratrop non-comp 51 A D 0135D1G 1P 02006010120070101 N",HCPCS
+J7626,"Budesonide, inhalation solution, fda-approved final product, non-compounded, Budesonide non-comp unit 51 A C D1G 1P 02002010120070101 N",HCPCS
+J7644,"Ipratropium bromide, inhalation solution, fda-approved final product, Ipratropium bromide non-comp51 A D 0135D1G 1P 02000010120070101 N",HCPCS
+J7677,"Revefenacin inhalation solution, fda-approved final product, non-compounded, Revefenacin inh non-com 1mcg51 A C D1G 1P 02019070120190701 N",HCPCS
+J9022,"Injection, atezolizumab, 10 mg Inj, atezolizumab,10 mg 51 A CYY20180101 O1D 1P 02018010120180101 N",HCPCS
+J9025,"Injection, azacitidine, 1 mg Azacitidine injection 51 A C O1D 1P 02006010120230101 N",HCPCS
+J9030,"Bcg live intravesical instillation, 1 mg Bcg live intravesical 1mg 51 A 2049 D O1D 1P 02019070120240101 N",HCPCS
+J9041,"Injection, bortezomib, 0.1 mg Injection, bortezomib, 0.1mg51 A CYY20080101 O1D 1P 02005010120230101 N",HCPCS
+J9047,"Injection, carfilzomib, 1 mg Injection, carfilzomib, 1 mg51 A CYY20140101 O1D 1P 02014010120140101 N",HCPCS
+J9073,"Injection, cyclophosphamide (ingenus), 5 mg Inj cyclophosphamd (ingenus)51 A 2049 DYY20240401 O1D 1P 02024040120240401 N, Inj cyclophos dr reddys 5 mg",HCPCS
+J9119,"Injection, cemiplimab-rwlc, 1 mg Inj., cemiplimab-rwlc, 1 mg 51 A CYY20191001 O1D 1 02019100120191001 N",HCPCS
+J9144,"Injection, daratumumab, 10 mg and hyaluronidase-fihj Daratumumab, hyaluronidase 51 A CYY20210101 O1D 1 02021010120210101 N",HCPCS
+J9155,"Injection, degarelix, 1 mg Degarelix injection 51 A CYY20100101 O1E 1P 02010010120100101 N",HCPCS
+J9171,"Injection, docetaxel, 1 mg Docetaxel injection 51 A 2049 D O1E 1P 02010010120240101 N",HCPCS
+J9173,"Injection, durvalumab, 10 mg Inj., durvalumab, 10 mg 51 A CYY20190101 O1E 1 02019010120190101 N",HCPCS
+J9176,"Injection, elotuzumab, 1 mg Injection, elotuzumab, 1mg 51 A CYY20170101 O1E 1 02017010120170101 N",HCPCS
+J9177,"Injection, enfortumab vedotin-ejfv, 0.25 mg Inj enfort vedo-ejfv 0.25mg 51 A CYY20200701 O1E 1P 02020070120200701 N",HCPCS
+J9263,"Injection, oxaliplatin, 0.5 mg Oxaliplatin 51 A C O1D 1P 02004010120180101 N",HCPCS
+J9264,"Injection, paclitaxel protein-bound particles, 1 mg Paclitaxel protein bound 51 A CYY20080101 O1E 1P 02006010120070101 N",HCPCS
+J9267,"Injection, paclitaxel, 1 mg Paclitaxel injection 51 A D 0194O1D 1P 02015010120150101 N",HCPCS
+J9271,"Injection, pembrolizumab, 1 mg Inj pembrolizumab 51 A CYY20160101 O1D 1P 02016010120160101 N",HCPCS
+J9299,"Injection, nivolumab, 1 mg Injection, nivolumab 51 A DYY20160101 0127O1D 1P 02016010120160101 N",HCPCS
+J9306,"Injection, pertuzumab, 1 mg Injection, pertuzumab, 1 mg 51 A CYY20140101 O1D 1 02014010120140101 N",HCPCS
+J9312,"Injection, rituximab, 10 mg Inj., rituximab, 10 mg 51 A 2049 DYY20190101 O1D 1P 02019010120190101 N",HCPCS
+J9317,"Injection, sacituzumab govitecan-hziy, 2.5 mg Sacituzumab govitecan-hziy 51 A CYY20210101 O1D 1P 02021010120210101 N",HCPCS
+J9332,"Injection, efgartigimod alfa-fcab, 2mg Inj efgartigimod 2mg 51 A CYY20220701 O1D 1 02022070120220701 N",HCPCS
+J9334,"Injection, efgartigimod alfa, 2 mg and hyaluronidase-qvfc Inj efgart-alfa 2mg hya-qvfc51 A CYY20240101 O1D 1P 02024010120240101 N",HCPCS
+J9358,"Injection, fam-trastuzumab deruxtecan-nxki, 1 mg Inj fam-trastu deru-nxki 1mg51 A CYY20200701 O1E 1P 02020070120200701 N",HCPCS
+P9603,Travel allowance one way in connection with medically necessary laboratory One-way allow prorated miles22 A 51141K D 0039Y2 5 01987010119920101 N,HCPCS
+Q0138,"Injection, ferumoxytol, for treatment of iron deficiency anemia, 1 mg (non-esrd Ferumoxytol, non-esrd 51 A CYY20100101 O1E 1P 02010010120100101 N",HCPCS
+Q5101,"Injection, filgrastim-sndz, biosimilar, (zarxio), 1 microgram Injection, zarxio 51 A DYY20240101 0187O1E 1P 02015070120240101 N",HCPCS
+Q5106,"Injection, epoetin alfa-epbx, biosimilar, (retacrit) (for non-esrd use), 1000 Inj retacrit non-esrd use 51 A 2049 DYY20180701 O1E 9 02018070120200101 N",HCPCS
+Q5110,"Injection, filgrastim-aafi, biosimilar, (nivestym), 1 microgram Nivestym 51 A 2049 DYY20181001 O1E 1P 02018100120181001 N",HCPCS
+Q5125,"Injection, filgrastim-ayow, biosimilar, (releuko), 1 microgram Inj, releuko 1 mcg 51 A CYY20221001 O1E 1 02022100120221001 N",HCPCS
+Q9965,"Low osmolar contrast material, 100-199 mg/ml iodine concentration, per ml Locm 100-199mg/ml iodine,1ml51 A 15022 D I1E 4 02008010120080101 N",HCPCS
+Q9966,"Low osmolar contrast material, 200-299 mg/ml iodine concentration, per ml Locm 200-299mg/ml iodine,1ml51 A 15022 D I1E 4 02008010120080101 N",HCPCS
+Q9967,"Low osmolar contrast material, 300-399 mg/ml iodine concentration, per ml Locm 300-399mg/ml iodine,1ml51 A 15022 D I1E 4 02008010120080101 N",HCPCS
