@@ -392,7 +392,7 @@
     "notes": "Dialysis circuit angioplasty (36902)."
   },
   "Auto – Needs Review": {
-    "pattern": "(?:\\bG0008\\b|\\b88309\\b|\\b731\\.0\\b)",
+    "pattern": "(?:\\bG0008\\b|\\b88309\\b)",
     "notes": "Codes auto-collected for later review."
   }
 }

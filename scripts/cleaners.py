@@ -140,7 +140,96 @@ def apply_payer_standardization_to_json(json_file_path):
     
     return df
 
-
+def transform_wide_to_long_format(df):
+    """
+    Transform UNC Rex wide format (one row per code with payer columns) 
+    to long format (multiple rows per code, one per payer/plan)
+    """
+    import re
+    
+    # First, let's identify the base columns we want to keep
+    base_columns = [
+        'description', 'code|1', 'code|1|type', 'code|2', 'code|2|type', 
+        'code|3', 'code|3|type', 'billing_class', 'setting',
+        'drug_unit_of_measurement', 'drug_type_of_measurement', 'modifiers',
+        'standard_charge|gross', 'standard_charge|discounted_cash', 
+        'standard_charge|min', 'standard_charge|max', 'additional_generic_notes'
+    ]
+    
+    # Keep only base columns that actually exist in the dataframe
+    available_base_columns = [col for col in base_columns if col in df.columns]
+    
+    # Find all payer-specific column groups using regex
+    payer_pattern = re.compile(r'(standard_charge|estimated_amount|additional_payer_notes)\|([^|]+)\|([^|]+)\|(.+)')
+    
+    payer_columns = {}
+    for col in df.columns:
+        match = payer_pattern.match(col)
+        if match:
+            metric_type, payer, plan, field = match.groups()
+            payer_plan_key = f"{payer}|{plan}"
+            
+            if payer_plan_key not in payer_columns:
+                payer_columns[payer_plan_key] = {
+                    'payer_name': payer,
+                    'plan_name': plan,
+                    'columns': {}
+                }
+            
+            # Map the field to standardized column names
+            if field == 'negotiated_dollar':
+                payer_columns[payer_plan_key]['columns']['standard_charge_dollar'] = col
+            elif field == 'negotiated_percentage':
+                payer_columns[payer_plan_key]['columns']['standard_charge_percentage'] = col
+            elif field == 'negotiated_algorithm':
+                payer_columns[payer_plan_key]['columns']['standard_charge_algorithm'] = col
+            elif field == 'methodology':
+                payer_columns[payer_plan_key]['columns']['methodology'] = col
+            elif metric_type == 'estimated_amount':
+                payer_columns[payer_plan_key]['columns']['estimated_amount'] = col
+            elif metric_type == 'additional_payer_notes':
+                payer_columns[payer_plan_key]['columns']['additional_payer_notes'] = col
+    
+    # Create list to store transformed rows
+    transformed_rows = []
+    
+    # Process each row in the original dataframe
+    for _, row in df.iterrows():
+        # Extract base information for this code
+        base_info = {}
+        for col in available_base_columns:
+            base_info[col.replace('|', '_')] = row[col]
+        
+        # Add standard charges that apply to all payers
+        base_info['standard_charge_gross'] = row.get('standard_charge|gross', None)
+        base_info['standard_charge_discounted_cash'] = row.get('standard_charge|discounted_cash', None)
+        base_info['standard_charge_min'] = row.get('standard_charge|min', None)
+        base_info['standard_charge_max'] = row.get('standard_charge|max', None)
+        
+        # Create a row for each payer/plan combination
+        for payer_plan_key, payer_info in payer_columns.items():
+            # Start with base information
+            new_row = base_info.copy()
+            
+            # Add payer and plan names
+            new_row['payer_name'] = payer_info['payer_name']
+            new_row['plan_name'] = payer_info['plan_name']
+            
+            # Add payer-specific values
+            for standard_col, original_col in payer_info['columns'].items():
+                new_row[standard_col] = row.get(original_col, None)
+            
+            # Only add rows that have some meaningful data (not all null payer-specific values)
+            payer_specific_values = [new_row.get(col) for col in ['standard_charge_dollar', 'standard_charge_percentage', 'estimated_amount']]
+            if any(pd.notna(val) and val != '' for val in payer_specific_values):
+                transformed_rows.append(new_row)
+    
+    # Create new dataframe from transformed rows
+    if transformed_rows:
+        result_df = pd.DataFrame(transformed_rows)
+        return result_df
+    else:
+        return pd.DataFrame()
 
 # ==============================================================
 # DEPRECIATED
