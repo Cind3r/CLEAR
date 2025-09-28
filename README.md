@@ -24,10 +24,13 @@ Currently limited to 500 procedures due to file size limits and me not wanting t
 
 These are the hospital's which data has been gathered and processed for thus far:
 
+These are the hospital's which data has been gathered and processed for thus far:
+
 | State    | Hospital Name                     | Zipcode     | Date                 | File Size    | Link                                                            |
 |----------|--------------------------------|-------------|-------------------|-------------|------------------------------------------------|
 | NC        | Duke University Hospital     |     27710    |      09/2025      |   3.32 GB   |    [Link](https://www.dukehealth.org/paying-for-care/what-duke-charges-services) |
 | NC        | AdventHealth (Hendersonville)   |     28792   |   09/2025    |      1.48 GB           |                                                                 |
+| NC | UNC Rex Hospital | 27606 | 09/2025 | 121 MB | [Link](https://www.unchealth.org/records-insurance/standard-charges) |
 | SC        | MUSC Health-University Medical Center (Charleston) |   29425   | 09/2025 | 11.8 MB |  [Link](https://muschealth.org/patients-visitors/billing/price-transparency) |
 
 ## Data Processing
