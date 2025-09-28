@@ -1,398 +1,218 @@
 {
   "Ambulance – ALS1 Emergency Base Rate": {
-    "pattern": "(\\b(A0427)\\b|\\bALS1\\b.*emergency\\b|advanced\\s+life\\s+support)",
-    "notes": "ALS1 emergency base; grounded in A0427 and description."
-  },
-  "Ambulance – BLS Emergency Base Rate": {
-    "pattern": "(\\b(A0429)\\b|\\bBLS\\b.*emergency\\b)",
-    "notes": "BLS emergency base."
-  },
-  "Ambulance – BLS Non‑Emergency": {
-    "pattern": "(\\b(A0428)\\b|\\bBLS\\b.*non.?emerg)",
-    "notes": "BLS non‑emergency base."
-  },
-  "Ambulance – Ground Mileage": {
-    "pattern": "(\\b(A0425)\\b|ground\\s+mileage)",
-    "notes": "Per‑mile ground mileage."
+    "notes": "ALS1 emergency base rate.",
+    "pattern": "(?:\\bA0427\\b|ALS1|advanced\\s+life\\s+support|emergency\\s+base)"
   },
   "Ambulance – Air (Rotor) Mileage": {
-    "pattern": "(\\b(A0436)\\b|\\brotor\\b.*mileage|air\\s+ambulance|helicopter)",
-    "notes": "Rotor-wing air ambulance mileage."
+    "notes": "Rotor-wing air ambulance mileage.",
+    "pattern": "(?:\\bA0436\\b|air\\s+ambulance|helicopter|rotor\\s+mileage)"
   },
-  "Specimen Travel Allowance": {
-    "pattern": "(\\b(P9603)\\b|travel\\s+allowance|mile.*travel)",
-    "notes": "Specimen collection travel allowance."
+  "Ambulance – BLS Emergency Base Rate": {
+    "notes": "BLS emergency base rate.",
+    "pattern": "(?:\\bA0429\\b|BLS|emergency\\s+base)"
   },
-  "Venipuncture – Blood Draw": {
-    "pattern": "(\\b(36415)\\b|venous\\s+blood|venipuncture|draw\\s+charge)",
-    "notes": "Routine venipuncture."
+  "Ambulance – BLS Non-Emergency": {
+    "notes": "BLS non-emergency base rate.",
+    "pattern": "(?:\\bA0428\\b|BLS|non\\s+emergency)"
   },
-  "Drug Testing – Presumptive (Immunoassay)": {
-    "pattern": "(\\b(80307)\\b|drug.*screen|cannabinoid\\s+screen|immunoassay)",
-    "notes": "UDS presumptive screening."
+  "Ambulance – Ground Mileage": {
+    "notes": "Per-mile ground mileage add-on.",
+    "pattern": "(?:\\bA0425\\b|ambulance\\s+mileage|ground\\s+mileage)"
   },
-  "Drug Testing – Definitive (Mass Spec) 1–7 classes/day": {
-    "pattern": "(\\b(G0480)\\b|\\bdrug (id|identification)\\b.*1.*7.*classes)",
-    "notes": "Definitive confirmation (1–7 classes)."
+  "Any J-code Injectable (catch-all)": {
+    "notes": "Generic net for J-codes; prefer specific bundles for analysis.",
+    "pattern": "\\bJ\\d{4}\\b"
   },
-  "IV Contrast – CT (Iohexol/iodinated)": {
-    "pattern": "(\\b(Q9965|Q9966|Q9967)\\b|iohexol|iodin(?:e|ated)|omnipaque)",
-    "notes": "Iodinated contrast media."
+  "Antiemetics (Oncology supportive) – NK1 / 5-HT3": {
+    "notes": "Antiemetic injectables.",
+    "pattern": "(?:\\bJ0185\\b|\\bJ1453\\b|\\bJ2469\\b|aprepitant|fosaprepitant|palonosetron)"
   },
-  "IV Contrast – MRI (Gadolinium)": {
-    "pattern": "(\\b(A9575|A9585)\\b|gadobutrol|gadoterate|gadavist|dotarem|gadolinium|contrast.*MRI)",
-    "notes": "Gadolinium-based contrast media for MRI."
+  "Anti-TNF / Anti-Integrin / Anti-IL biologics (GI/Neuro/Allergy)": {
+    "notes": "Common biologics in data.",
+    "pattern": "(?:\\bJ1745\\b|\\bJ2323\\b|\\bJ2327\\b|\\bJ2350\\b|\\bJ2357\\b|\\bJ3262\\b|\\bJ3380\\b|infliximab|natalizumab|ocrelizumab|risankizumab|tocilizumab|vedolizumab)"
   },
-  "Comprehensive Metabolic Panel (CMP)": {
-    "pattern": "(\\b(80053)\\b|\\bCMP\\b|comprehensive\\s+metabolic\\s+panel)",
-    "notes": "Chemistry panel."
+  "Anti-VEGF – Aflibercept": {
+    "notes": "Intravitreal anti-VEGF.",
+    "pattern": "(?:\\bJ0178\\b|aflibercept|eylea)"
+  },
+  "Arthroscopic Rotator Cuff Repair": {
+    "notes": "Shoulder arthroscopy.",
+    "pattern": "(?:\\b29827\\b|arthroscop|rotator\\s+cuff\\s+repair)"
   },
   "Basic Metabolic Panel (BMP)": {
-    "pattern": "(\\b(80048)\\b|\\bBMP\\b|basic\\s+metabolic\\s+panel)",
-    "notes": "Chemistry panel."
+    "notes": "Chemistry panel.",
+    "pattern": "(?:\\b80048\\b|BMP|basic\\s+metabolic\\s+panel)"
   },
-  "Lipid Panel": {
-    "pattern": "(\\b(80061)\\b|lipid\\s+panel|cholesterol)",
-    "notes": "Cholesterol/lipid testing."
-  },
-  "Thyroid – TSH": {
-    "pattern": "(\\b(84443)\\b|\\bTSH\\b|thyroid\\s+stimulating\\s+hormone)",
-    "notes": "TSH."
-  },
-  "Thyroid – Free T4": {
-    "pattern": "(\\b(84439)\\b|\\bfree\\s*T4\\b)",
-    "notes": "Free thyroxine."
+  "Botulinum Toxins – Ona/INCO": {
+    "notes": "Botox/Xeomin.",
+    "pattern": "(?:\\bJ0585\\b|\\bJ0588\\b|botulinum\\s+toxin|incobotulinum|onabotulinum)"
   },
   "CBC with Differential": {
-    "pattern": "(\\b(85025)\\b|\\bCBC\\b.*diff|complete\\s+blood\\s+count.*diff)",
-    "notes": "CBC with auto diff."
-  },
-  "Hemoglobin A1c": {
-    "pattern": "(\\b(83036)\\b|\\bA1c\\b|hemoglobin\\s*A1c)",
-    "notes": "Glycohemoglobin."
-  },
-  "Magnesium": {
-    "pattern": "(\\b(83735)\\b|\\bmagnesium\\b)",
-    "notes": "Serum magnesium."
-  },
-  "Parathyroid Hormone (PTH)": {
-    "pattern": "(\\b(83970)\\b|\\bPTH\\b|parathyroid)",
-    "notes": "Intact PTH."
-  },
-  "PSA – Prostate Specific Antigen": {
-    "pattern": "(\\b(84153)\\b|\\bPSA\\b|prostate\\s+specific\\s+antigen)",
-    "notes": "PSA total."
-  },
-  "Serum Protein Electrophoresis (SPEP)": {
-    "pattern": "(\\b(84165)\\b|protein\\s+electrophoresis|SPEP)",
-    "notes": "Serum protein electrophoresis."
-  },
-  "Immunofixation Electrophoresis": {
-    "pattern": "(\\b(86334)\\b|immunofixation)",
-    "notes": "IFE."
-  },
-  "Immunoglobulins (IgG/IgA/IgM each)": {
-    "pattern": "(\\b(82784)\\b|immunoglobulin|Ig[AGMD])",
-    "notes": "Ig quantification."
-  },
-  "COVID‑19 PCR (NAAT)": {
-    "pattern": "(\\b(87635)\\b|COVID|SARS-?CoV-?2|coronavirus)",
-    "notes": "SARS-CoV-2 NAAT."
-  },
-  "SARS‑CoV‑2 + Influenza A/B PCR (Multiplex)": {
-    "pattern": "(\\b(87636)\\b|multiplex.*(SARS|COVID).*(influenza|flu)|SARS.*flu)",
-    "notes": "COVID+Flu multiplex PCR."
-  },
-  "Influenza A/B PCR": {
-    "pattern": "(\\b(87502)\\b|influenza.*PCR|flu.*PCR)",
-    "notes": "Flu PCR."
-  },
-  "Rapid Influenza Antigen": {
-    "pattern": "(\\b(87804)\\b|rapid\\s+flu|influenza.*antigen)",
-    "notes": "Rapid flu antigen."
-  },
-  "Respiratory Virus Panel (SARS‑CoV‑2/Flu/RSV)": {
-    "pattern": "(\\b(0241U)\\b|resp(iratory)?\\s+virus\\s+panel|RSV|SARS|flu)",
-    "notes": "Multiplex RVP PLA."
-  },
-  "DNA/NAAT – Unspecified Agent": {
-    "pattern": "(\\b(87798)\\b|DNA.*amplified|NAAT|PCR)",
-    "notes": "Unspecified agent by amplified probe."
-  },
-  "Microbiology NA Probe (each)": {
-    "pattern": "(\\b(87150)\\b|DNA\\s+amplified\\s+probe)",
-    "notes": "Amplified probe, each."
-  },
-  "Antibiotic Susceptibility MIC": {
-    "pattern": "(\\b(87186)\\b|susceptibility|MIC)",
-    "notes": "Antimicrobial susceptibility, MIC."
-  },
-  "Vancomycin‑Resistant Enterococcus (VRE) NAAT": {
-    "pattern": "(\\b(87500)\\b|\\bVRE\\b|enterococcus)",
-    "notes": "VRE NAAT."
-  },
-  "Pap/Non‑Gyn Cytology Enhanced Techniques": {
-    "pattern": "(\\b(88112)\\b|cytopath|pap|non-?gyn|cell.*enhance)",
-    "notes": "Cytology enhanced techniques."
-  },
-  "Flow Cytometry (Tech/Professional)": {
-    "pattern": "(\\b(88185|88189)\\b|flow\\s+cytometry)",
-    "notes": "Flow cytometry codes in file."
-  },
-  "Surgical Pathology Level IV": {
-    "pattern": "(\\b(88305)\\b|surgical\\s+pathology)",
-    "notes": "Pathology tissue exam level IV."
-  },
-  "Immunohistochemistry – First Antibody": {
-    "pattern": "(\\b(88342)\\b|immunohistochemistry|IHC)",
-    "notes": "IHC first antibody."
-  },
-  "Immunohistochemistry – Each Additional Antibody": {
-    "pattern": "(\\b(88341)\\b|immunohistochemistry|IHC)",
-    "notes": "IHC each additional antibody."
-  },
-  "Special Stains – Group II": {
-    "pattern": "(\\b(88313)\\b|special\\s+stains)",
-    "notes": "Special stains group II."
-  },
-  "In Situ Hybridization – Multiplex": {
-    "pattern": "(\\b(88377)\\b|in\\s*situ\\s*hyb|ISH|multiplex)",
-    "notes": "Morphometric analysis ISH."
-  },
-  "Immunocytochemistry – Multiplex": {
-    "pattern": "(\\b(88344)\\b|immunocytochem|multiplex)",
-    "notes": "Immunocytochemistry multiplex."
-  },
-  "Intraoperative Pathology Consult – Frozen Section": {
-    "pattern": "(\\b(88331)\\b|frozen\\s+section|intraoperative)",
-    "notes": "Frozen section pathology consult."
-  },
-  "Surgical Pathology – Prostate Needle Biopsy (any # specimens)": {
-    "pattern": "(\\b(G0416)\\b|prostate\\s+needle\\s+biopsy)",
-    "notes": "HCPCS G0416."
-  },
-  "Testosterone – Total (Assay)": {
-    "pattern": "(\\b(84403)\\b|testosterone)",
-    "notes": "Serum testosterone total."
-  },
-  "Testosterone – Injection (Cypionate)": {
-    "pattern": "(\\b(J1071)\\b|testosterone.*(cypionate|inj|injection))",
-    "notes": "Testosterone cypionate injection."
-  },
-  "Antiemetics – Fosaprepitant": {
-    "pattern": "(\\b(J1453)\\b|fosaprepitant)",
-    "notes": "NK1 antagonist."
-  },
-  "Antiemetics – Palonosetron": {
-    "pattern": "(\\b(J2469)\\b|palonosetron)",
-    "notes": "5‑HT3 antagonist."
-  },
-  "Steroid Injection – Methylprednisolone Acetate": {
-    "pattern": "(\\b(J1010)\\b|methylprednisolone\\s+acetate)",
-    "notes": "Depot methylpred acetate."
-  },
-  "Steroid Injection – Methylprednisolone Sodium Succinate": {
-    "pattern": "(\\b(J2919)\\b|methylprednisolone\\s+sodium\\s+succ)",
-    "notes": "IV methylpred."
-  },
-  "Steroid Injection – Dexamethasone": {
-    "pattern": "(\\b(J1100)\\b|dexamethasone)",
-    "notes": "Dexamethasone injection."
-  },
-  "Steroid Injection – Triamcinolone": {
-    "pattern": "(\\b(J3301)\\b|triamcinolone)",
-    "notes": "Triamcinolone injection."
-  },
-  "Local Anesthetic – Bupivacaine (non‑liposomal)": {
-    "pattern": "(\\b(J0665)\\b|bupiv(?:a|i)caine)",
-    "notes": "Bupivacaine injection."
-  },
-  "Local Anesthetic – Bupivacaine Liposomal (Exparel)": {
-    "pattern": "(\\b(C9290)\\b|liposom(?:e|al).*bupivacaine|exparel)",
-    "notes": "C9290 Exparel."
-  },
-  "Erythropoiesis‑Stimulating Agents – Epoetin Alfa": {
-    "pattern": "(\\b(J0885|Q5106)\\b|epoetin|retacrit|epbx)",
-    "notes": "Epoetin alfa incl. biosimilar (Q5106)."
-  },
-  "Erythropoiesis‑Stimulating Agents – Darbepoetin Alfa": {
-    "pattern": "(\\b(J0881)\\b|darbepoetin)",
-    "notes": "Darbepoetin alfa."
-  },
-  "G‑CSF – Filgrastim (and biosimilars)": {
-    "pattern": "(\\b(J1442|Q5101|Q5110|Q5125)\\b|filgrastim|zarxio|nivestym|udenyca|ayow|aafi)",
-    "notes": "Filgrastim and biosimilars."
-  },
-  "Alpha‑1 Proteinase Inhibitor": {
-    "pattern": "(\\b(J0256)\\b|alpha\\s*-?\\s*1\\s*proteinase)",
-    "notes": "Augmentation therapy."
-  },
-  "Immunosuppressants – Cyclosporine (oral)": {
-    "pattern": "(\\b(J7515)\\b|cyclosporine)",
-    "notes": "Transplant immunosuppression."
-  },
-  "Immunosuppressants – Mycophenolate Mofetil/Acid (oral)": {
-    "pattern": "(\\b(J7517|J7518)\\b|mycophenol(?:ate|ic))",
-    "notes": "Transplant immunosuppression."
-  },
-  "Immunosuppressants – Sirolimus (oral)": {
-    "pattern": "(\\b(J7520)\\b|sirolimus)",
-    "notes": "Transplant immunosuppression."
-  },
-  "Immunosuppressants – Everolimus (oral)": {
-    "pattern": "(\\b(J7527)\\b|everolimus)",
-    "notes": "Transplant immunosuppression."
-  },
-  "Systemic Steroid – Prednisone (oral pack)": {
-    "pattern": "(\\b(J7512)\\b|prednisone)",
-    "notes": "Oral prednisone pack in file."
-  },
-  "Anti‑VEGF – Aflibercept (Eylea)": {
-    "pattern": "(\\b(J0178)\\b|aflibercept|eylea)",
-    "notes": "Intravitreal anti‑VEGF."
-  },
-  "Botulinum Toxin – OnabotulinumtoxinA": {
-    "pattern": "(\\b(J0585)\\b|onabotulinum|botulinum\\s*toxin)",
-    "notes": "Botox."
-  },
-  "Botulinum Toxin – IncobotulinumtoxinA": {
-    "pattern": "(\\b(J0588)\\b|incobotulinum)",
-    "notes": "Xeomin."
+    "notes": "CBC with automated diff.",
+    "pattern": "(?:\\b85025\\b|CBC|complete\\s+blood\\s+count|diff)"
   },
   "Cardiac Stress Agent – Regadenoson": {
-    "pattern": "(\\b(J2785)\\b|regadenoson)",
-    "notes": "Pharmacologic stress agent."
+    "notes": "Pharmacologic stress test agent.",
+    "pattern": "(?:\\bJ2785\\b|regadenoson)"
   },
-  "Unlisted Molecular Pathology/Gene Analysis": {
-    "pattern": "(\\b(81479)\\b|gene\\s+analysis|unlisted\\s+procedure)",
-    "notes": "Generic molecular pathology."
+  "Comprehensive Metabolic Panel (CMP)": {
+    "notes": "Chemistry panel.",
+    "pattern": "(?:\\b80053\\b|CMP|comprehensive\\s+metabolic\\s+panel)"
   },
-  "Comprehensive Genomic Profiling (FoundationOne CDx)": {
-    "pattern": "(\\b(0037U)\\b|found(ation)?\\s*one|targeted\\s+genomic\\s+seq|F1CDX|324\\s+genes)",
-    "notes": "PLA test 0037U."
+  "COVID-19 + Influenza ± RSV PCR (Multiplex)": {
+    "notes": "Respiratory multiplex NAAT.",
+    "pattern": "(?:\\b87636\\b|\\b87637\\b|COVID|RSV|SARS|flu|influenza|multiplex)"
   },
-  "Any J‑code Injectable (catch‑all)": {
-    "pattern": "(\\bJ\\d{4}\\b)",
-    "notes": "Generic catch‑all for J‑codes."
+  "Cytopathology – In Situ Hybridization (FISH)": {
+    "notes": "ISH/FISH cytopathology.",
+    "pattern": "(?:\\b88120\\b|FISH\\s+cytopathology|in\\s+situ\\s+hybridization)"
   },
-  "Autoantibody – Sjögren SSA (anti‑SS‑A)": {
-    "pattern": "(\\b(86235)\\b|SJOGREN|SS-?A|nuclear\\s+antigen\\s+antibody)",
-    "notes": "SSA autoantibody."
+  "Dialysis Circuit Angioplasty (Therapeutic)": {
+    "notes": "Dialysis access angioplasty.",
+    "pattern": "(?:\\b36902\\b|angioplasty|balloon|dialysis\\s+circuit)"
   },
-  "Iron – Serum Iron": {
-    "pattern": "(\\b(83540)\\b|\\biron\\b)",
-    "notes": "Serum iron."
+  "Drug Testing – Presumptive (Immunoassay)": {
+    "notes": "UDS presumptive immunoassay.",
+    "pattern": "(?:\\b80307\\b|cotinine|drug\\s+screen|fentanyl|immunoassay|panel|toxicology|urine\\s+drug\\s+screen)"
   },
-  "Iron – TIBC": {
-    "pattern": "(\\b(83550)\\b|TIBC|total\\s+iron\\s+binding)",
-    "notes": "Total iron binding capacity."
+  "Endovenous RF Ablation – First Vein": {
+    "notes": "RF ablation first vein.",
+    "pattern": "(?:\\b36475\\b|endovenous|radiofrequency|vein)"
+  },
+  "Erythropoiesis-Stimulating Agents – Darbepoetin Alfa": {
+    "notes": "ESA darbepoetin.",
+    "pattern": "(?:\\bJ0881\\b|darbepoetin)"
+  },
+  "Erythropoiesis-Stimulating Agents – Epoetin Alfa (incl. biosimilar)": {
+    "notes": "ESA epoetin incl. biosimilar.",
+    "pattern": "(?:\\bJ0885\\b|\\bQ5106\\b|epbx|epoetin|retacrit)"
   },
   "Ferritin": {
-    "pattern": "(\\b(82728)\\b|\\bferritin\\b)",
-    "notes": "Ferritin."
-  },
-  "Vitamin D 25‑OH": {
-    "pattern": "(\\b(82306)\\b|vitamin\\s*D\\s*25)",
-    "notes": "25-hydroxy vitamin D."
-  },
-  "Free T3": {
-    "pattern": "(\\b(84481)\\b|\\bT3\\b.*free|free\\s*T3)",
-    "notes": "Free triiodothyronine."
-  },
-  "Cardiac – NT‑proBNP": {
-    "pattern": "(\\b(83880)\\b|NT-?proBNP|pro\\s*brain\\s*natriuretic)",
-    "notes": "Cardiac peptide."
-  },
-  "Strep A DNA (NAAT)": {
-    "pattern": "(\\b(87651)\\b|strep(ococcus)?\\s*A.*(DNA|NAAT|PCR)|rapid\\s*strep\\s*DNA)",
-    "notes": "Strep A DNA probe."
-  },
-  "Staph aureus DNA (NAAT)": {
-    "pattern": "(\\b(87640)\\b|staph(ylococcus)?\\s*A.*(DNA|NAAT|PCR))",
-    "notes": "Staph A DNA probe."
-  },
-  "Multiplex NAAT – Multiple organisms": {
-    "pattern": "(\\b(87801)\\b|multiple\\s+organisms.*DNA|multiplex.*DNA|NAAT)",
-    "notes": "Multiplex NAAT 87801."
-  },
-  "Candida DNA (PCR)": {
-    "pattern": "(\\b(87481)\\b|\\bcandida\\b.*(DNA|PCR))",
-    "notes": "Candida PCR/DNA."
-  },
-  "IV Iron – Ferumoxytol": {
-    "pattern": "(\\b(Q0138)\\b|ferumoxytol|feraheme)",
-    "notes": "IV iron therapy."
-  },
-  "Gene Sequence Panel": {
-    "pattern": "(\\b(81455)\\b|gene\\s+sequence\\s+panel|hereditary|cancer\\s+panel)",
-    "notes": "Molecular gene panel."
-  },
-  "IHC – Estrogen Receptor (ER)": {
-    "pattern": "(\\b(88360)\\b|estrogen\\s+receptor|ER\\s*IHC)",
-    "notes": "ER IHC semi‑quant."
-  },
-  "Orthopedics – Arthroscopic Rotator Cuff Repair": {
-    "pattern": "(\\b(29827)\\b|rotator\\s+cuff.*(repair|arthroscop))",
-    "notes": "Shoulder arthroscopy."
-  },
-  "ENT – Nasal Endoscopy Diagnostic": {
-    "pattern": "(\\b(31231)\\b|nasal\\s+endoscopy.*diagnostic)",
-    "notes": "Diagnostic nasal endoscopy."
-  },
-  "Cardiac – Insertable Loop Recorder (ILR) insertion": {
-    "pattern": "(\\b(33285)\\b|(insert(ion)?|place).*loop\\s+recorder|ILR)",
-    "notes": "Subq rhythm monitor insertion."
-  },
-  "Vascular – Endovenous RF Ablation (1st vein)": {
-    "pattern": "(\\b(36475)\\b|endovenous.*radiofrequency|RF.*ablation.*vein)",
-    "notes": "Endovenous RF ablation first vein."
-  },
-  "Vascular – Sclerotherapy (non‑compounded)": {
-    "pattern": "(\\b(36465)\\b|sclerosant|sclerotherapy)",
-    "notes": "Non‑compounded sclerosant with ultrasound single vein."
-  },
-  "Urine Creatinine (random)": {
-    "pattern": "(\\b(82570)\\b|urine.*creatinine|random\\s+urine\\s+creatinine)",
-    "notes": "Random urine creatinine."
-  },
-  "Vitamin B12": {
-    "pattern": "(\\b(82607)\\b|vitamin\\s*B\\s*12|cobalamin)",
-    "notes": "Vitamin B12 level."
+    "notes": "Ferritin level.",
+    "pattern": "(?:\\b82728\\b|ferritin)"
   },
   "Folate": {
-    "pattern": "(\\b(82746)\\b|\\bfolate\\b|folic\\s+acid)",
-    "notes": "Folate level."
+    "notes": "Folate level.",
+    "pattern": "(?:\\b82746\\b|folate|folic\\s+acid)"
+  },
+  "G-CSF – Filgrastim & biosimilars": {
+    "notes": "Filgrastim and biosimilars.",
+    "pattern": "(?:\\bJ1442\\b|\\bQ5101\\b|\\bQ5110\\b|\\bQ5125\\b|aafi|ayow|filgrastim|nivestym|zarxio)"
+  },
+  "Hemoglobin A1c": {
+    "notes": "Diabetes control (A1c).",
+    "pattern": "(?:\\b83036\\b|A1c|glycated\\s+hemoglobin|glycosylated\\s+hemoglobin)"
+  },
+  "Immunization Administration – Influenza": {
+    "notes": "Influenza vaccine administration.",
+    "pattern": "(?:\\bG0008\\b|flu\\s+shot\\s+admin|influenza\\s+vaccine\\s+administration)"
+  },
+  "Immunoglobulins (IgG/IgA/IgM each)": {
+    "notes": "Quantitative immunoglobulins.",
+    "pattern": "(?:\\b82784\\b|IgA|IgG|IgM|immunoglobulin)"
+  },
+  "Immunohistochemistry – Each Additional Antibody": {
+    "notes": "IHC additional antibody.",
+    "pattern": "(?:\\b88341\\b|IHC|immunohistochemistry)"
+  },
+  "Immunohistochemistry – First Antibody": {
+    "notes": "IHC first antibody.",
+    "pattern": "(?:\\b88342\\b|IHC|immunohistochemistry)"
+  },
+  "Insertable Loop Recorder – Insertion": {
+    "notes": "Subq rhythm monitor insertion.",
+    "pattern": "(?:\\b33285\\b|ILR|insertable\\s+cardiac\\s+monitor|loop\\s+recorder)"
+  },
+  "IV Iron – Iron Sucrose / Ferric Carboxymaltose / Ferumoxytol / Derisomaltose": {
+    "notes": "IV iron therapies.",
+    "pattern": "(?:\\bJ1437\\b|\\bJ1439\\b|\\bJ1756\\b|\\bQ0138\\b|dera?isomaltose|fer?umoxytol|ferric\\s+carboxymaltose|feraheme|iron\\s+sucrose)"
+  },
+  "IVIG / SCIG Immunoglobulin Products": {
+    "notes": "Immunoglobulin replacement.",
+    "pattern": "(?:\\bJ1559\\b|\\bJ1561\\b|\\bJ1568\\b|\\bJ1569\\b|\\bJ1575\\b|gammagard|gammaked|gamunex|hizentra|hyqvia|octagam)"
+  },
+  "Lipid Panel": {
+    "notes": "Lipid profile.",
+    "pattern": "(?:\\b80061\\b|cardio\\s+iq|cholesterol|electrophoresis|lipid\\s+panel|lipid\\s+profile)"
+  },
+  "Local Anesthetic – Bupivacaine (std & liposomal)": {
+    "notes": "Local anesthetic injections.",
+    "pattern": "(?:\\bC9290\\b|\\bJ0665\\b|bupivacaine|exparel|liposomal)"
+  },
+  "Monoclonal Antibodies – Oncology checkpoint/targeted": {
+    "notes": "Oncology mAbs present.",
+    "pattern": "(?:\\bJ9271\\b|\\bJ9299\\b|\\bJ9306\\b|\\bJ9312\\b|nivolumab|pembrolizumab|pertuzumab|rituximab)"
+  },
+  "Nasal Endoscopy – Diagnostic": {
+    "notes": "ENT nasal endoscopy.",
+    "pattern": "(?:\\b31231\\b|diagnostic|nasal\\s+endoscopy)"
+  },
+  "Physical Therapy – Electrical Stimulation (Unattended)": {
+    "notes": "PT modality: unattended e-stim.",
+    "pattern": "(?:\\bG0283\\b|electrical\\s+stimulation|unattended)"
+  },
+  "Respiratory Nebulizer Meds (SABA/LABA/Anticholinergic/ICS)": {
+    "notes": "Nebulized respiratory meds.",
+    "pattern": "(?:\\bJ7605\\b|\\bJ7606\\b|\\bJ7613\\b|\\bJ7614\\b|\\bJ7620\\b|\\bJ7626\\b|\\bJ7644\\b|albuterol|arformoterol|budesonide|combination|formoterol|ipratropium|levalbuterol)"
+  },
+  "Sclerotherapy (non-compounded) – 1 vein": {
+    "notes": "Non-compounded sclerosant, single vein.",
+    "pattern": "(?:\\b36465\\b|sclerotherapy|sclerosant)"
+  },
+  "Serum Iron": {
+    "notes": "Serum iron.",
+    "pattern": "(?:\\b83540\\b|iron\\s+level)"
+  },
+  "Special Stains – Group I": {
+    "notes": "Special stains group I.",
+    "pattern": "(?:\\b88312\\b|cryptosporidium|special\\s+stains)"
+  },
+  "Specimen Travel Allowance": {
+    "notes": "Specimen collection travel allowance.",
+    "pattern": "(?:\\bP9603\\b|mile\\s+travel|travel\\s+allowance)"
+  },
+  "Steroid Injections – Dex / Methylpred (Acetate & Succinate) / Betamethasone / Triamcinolone": {
+    "notes": "Common injectable steroids.",
+    "pattern": "(?:\\bJ0702\\b|\\bJ1010\\b|\\bJ1100\\b|\\bJ2919\\b|\\bJ3301\\b|\\bJ3304\\b|betamethasone|dexamethasone|methylprednisolone|triamcinolone)"
+  },
+  "Surgical Pathology Level IV": {
+    "notes": "Pathology tissue exam.",
+    "pattern": "(?:\\b88305\\b|surgical\\s+pathology)"
+  },
+  "Surgical Pathology Level V": {
+    "notes": "Pathology tissue exam Level V.",
+    "pattern": "(?:\\b88307\\b|surgical\\s+pathology\\s+level\\s+v)"
+  },
+  "Surgical Pathology Level VI": {
+    "notes": "Pathology tissue exam Level VI.",
+    "pattern": "(?:\\b88309\\b|surgical\\s+pathology\\s+level\\s+vi)"
+  },
+  "Testosterone – Cypionate/Undecanoate (Injection)": {
+    "notes": "Androgen injections.",
+    "pattern": "(?:\\bJ1071\\b|\\bJ3145\\b|cypionate|testosterone|undecanoate)"
+  },
+  "TIBC (Total Iron Binding Capacity)": {
+    "notes": "TIBC.",
+    "pattern": "(?:\\b83550\\b|tibc|total\\s+iron\\s+binding)"
   },
   "Urine Albumin (Microalbumin)": {
-    "pattern": "(\\b(82043)\\b|microalbumin|urine\\s+albumin)",
-    "notes": "Urine albumin quantitative."
+    "notes": "Urine microalbumin.",
+    "pattern": "(?:\\b82043\\b|albumin/creatinine\\s+ratio|microalbumin)"
   },
-  "CBC without Differential": {
-    "pattern": "(\\b(85027)\\b|\\bCBC\\b(?!.*diff)|complete\\s+blood\\s+count(?!.*diff))",
-    "notes": "CBC w/o diff."
+  "Urine Creatinine": {
+    "notes": "Random/24-hr urine creatinine.",
+    "pattern": "(?:\\b82570\\b|creatinine\\s+urine|urine\\s+creatinine)"
   },
-  "Urine Culture, Quantitative": {
-    "pattern": "(\\b(87086)\\b|urine\\s+culture|quantitative\\s+culture)",
-    "notes": "Urine culture."
+  "Venipuncture – Blood Draw": {
+    "notes": "Routine blood draw.",
+    "pattern": "(?:\\b36415\\b|draw\\s+charge|venipuncture|venous\\s+blood)"
   },
-  "Molecular – Genetic Testing Panel": {
-    "pattern": "(\\b(81443)\\b|genetic\\s+testing\\s+panel|multigene\\s+panel)",
-    "notes": "Molecular genetics panel."
+  "Vitamin B12": {
+    "notes": "B12 level.",
+    "pattern": "(?:\\b82607\\b|cobalamin|vitamin\\s+b12)"
   },
-  "Molecular – Exome/Genome Sequencing": {
-    "pattern": "(\\b(81456)\\b|exome|whole\\s+exome|genome\\s+sequencing)",
-    "notes": "Exome/genome sequencing."
-  },
-  "Cytology – Fine Needle Aspiration (FNA) evaluation": {
-    "pattern": "(\\b(88173)\\b|fine\\s+needle\\s+aspiration|FNA)",
-    "notes": "FNA cytology evaluation."
-  },
-  "Dialysis Access – Angioplasty (Therapeutic) Initial Segment": {
-    "pattern": "(\\b(36902)\\b|dialysis\\s+circuit|angiop(?:l|)asty|balloon\\s+angioplasty)",
-    "notes": "Dialysis circuit angioplasty (36902)."
-  },
-  "Auto – Needs Review": {
-    "pattern": "(?:\\bG0008\\b|\\b88309\\b|\\b731\\.0\\b)",
-    "notes": "Codes auto-collected for later review."
+  "Vitamin D 25-OH": {
+    "notes": "25-hydroxy vitamin D.",
+    "pattern": "(?:\\b82306\\b|vitamin\\s+d\\s+25)"
   }
 }
