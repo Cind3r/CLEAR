@@ -330,7 +330,7 @@
   const DATA_ZIPS = "data/zip_centroids.csv";
   const DATA_HOSPS = "data/hospitals.csv";
   const DATA_SERVICE = "data/service_config.json";
-  const DATA_CMS = "data/cms_anchor_2024.csv";
+  const DATA_CMS = "data/medicare_pricing_matched.csv";
   const jsonUrl = (relPath) => relPath.startsWith('docs/') ? relPath.substring(5) : relPath;
 
   // --------- ELEMENTS ----------
@@ -454,9 +454,9 @@
 
   try {
     const cmsRows = await d3.csv(DATA_CMS, d3.autoType);
-    cmsRows.forEach(r => cmsRate.set(String(r.code), +r.medicare_rate_2024 || 0));
+    cmsRows.forEach(r => cmsRate.set(String(r.code), +r.price || 0));
   } catch (e) {
-    console.warn("cms_anchor_2024.csv failed:", e);
+    console.warn("medicare_pricing_matched.csv failed:", e);
   }
 
   // 4) JSON Loading Cache
