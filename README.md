@@ -32,6 +32,7 @@ These are the hospital's which data has been gathered and processed for thus far
 | NC        | AdventHealth (Hendersonville)   |     28792   |   09/2025    |      1.48 GB           |                                                                 |
 | NC | UNC Rex Hospital | 27606 | 09/2025 | 121 MB | [Link](https://www.unchealth.org/records-insurance/standard-charges) |
 | SC        | MUSC Health-University Medical Center (Charleston) |   29425   | 09/2025 | 11.8 MB |  [Link](https://muschealth.org/patients-visitors/billing/price-transparency) |
+| VA | Inovia Fairfax Hospital (Falls Church) | 22042 | 09/2025 | 11.3 MB | [Link](https://www.inova.org/patient-and-visitor-information/hospital-charges) |
 
 ## Data Processing
 
