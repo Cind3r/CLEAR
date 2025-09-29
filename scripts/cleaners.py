@@ -161,10 +161,13 @@ def transform_wide_to_long_format(df):
     
     # Find all payer-specific column groups using regex
     payer_pattern = re.compile(r'(standard_charge|estimated_amount|additional_payer_notes)\|([^|]+)\|([^|]+)\|(.+)')
+    estimated_amount_pattern = re.compile(r'estimated_amount\|([^|]+)\|([^|]+)$')
     
     payer_columns = {}
     for col in df.columns:
         match = payer_pattern.match(col)
+        estimated_match = estimated_amount_pattern.match(col)
+        
         if match:
             metric_type, payer, plan, field = match.groups()
             payer_plan_key = f"{payer}|{plan}"
@@ -185,10 +188,22 @@ def transform_wide_to_long_format(df):
                 payer_columns[payer_plan_key]['columns']['standard_charge_algorithm'] = col
             elif field == 'methodology':
                 payer_columns[payer_plan_key]['columns']['methodology'] = col
-            elif metric_type == 'estimated_amount':
-                payer_columns[payer_plan_key]['columns']['estimated_amount'] = col
             elif metric_type == 'additional_payer_notes':
                 payer_columns[payer_plan_key]['columns']['additional_payer_notes'] = col
+                
+        elif estimated_match:
+            # Handle estimated_amount columns that don't have a field suffix
+            payer, plan = estimated_match.groups()
+            payer_plan_key = f"{payer}|{plan}"
+            
+            if payer_plan_key not in payer_columns:
+                payer_columns[payer_plan_key] = {
+                    'payer_name': payer,
+                    'plan_name': plan,
+                    'columns': {}
+                }
+            
+            payer_columns[payer_plan_key]['columns']['estimated_amount'] = col
     
     # Create list to store transformed rows
     transformed_rows = []
