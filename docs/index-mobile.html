@@ -921,6 +921,35 @@
   function renderHospitals(hlist, hitsById){
     $list.innerHTML = "";
     $listTitle.textContent = `Hospitals (${hlist.length})`;
+    
+    // Sort hospitals by distance if ZIP code is available
+    const enteredZip = $zip.value.trim();
+    let sortedHospitals = [...hlist]; // Create a copy to avoid mutating original array
+    
+    if (enteredZip && ZIP.has(enteredZip)) {
+      const zipCoords = ZIP.get(enteredZip);
+      if (zipCoords && zipCoords.length === 2) {
+        const [zipLat, zipLon] = zipCoords;
+        if (isFinite(zipLat) && isFinite(zipLon)) {
+          sortedHospitals.sort((a, b) => {
+            // Calculate distance for hospital a
+            let distanceA = Infinity;
+            if (isFinite(a.lat) && isFinite(a.lon)) {
+              distanceA = gcMiles([zipLon, zipLat], [a.lon, a.lat]);
+            }
+            
+            // Calculate distance for hospital b
+            let distanceB = Infinity;
+            if (isFinite(b.lat) && isFinite(b.lon)) {
+              distanceB = gcMiles([zipLon, zipLat], [b.lon, b.lat]);
+            }
+            
+            return distanceA - distanceB; // Sort closest first
+          });
+        }
+      }
+    }
+    
     const pts = hospLayer.selectAll("circle.marker-hosp").data(hlist, d=>d.id);
     pts.join(
       en => en.append("circle").attr("class","marker-hosp").attr("r",3.5)
@@ -930,10 +959,24 @@
               .attr("cy", d => projection(d.ll)?.[1] ?? -9999),
       ex => ex.remove()
     );
-    for(const h of hlist){
+    for(const h of sortedHospitals){
       const div = document.createElement("div"); div.className = "card";
       const hits = hitsById.get(h.id) || [];
       const hospitalId = `hospital-${h.id}`;
+      
+      // Calculate distance from entered ZIP code if available
+      let distanceText = "";
+      const enteredZip = $zip.value.trim();
+      if (enteredZip && ZIP.has(enteredZip) && isFinite(h.lat) && isFinite(h.lon)) {
+        const zipCoords = ZIP.get(enteredZip);
+        if (zipCoords && zipCoords.length === 2) {
+          const [zipLat, zipLon] = zipCoords;
+          if (isFinite(zipLat) && isFinite(zipLon)) {
+            const distance = gcMiles([zipLon, zipLat], [h.lon, h.lat]);
+            distanceText = `${distance.toFixed(0)} mi`;
+          }
+        }
+      }
       
       div.innerHTML = `
         <div class="hospital-header" onclick="toggleHospitalPrices('${hospitalId}')">
@@ -941,10 +984,11 @@
             <div>
               <strong>${h.name}</strong> 
               <span class="badge">${h.state ?? ""}</span>
+              <span class="badge">${distanceText}</span>
             </div>
             <div class="toggle-indicator clickable" id="toggle-${hospitalId}">▶</div>
           </div>
-          <div class="small">${h.zip ?? ""} · ${h.lat?.toFixed?.(4) ?? ""}, ${h.lon?.toFixed?.(4) ?? ""}</div>
+          <div class="small">${h.address ?? ""}, ${h.city ?? ""}, ${h.zip ?? ""}</div>
           ${hits.length ? `<div style="margin-top:.5rem"><strong>${hits.length}</strong> match${hits.length>1?"es":""} found - tap to view</div>` : `<div class="small" style="margin-top:.5rem">No matches in price data</div>`}
         </div>
         ${hits.length ? `
@@ -975,6 +1019,88 @@
           svg.transition().duration(600)
             .call(zoom.transform, d3.zoomIdentity.translate(WIDTH/2 - p[0]*6, HEIGHT/2 - p[1]*6).scale(6));
         };
+      }
+
+      // Add long-press functionality to copy address on hospital header
+      const hospitalHeader = div.querySelector('.hospital-header');
+      if (hospitalHeader) {
+        let longPressTimer;
+        let isLongPress = false;
+
+        hospitalHeader.addEventListener('touchstart', (e) => {
+          isLongPress = false;
+          longPressTimer = setTimeout(() => {
+            isLongPress = true;
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Construct full address
+            const addressParts = [];
+            if (h.address) addressParts.push(h.address);
+            if (h.city) addressParts.push(h.city);
+            if (h.state) addressParts.push(h.state);
+            if (h.zip) addressParts.push(h.zip);
+            const fullAddress = addressParts.join(', ');
+            
+            // Copy to clipboard
+            if (navigator.clipboard && window.isSecureContext) {
+              navigator.clipboard.writeText(fullAddress).then(() => {
+                // Show confirmation
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                  position: fixed;
+                  top: 50%;
+                  left: 50%;
+                  transform: translate(-50%, -50%);
+                  background: #059669;
+                  color: white;
+                  padding: 1rem 2rem;
+                  border-radius: 0.5rem;
+                  z-index: 10000;
+                  font-weight: 500;
+                  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                `;
+                toast.textContent = 'Address copied to clipboard!';
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                  if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                  }
+                }, 2000);
+              }).catch(() => {
+                // Fallback: show address in alert
+                alert(`Address: ${fullAddress}`);
+              });
+            } else {
+              // Fallback for older browsers or non-secure contexts
+              alert(`Address: ${fullAddress}\n\n(Long-press to select and copy)`);
+            }
+            
+            // Add visual feedback
+            hospitalHeader.style.backgroundColor = 'rgba(5, 150, 105, 0.2)';
+            setTimeout(() => {
+              hospitalHeader.style.backgroundColor = '';
+            }, 200);
+            
+          }, 800); // 800ms for long press
+        });
+
+        hospitalHeader.addEventListener('touchend', (e) => {
+          clearTimeout(longPressTimer);
+          if (isLongPress) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        });
+
+        hospitalHeader.addEventListener('touchcancel', () => {
+          clearTimeout(longPressTimer);
+        });
+
+        hospitalHeader.addEventListener('touchmove', () => {
+          clearTimeout(longPressTimer);
+        });
       }
       
       $list.appendChild(div);
