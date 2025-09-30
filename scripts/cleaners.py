@@ -140,35 +140,57 @@ def apply_payer_standardization_to_json(json_file_path):
     
     return df
 
-def transform_wide_to_long_format(df):
+def transform_wide_to_long_format(df, verbose=False):
     """
     Transform UNC Rex wide format (one row per code with payer columns) 
     to long format (multiple rows per code, one per payer/plan)
+    
+    Args:
+        df: Input DataFrame in wide format
+        verbose: If True, prints detailed transformation statistics
     """
     import re
     
+    # Print original shape
+    original_rows, original_cols = df.shape
+    if verbose:
+        print(f"Original DataFrame shape: {original_rows} rows × {original_cols} columns")
+    
     # First, let's identify the base columns we want to keep
     base_columns = [
-        'description', 'code|1', 'code|1|type', 'code|2', 'code|2|type', 
-        'code|3', 'code|3|type', 'billing_class', 'setting',
+        'description', 
+        'code|1', 
+        'code|1|type', 
+        'code|2', 
+        'code|2|type', 
+        'code|3', 
+        'code|3|type',
+        'code|4',
+        'code|4|type',
+        'billing_class', 'setting',
         'drug_unit_of_measurement', 'drug_type_of_measurement', 'modifiers',
         'standard_charge|gross', 'standard_charge|discounted_cash', 
-        'standard_charge|min', 'standard_charge|max', 'additional_generic_notes'
+        'standard_charge|min', 'standard_charge|max', 'estimated_amount', 'additional_generic_notes'
     ]
     
     # Keep only base columns that actually exist in the dataframe
     available_base_columns = [col for col in base_columns if col in df.columns]
+    if verbose:
+        print(f"Available base columns: {len(available_base_columns)} out of {len(base_columns)} possible")
     
     # Find all payer-specific column groups using regex
     payer_pattern = re.compile(r'(standard_charge|estimated_amount|additional_payer_notes)\|([^|]+)\|([^|]+)\|(.+)')
     estimated_amount_pattern = re.compile(r'estimated_amount\|([^|]+)\|([^|]+)$')
     
     payer_columns = {}
+    payer_specific_cols = []
+    
     for col in df.columns:
         match = payer_pattern.match(col)
         estimated_match = estimated_amount_pattern.match(col)
         
         if match:
+            payer_specific_cols.append(col)
             metric_type, payer, plan, field = match.groups()
             payer_plan_key = f"{payer}|{plan}"
             
@@ -192,6 +214,7 @@ def transform_wide_to_long_format(df):
                 payer_columns[payer_plan_key]['columns']['additional_payer_notes'] = col
                 
         elif estimated_match:
+            payer_specific_cols.append(col)
             # Handle estimated_amount columns that don't have a field suffix
             payer, plan = estimated_match.groups()
             payer_plan_key = f"{payer}|{plan}"
@@ -204,6 +227,24 @@ def transform_wide_to_long_format(df):
                 }
             
             payer_columns[payer_plan_key]['columns']['estimated_amount'] = col
+    
+    if verbose:
+        print(f"Found {len(payer_specific_cols)} payer-specific columns")
+        print(f"Found {len(payer_columns)} unique payer/plan combinations")
+    
+    # Calculate columns that will be dropped
+    standard_charge_cols = [col for col in df.columns if col.startswith('standard_charge|') and col in ['standard_charge|gross', 'standard_charge|discounted_cash', 'standard_charge|min', 'standard_charge|max']]
+    kept_cols = len(available_base_columns) + len(standard_charge_cols) + 2  # +2 for payer_name and plan_name
+    # Add columns that will be created from payer-specific data
+    potential_payer_cols = set()
+    for payer_info in payer_columns.values():
+        potential_payer_cols.update(payer_info['columns'].keys())
+    kept_cols += len(potential_payer_cols)
+    
+    columns_dropped = original_cols - kept_cols
+    if verbose:
+        print(f"Columns being dropped: {columns_dropped}")
+        print(f"Expected columns in result: {kept_cols}")
     
     # Create list to store transformed rows
     transformed_rows = []
@@ -242,8 +283,26 @@ def transform_wide_to_long_format(df):
     # Create new dataframe from transformed rows
     if transformed_rows:
         result_df = pd.DataFrame(transformed_rows)
+        final_rows, final_cols = result_df.shape
+        if verbose:
+            print(f"Final DataFrame shape: {final_rows} rows × {final_cols} columns")
+            
+            # Calculate transformation metrics
+            row_multiplication_factor = final_rows / original_rows if original_rows > 0 else 0
+            print(f"Row multiplication factor: {row_multiplication_factor:.2f}x (from {original_rows} to {final_rows})")
+            print(f"Actual columns dropped: {original_cols - final_cols}")
+            
+            # Mathematical validation
+            total_data_points_original = original_rows * original_cols
+            total_data_points_final = final_rows * final_cols
+            data_efficiency = total_data_points_final / total_data_points_original if total_data_points_original > 0 else 0
+            print(f"Data efficiency: {data_efficiency:.2f} (final data points / original data points)")
+            print(f"Original total data points: {total_data_points_original:,}")
+            print(f"Final total data points: {total_data_points_final:,}")
+        
         return result_df
     else:
+        print("No transformed rows created - returning empty DataFrame")
         return pd.DataFrame()
 
 # ==============================================================
