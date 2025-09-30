@@ -70,6 +70,28 @@ def get_matches(df, verbose=False, cols_to_drop=None):
     code_columns = [col for col in df.columns if 'code' in col.lower() and 'type' not in col.lower()]
     if verbose:
         print(f"Identified code columns: {code_columns}")
+        # check to make sure code columns are in the form 'code_#'
+        for col in code_columns:
+            if not re.match(r'code_\d+$', col):
+                print(f"Warning: Column '{col}' does not match expected format 'code_#'.")
+                
+                # Change '|' to '_' in column name if present
+                if '|' in col:
+                    new_col = col.replace('|', '_')
+                    df = df.rename(columns={col: new_col})
+                    print(f"Renamed column '{col}' to '{new_col}'.")
+                    
+                    # Also rename corresponding type column
+                    type_col = f"{col}|type"
+                    new_type_col = f"{new_col}_type"
+                    
+                    df[new_type_col] = df[type_col]
+                    df = df.drop(columns=[type_col])
+                    print(f"Renamed column '{type_col}' to '{new_type_col}'.")
+
+                    # Update code_columns list
+                    code_columns[code_columns.index(col)] = new_col
+
     if not code_columns:
         print("No code columns found in the DataFrame.")
         return pd.DataFrame()  # Return empty DataFrame if no code columns found
