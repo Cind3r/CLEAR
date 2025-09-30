@@ -33,7 +33,7 @@
   /* Map section */
   .map-container{position:relative;height:50vh;min-height:300px;margin-bottom:1rem;border:1px solid #1f2937;border-radius:.5rem;overflow:hidden}
   svg{display:block;width:100%;height:100%}
-  .reset-zoom-btn{position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);background:#1f2937;color:var(--ink);border:1px solid #374151;border-radius:.5rem;padding:.5rem 1rem;cursor:pointer;font-size:12px;z-index:5;transition:all 0.2s ease;min-height:36px}
+  .reset-zoom-btn{position:absolute;bottom:1rem;right:1rem;background:#1f2937;color:var(--ink);border:1px solid #374151;border-radius:.5rem;padding:.4rem .75rem;cursor:pointer;font-size:11px;z-index:5;transition:all 0.2s ease;min-height:32px;width:auto}
   .reset-zoom-btn:active{background:#374151;border-color:#4b5563}
   
   /* Results section */
@@ -137,6 +137,16 @@
   <header>
     <div class="header-section">
       <label>
+        <span>Configuration Type:</span>
+        <select id="config-type">
+          <option value="service" selected>Service</option>
+          <option value="revenue-code">Revenue Code</option>
+        </select>
+      </label>
+    </div>
+    
+    <div class="header-section">
+      <label id="service-label">
         <span>Service Group:</span>
         <select id="service">
           <option value="">(Select Group)</option>
@@ -178,16 +188,12 @@
       </label>
     </div>
     
-    <div class="header-section">
-      <label style="display:flex;align-items:center">
-        <input id="unit" type="checkbox" />
-        <span>Show as ratio-to-Medicare</span>
-      </label>
-    </div>
-    
     <button id="go">Search Hospitals</button>
     <div id="status"></div>
   </header>
+
+  <!-- Hidden checkbox for Medicare ratio state -->
+  <input id="unit" type="checkbox" style="display:none;" />
 
   <main>
     <div class="map-container">
@@ -198,8 +204,9 @@
     <div class="results-section">
       <div class="results-header">
         <h3 id="list-title" style="text-align:center;margin-bottom:0.5rem;">Hospitals (0)</h3>
-        <div style="text-align:center;margin-bottom:1rem;">
-          <button class="toggle-all-btn" onclick="toggleAllHospitals()">Expand All</button>
+        <div style="text-align:center;margin-bottom:1rem;display:flex;gap:0.5rem;width:100%;">
+          <button class="toggle-all-btn" onclick="toggleAllHospitals()" style="flex:1;">Expand All</button>
+          <button class="toggle-all-btn" id="medicare-ratio-btn" onclick="toggleMedicareRatio()" style="flex:1;">Show Medicare Ratios</button>
         </div>
       </div>
       <div class="small" style="margin-bottom:1rem;text-align:center;">Shows hospitals within the radius; price matches appear under each hospital.</div>
@@ -225,6 +232,19 @@
       <h2>About This Tool</h2>
       <p>The <strong>Hospital Price Finder</strong> helps you discover and compare healthcare procedure costs across hospitals within a specified radius of any ZIP code. Search by procedure codes (CPT, HCPCS) or custom patterns to find pricing transparency data from hospital charge masters.</p>
       
+      <!-- Mobile format change: How to Use section moved up for better mobile UX - do not undo -->
+      <div class="usage-guide">
+        <h3>🔍 How to Use</h3>
+        <ol>
+          <li>Select a predefined service or enter a custom procedure pattern (regex supported)</li>
+          <li>Enter a ZIP code and choose your search radius</li>
+          <li>Optionally filter by insurance payer or view prices as ratios to Medicare rates</li>
+          <li>Tap search to see hospitals on the map and pricing data in the results</li>
+          <li>Scroll down to analyze price distributions and hospital comparisons</li>
+          <li>Use the reset zoom button to return to the full map view</li>
+        </ol>
+      </div>
+      
       <div class="plot-explanations">
         <div class="plot-explanation">
           <h3>📊 Price Distribution Chart</h3>
@@ -245,18 +265,6 @@
             <p><em>Note: If a hospital appears in multiple matching procedures, the slope chart shows averages while the results list displays each individual procedure separately. This explains why slope chart values may not exactly match individual result entries.</em></p>
           </div>
         </div>
-      </div>
-      
-      <div class="usage-guide">
-        <h3>🔍 How to Use</h3>
-        <ol>
-          <li>Select a predefined service or enter a custom procedure pattern (regex supported)</li>
-          <li>Enter a ZIP code and choose your search radius</li>
-          <li>Optionally filter by insurance payer or view prices as ratios to Medicare rates</li>
-          <li>Tap search to see hospitals on the map and pricing data in the results</li>
-          <li>Scroll down to analyze price distributions and hospital comparisons</li>
-          <li>Use the reset zoom button to return to the full map view</li>
-        </ol>
       </div>
     </div>
   </div>
@@ -321,6 +329,23 @@
     toggleBtn.textContent = allExpanded ? 'Collapse All' : 'Expand All';
   };
 
+  // Toggle Medicare ratio function
+  window.toggleMedicareRatio = function() {
+    const medicareBtn = document.getElementById('medicare-ratio-btn');
+    const unitCheckbox = document.getElementById('unit');
+    
+    // Toggle the hidden checkbox
+    unitCheckbox.checked = !unitCheckbox.checked;
+    
+    // Update button text
+    medicareBtn.textContent = unitCheckbox.checked ? 'Hide Medicare Ratios' : 'Show Medicare Ratios';
+    
+    // Refresh the display if there are current results
+    if (currentHospitalList.length > 0) {
+      renderHospitals(currentHospitalList, currentHitsById);
+    }
+  };
+
   // --------- CONFIG / URL HELPERS ----------
   const WIDTH = 960, HEIGHT = 600, EARTH_MI = 3958.7613;
   const ENABLE_PRICES = true;  // set false to debug map/CSV only
@@ -330,6 +355,7 @@
   const DATA_ZIPS = "data/zip_centroids.csv";
   const DATA_HOSPS = "data/hospitals.csv";
   const DATA_SERVICE = "data/service_config.json";
+  const DATA_RC = "data/rc_config.json";
   const DATA_CMS = "data/medicare_pricing_matched.csv";
   const jsonUrl = (relPath) => relPath.startsWith('docs/') ? relPath.substring(5) : relPath;
 
@@ -340,6 +366,7 @@
   const $radius = document.getElementById("radius");
   const $payer = document.getElementById("payer");
   const $service = document.getElementById("service");
+  const $configType = document.getElementById("config-type");
   const $unit = document.getElementById("unit");
   const $go = document.getElementById("go");
   const $status = document.getElementById("status");
@@ -350,6 +377,8 @@
   // --------- DATA MAPS ----------
   const cmsRate = new Map();
   const services = new Map();
+  const revenueCodes = new Map();
+  let currentConfigType = 'service';
 
   // --------- MAP ----------
   const projection = d3.geoAlbersUsa().translate([WIDTH/2, HEIGHT/2]).scale(1200);
@@ -433,24 +462,60 @@
     const svcCfg = await fetch(DATA_SERVICE).then(r=>r.json());
     Object.entries(svcCfg).forEach(([name, obj])=>{
       services.set(name, new RegExp(obj.pattern, 'i'));
+    });
+  } catch (e) {
+    console.warn("service_config.json failed:", e);
+  }
+
+  // Load revenue code configuration
+  try {
+    const rcCfg = await fetch(DATA_RC).then(r=>r.json());
+    Object.entries(rcCfg).forEach(([name, obj])=>{
+      revenueCodes.set(name, new RegExp(obj.pattern, 'i'));
+    });
+  } catch (e) {
+    console.warn("rc_config.json failed:", e);
+  }
+
+  // Function to populate dropdown based on configuration type
+  function populateServiceDropdown(configType) {
+    // Clear existing options except the first one
+    $service.innerHTML = '<option value="">(Select Group)</option>';
+    
+    const configMap = configType === 'service' ? services : revenueCodes;
+    
+    configMap.forEach((regex, name) => {
       const opt = document.createElement('option'); 
       opt.value = name; 
       opt.textContent = name;
       $service.appendChild(opt);
     });
+    
     // Add Custom Pattern option at the end
     const customOpt = document.createElement('option');
     customOpt.value = 'custom';
     customOpt.textContent = 'Custom Pattern';
     $service.appendChild(customOpt);
-  } catch (e) {
-    console.warn("service_config.json failed:", e);
-    // Still add Custom Pattern option even if service config fails
-    const customOpt = document.createElement('option');
-    customOpt.value = 'custom';
-    customOpt.textContent = 'Custom Pattern';
-    $service.appendChild(customOpt);
   }
+
+  // Initialize with service configuration
+  populateServiceDropdown('service');
+
+  // Add event listener for configuration type change
+  $configType.addEventListener('change', function() {
+    currentConfigType = this.value;
+    populateServiceDropdown(currentConfigType);
+    
+    // Update the service label
+    const serviceLabel = document.getElementById('service-label');
+    serviceLabel.querySelector('span').textContent = currentConfigType === 'service' ? 'Service Group:' : 'Revenue Code:';
+    
+    // Reset service selection
+    $service.value = '';
+    // Hide procedure input
+    document.getElementById('procedure-section').style.display = 'none';
+    $q.value = '';
+  });
 
   try {
     const cmsRows = await d3.csv(DATA_CMS, d3.autoType);
@@ -484,21 +549,33 @@
     return { price, ratio };
   };
 
+  // Helper: get the appropriate code field based on configuration type
+  const getCodeField = (record) => {
+    // Always use 'code' field for display and Medicare ratio calculations
+    return record.code || '';
+  };
+
+  // Helper: get the search code field based on configuration type
+  const getSearchCodeField = () => {
+    return currentConfigType === 'service' ? 'code' : 'rc_code';
+  };
+
   // Helper: generate price table HTML
   const generatePriceTable = (record) => {
     const showRatio = $unit.checked;
+    const code = getCodeField(record);
     const priceTypes = [];
     
     if (record.estimated_amount != null) {
-      const formatted = formatPrice(record.estimated_amount, record.code);
+      const formatted = formatPrice(record.estimated_amount, code);
       priceTypes.push({ type: "Estimate", price: formatted.price, ratio: formatted.ratio });
     }
     if (record.standard_charge_min != null) {
-      const formatted = formatPrice(record.standard_charge_min, record.code);
+      const formatted = formatPrice(record.standard_charge_min, code);
       priceTypes.push({ type: "Minimum", price: formatted.price, ratio: formatted.ratio });
     }
     if (record.standard_charge_max != null) {
-      const formatted = formatPrice(record.standard_charge_max, record.code);
+      const formatted = formatPrice(record.standard_charge_max, code);
       priceTypes.push({ type: "Maximum", price: formatted.price, ratio: formatted.ratio });
     }
     
@@ -879,7 +956,7 @@
                     ${r.payer_name ? r.payer_name : ""}${r.payer_name && r.plan_name ? " - " : ""}${r.plan_name ? r.plan_name : ""}
                   </div>
                 ` : ""}
-                <div style="margin-bottom:.5rem"><code>${r.code ?? ""}</code> — ${r.description ?? ""}</div>
+                <div style="margin-bottom:.5rem"><code>${getCodeField(r)}</code> — ${r.description ?? ""}</div>
                 ${generatePriceTable(r)}
               </div>
             `).join("")}
@@ -959,12 +1036,14 @@
       // Create regex for searching
       const regex = new RegExp(regexOrCode, 'i');
       
-      // Search through descriptions, codes, and code_2 fields
+      // Determine which code field to search based on configuration type
+      const codeField = getSearchCodeField();
+      
+      // Search through descriptions and codes
       let matches = jsonData.filter(record => {
         const description = record.description || '';
-        const code = record.code || '';
-        const code2 = record.code_2 || '';
-        const matchesRegex = regex.test(description) || regex.test(code) || regex.test(code2);
+        const code = record[codeField] || '';
+        const matchesRegex = regex.test(description) || regex.test(code);
         const matchesPayer = !selectedPayer || (record.payer_name && record.payer_name === selectedPayer);
         return matchesRegex && matchesPayer;
       }).slice(0, 30); // Limit to 30 results for mobile performance
@@ -1040,8 +1119,10 @@
     
     // Get the search pattern - either from service or custom query
     let searchPattern = '';
-    if (svcName && svcName !== 'custom' && services.has(svcName)) {
-      const svcRegex = services.get(svcName);
+    const configMap = currentConfigType === 'service' ? services : revenueCodes;
+    
+    if (svcName && svcName !== 'custom' && configMap.has(svcName)) {
+      const svcRegex = configMap.get(svcName);
       searchPattern = svcRegex.source; // Get the regex pattern string
     } else if (svcName === 'custom' && q) {
       searchPattern = q;

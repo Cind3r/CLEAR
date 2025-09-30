@@ -1,0 +1,1602 @@
+{
+  "Acquisition of Body Components": {
+    "RC": "081X",
+    "pattern": "(?:(?<!\\d)(?:0?81[0-9]|0?81X)(?!\\d)|acquisition|body|components)"
+  },
+  "Activity therapy": {
+    "RC": "0904",
+    "pattern": "(?:(?<!\\d)0?904(?!\\d)|activity|therapy)"
+  },
+  "Acupressure": {
+    "RC": "2102",
+    "pattern": "(?:(?<!\\d)2102(?!\\d)|acupressure)"
+  },
+  "Acupuncture": {
+    "RC": "2101",
+    "pattern": "(?:(?<!\\d)2101(?!\\d)|acupuncture)"
+  },
+  "Administration (e.g., transfusions)": {
+    "RC": "0391",
+    "pattern": "(?:(?<!\\d)0?391(?!\\d)|administration|transfusions)"
+  },
+  "Administration, Processing and Storage for Blood and Blood Components": {
+    "RC": "039X",
+    "pattern": "(?:(?<!\\d)(?:0?39[0-9]|0?39X)(?!\\d)|administration|processing|storage|blood|blood|components)"
+  },
+  "Admission Charge": {
+    "RC": "0221",
+    "pattern": "(?:(?<!\\d)0?221(?!\\d)|admission|charge)"
+  },
+  "Admission kits": {
+    "RC": "0997",
+    "pattern": "(?:(?<!\\d)0?997(?!\\d)|admission|kits)"
+  },
+  "Adult Care": {
+    "RC": "310X",
+    "pattern": "(?:(?<!\\d)(?:310[0-9]|310X)(?!\\d)|adult|care)"
+  },
+  "Adult daycare, medical and social - daily": {
+    "RC": "3103",
+    "pattern": "(?:(?<!\\d)3103(?!\\d)|adult|daycare|medical|social|daily)"
+  },
+  "adult daycare, medical and social - hourly": {
+    "RC": "3101",
+    "pattern": "(?:(?<!\\d)3101(?!\\d)|adult|daycare|medical|social|hourly)"
+  },
+  "Adult daycare, social - daily": {
+    "RC": "3104",
+    "pattern": "(?:(?<!\\d)3104(?!\\d)|adult|daycare|social|daily)"
+  },
+  "Adult daycare, social - hourly": {
+    "RC": "3102",
+    "pattern": "(?:(?<!\\d)3102(?!\\d)|adult|daycare|social|hourly)"
+  },
+  "Adult foster care - daily": {
+    "RC": "3105",
+    "pattern": "(?:(?<!\\d)3105(?!\\d)|adult|foster|care|daily)"
+  },
+  "Air ambulance": {
+    "RC": "0545",
+    "pattern": "(?:(?<!\\d)0?545(?!\\d)|ambulance)"
+  },
+  "Alcohol rehabilitation": {
+    "RC": "0945",
+    "pattern": "(?:(?<!\\d)0?945(?!\\d)|alcohol|rehabilitation)"
+  },
+  "All inclusive room and board": {
+    "RC": "0101",
+    "pattern": "(?:(?<!\\d)0?101(?!\\d)|inclusive|room|board)"
+  },
+  "All inclusive room and board plus ancillary": {
+    "RC": "0100",
+    "pattern": "(?:(?<!\\d)0?100(?!\\d)|inclusive|room|board|plus|ancillary)"
+  },
+  "All-inclusive Ancillary": {
+    "RC": "024X",
+    "pattern": "(?:(?<!\\d)(?:0?24[0-9]|0?24X)(?!\\d)|inclusive|ancillary)"
+  },
+  "All-inclusive Rate": {
+    "RC": "010X",
+    "pattern": "(?:(?<!\\d)(?:0?10[0-9]|0?10X)(?!\\d)|inclusive|rate)"
+  },
+  "Allergy test": {
+    "RC": "0924",
+    "pattern": "(?:(?<!\\d)0?924(?!\\d)|allergy|test)"
+  },
+  "Alternative Therapy Services": {
+    "RC": "210X",
+    "pattern": "(?:(?<!\\d)(?:210[0-9]|210X)(?!\\d)|alternative|therapy|services)"
+  },
+  "Ambulance": {
+    "RC": "054X",
+    "pattern": "(?:(?<!\\d)(?:0?54[0-9]|0?54X)(?!\\d)|ambulance)"
+  },
+  "Ambulatory Surgical Care": {
+    "RC": "049X",
+    "pattern": "(?:(?<!\\d)(?:0?49[0-9]|0?49X)(?!\\d)|ambulatory|surgical|care)"
+  },
+  "Anesthesia": {
+    "RC": "037X",
+    "pattern": "(?:(?<!\\d)(?:0?37[0-9]|0?37X)(?!\\d)|anesthesia)"
+  },
+  "Anesthesiologist (CRNA)": {
+    "RC": "0964",
+    "pattern": "(?:(?<!\\d)0?964(?!\\d)|anesthesiologist|crna)"
+  },
+  "Anesthesiologist (MD)": {
+    "RC": "0963",
+    "pattern": "(?:(?<!\\d)0?963(?!\\d)|anesthesiologist)"
+  },
+  "Angiocardiography": {
+    "RC": "0321",
+    "pattern": "(?:(?<!\\d)0?321(?!\\d)|angiocardiography)"
+  },
+  "Arteriography": {
+    "RC": "0323",
+    "pattern": "(?:(?<!\\d)0?323(?!\\d)|arteriography)"
+  },
+  "Arthrography": {
+    "RC": "0322",
+    "pattern": "(?:(?<!\\d)0?322(?!\\d)|arthrography)"
+  },
+  "Assessment": {
+    "RC": "0583",
+    "pattern": "(?:(?<!\\d)0?583(?!\\d)|assessment)"
+  },
+  "Athletic training": {
+    "RC": "0951",
+    "pattern": "(?:(?<!\\d)0?951(?!\\d)|athletic|training)"
+  },
+  "Audiology": {
+    "RC": "047X",
+    "pattern": "(?:(?<!\\d)(?:0?47[0-9]|0?47X)(?!\\d)|audiology)"
+  },
+  "Bacteriology and Microbiology": {
+    "RC": "0306",
+    "pattern": "(?:(?<!\\d)0?306(?!\\d)|bacteriology|microbiology)"
+  },
+  "Basic": {
+    "RC": "0241",
+    "pattern": "(?:(?<!\\d)0?241(?!\\d)|basic)"
+  },
+  "Beauty shop/barber": {
+    "RC": "0998",
+    "pattern": "(?:(?<!\\d)0?998(?!\\d)|beauty|shop|barber)"
+  },
+  "Behavioral Health Accommodations": {
+    "RC": "100X",
+    "pattern": "(?:(?<!\\d)(?:100[0-9]|100X)(?!\\d)|behavioral|health|accommodations)"
+  },
+  "Behavioral health treatments": {
+    "RC": "0919",
+    "pattern": "(?:(?<!\\d)0?919(?!\\d)|behavioral|health|treatments)"
+  },
+  "Behavioral Health Treatments/Services (also see 091X, and extension of 090X)": {
+    "RC": "090X",
+    "pattern": "(?:(?<!\\d)(?:0?90[0-9]|0?90X)(?!\\d)|behavioral|health|treatments|services|also|extension)"
+  },
+  "Behavioral Health Treatments/Services - Extension of 090X": {
+    "RC": "091X",
+    "pattern": "(?:(?<!\\d)(?:0?91[0-9]|0?91X)(?!\\d)|behavioral|health|treatments|services|extension)"
+  },
+  "Biofeedback": {
+    "RC": "2105",
+    "pattern": "(?:(?<!\\d)2105(?!\\d)|biofeedback)"
+  },
+  "Biopsy": {
+    "RC": "0314",
+    "pattern": "(?:(?<!\\d)0?314(?!\\d)|biopsy)"
+  },
+  "Birthing center": {
+    "RC": "0724",
+    "pattern": "(?:(?<!\\d)0?724(?!\\d)|birthing|center)"
+  },
+  "Blood and Blood Products": {
+    "RC": "038X",
+    "pattern": "(?:(?<!\\d)(?:0?38[0-9]|0?38X)(?!\\d)|blood|blood|products)"
+  },
+  "Body scan": {
+    "RC": "0352",
+    "pattern": "(?:(?<!\\d)0?352(?!\\d)|body|scan)"
+  },
+  "Brain/brain stem": {
+    "RC": "0611",
+    "pattern": "(?:(?<!\\d)0?611(?!\\d)|brain|brain|stem)"
+  },
+  "Burn Care": {
+    "RC": "0207",
+    "pattern": "(?:(?<!\\d)0?207(?!\\d)|burn|care)"
+  },
+  "Cadaver donor": {
+    "RC": "0812",
+    "pattern": "(?:(?<!\\d)0?812(?!\\d)|cadaver|donor)"
+  },
+  "Cafeteria/guest tray": {
+    "RC": "0991",
+    "pattern": "(?:(?<!\\d)0?991(?!\\d)|cafeteria|guest|tray)"
+  },
+  "Cardiac cath lab": {
+    "RC": "0481",
+    "pattern": "(?:(?<!\\d)0?481(?!\\d)|cardiac|cath)"
+  },
+  "Cardiac rehabilitation": {
+    "RC": "0943",
+    "pattern": "(?:(?<!\\d)0?943(?!\\d)|cardiac|rehabilitation)"
+  },
+  "Cardiology": {
+    "RC": "048X",
+    "pattern": "(?:(?<!\\d)(?:0?48[0-9]|0?48X)(?!\\d)|cardiology)"
+  },
+  "Cast Room": {
+    "RC": "070X",
+    "pattern": "(?:(?<!\\d)(?:0?70[0-9]|0?70X)(?!\\d)|cast|room)"
+  },
+  "CCU": {
+    "RC": "0234",
+    "pattern": "(?<!\\d)0?234(?!\\d)"
+  },
+  "Cell Collection": {
+    "RC": "0871",
+    "pattern": "(?:(?<!\\d)0?871(?!\\d)|cell|collection)"
+  },
+  "Cell/Gene Therapy": {
+    "RC": "087X",
+    "pattern": "(?:(?<!\\d)(?:0?87[0-9]|0?87X)(?!\\d)|cell|gene|therapy)"
+  },
+  "Chemical dependency": {
+    "RC": "0906",
+    "pattern": "(?:(?<!\\d)0?906(?!\\d)|chemical|dependency)"
+  },
+  "Chemical dependency (drug and alcohol)": {
+    "RC": "0953",
+    "pattern": "(?:(?<!\\d)0?953(?!\\d)|chemical|dependency|drug|alcohol)"
+  },
+  "Chemistry": {
+    "RC": "0301",
+    "pattern": "(?:(?<!\\d)0?301(?!\\d)|chemistry)"
+  },
+  "Chemotherapy administration - injection": {
+    "RC": "0331",
+    "pattern": "(?:(?<!\\d)0?331(?!\\d)|chemotherapy|administration|injection)"
+  },
+  "Chemotherapy administration - IV": {
+    "RC": "0335",
+    "pattern": "(?:(?<!\\d)0?335(?!\\d)|chemotherapy|administration)"
+  },
+  "Chemotherapy administration - oral": {
+    "RC": "0332",
+    "pattern": "(?:(?<!\\d)0?332(?!\\d)|chemotherapy|administration|oral)"
+  },
+  "Chest X-ray": {
+    "RC": "0324",
+    "pattern": "(?:(?<!\\d)0?324(?!\\d)|chest)"
+  },
+  "Chronic pain center": {
+    "RC": "0511",
+    "pattern": "(?:(?<!\\d)0?511(?!\\d)|chronic|pain|center)"
+  },
+  "Circumcision": {
+    "RC": "0723",
+    "pattern": "(?:(?<!\\d)0?723(?!\\d)|circumcision)"
+  },
+  "Clinic": {
+    "RC": "0983",
+    "pattern": "(?:(?<!\\d)0?983(?!\\d)|clinic)"
+  },
+  "Clinic visit by member to RHC/FQHC": {
+    "RC": "0521",
+    "pattern": "(?:(?<!\\d)0?521(?!\\d)|clinic|visit|member|fqhc)"
+  },
+  "Community behavioral health program - day treatment": {
+    "RC": "0907",
+    "pattern": "(?:(?<!\\d)0?907(?!\\d)|community|behavioral|health|program|treatment)"
+  },
+  "Complex medical equipment - ancillary": {
+    "RC": "0947",
+    "pattern": "(?:(?<!\\d)0?947(?!\\d)|complex|medical|equipment|ancillary)"
+  },
+  "Complex medical equipment - routine": {
+    "RC": "0946",
+    "pattern": "(?:(?<!\\d)0?946(?!\\d)|complex|medical|equipment|routine)"
+  },
+  "Composite or other rate": {
+    "RC": "0851",
+    "pattern": "(?:(?<!\\d)0?851(?!\\d)|composite|other|rate)"
+  },
+  "Comprehensive": {
+    "RC": "0242",
+    "pattern": "(?:(?<!\\d)0?242(?!\\d)|comprehensive)"
+  },
+  "Consultation": {
+    "RC": "0988",
+    "pattern": "(?:(?<!\\d)0?988(?!\\d)|consultation)"
+  },
+  "Consultation and education": {
+    "RC": "0694",
+    "pattern": "(?:(?<!\\d)0?694(?!\\d)|consultation|education)"
+  },
+  "Continuous Ambulatory Peritoneal Dialysis (CAPD)- Outpatient or Home": {
+    "RC": "084X",
+    "pattern": "(?:(?<!\\d)(?:0?84[0-9]|0?84X)(?!\\d)|continuous|ambulatory|peritoneal|dialysis|capd|outpatient)"
+  },
+  "Continuous Cycling Peritoneal Dialysis (CCPD) - Outpatient or Home": {
+    "RC": "085X",
+    "pattern": "(?:(?<!\\d)(?:0?85[0-9]|0?85X)(?!\\d)|continuous|cycling|peritoneal|dialysis|ccpd|outpatient)"
+  },
+  "Continuous home care": {
+    "RC": "0652",
+    "pattern": "(?:(?<!\\d)0?652(?!\\d)|continuous|home|care)"
+  },
+  "Contracted": {
+    "RC": "0672",
+    "pattern": "(?:(?<!\\d)0?672(?!\\d)|contracted)"
+  },
+  "Coronary Care Unit": {
+    "RC": "021X",
+    "pattern": "(?:(?<!\\d)(?:0?21[0-9]|0?21X)(?!\\d)|coronary|care|unit)"
+  },
+  "CT Scan": {
+    "RC": "035X",
+    "pattern": "(?:(?<!\\d)(?:0?35[0-9]|0?35X)(?!\\d)|scan)"
+  },
+  "Cytology": {
+    "RC": "0311",
+    "pattern": "(?:(?<!\\d)0?311(?!\\d)|cytology)"
+  },
+  "daily respite charge": {
+    "RC": "0663",
+    "pattern": "(?:(?<!\\d)0?663(?!\\d)|daily|respite|charge)"
+  },
+  "Delivery": {
+    "RC": "0722",
+    "pattern": "(?:(?<!\\d)0?722(?!\\d)|delivery)"
+  },
+  "Dental clinic": {
+    "RC": "0512",
+    "pattern": "(?:(?<!\\d)0?512(?!\\d)|dental|clinic)"
+  },
+  "Detoxification": {
+    "RC": "0156",
+    "pattern": "(?:(?<!\\d)0?156(?!\\d)|detoxification)"
+  },
+  "Diagnostic": {
+    "RC": "0471",
+    "pattern": "(?:(?<!\\d)0?471(?!\\d)|diagnostic)"
+  },
+  "Diagnostic mammography": {
+    "RC": "0401",
+    "pattern": "(?:(?<!\\d)0?401(?!\\d)|diagnostic|mammography)"
+  },
+  "Diagnostic radiopharmaceuticals": {
+    "RC": "0343",
+    "pattern": "(?:(?<!\\d)0?343(?!\\d)|diagnostic|radiopharmaceuticals)"
+  },
+  "Drug rehabilitation": {
+    "RC": "0944",
+    "pattern": "(?:(?<!\\d)0?944(?!\\d)|drug|rehabilitation)"
+  },
+  "Drug/supply delivery": {
+    "RC": "0263",
+    "pattern": "(?:(?<!\\d)0?263(?!\\d)|drug|supply|delivery)"
+  },
+  "Drugs incident to Other diagnostic services": {
+    "RC": "0254",
+    "pattern": "(?:(?<!\\d)0?254(?!\\d)|drugs|incident|other|diagnostic|services)"
+  },
+  "Drugs incident to radiology": {
+    "RC": "0255",
+    "pattern": "(?:(?<!\\d)0?255(?!\\d)|drugs|incident|radiology)"
+  },
+  "Drugs requiring detailed coding": {
+    "RC": "0636",
+    "pattern": "(?:(?<!\\d)0?636(?!\\d)|drugs|requiring|detailed|coding)"
+  },
+  "Durable Medical Equipment (Other than Renal)": {
+    "RC": "029X",
+    "pattern": "(?:(?<!\\d)(?:0?29[0-9]|0?29X)(?!\\d)|durable|medical|equipment|other|than|renal)"
+  },
+  "Echocardiology": {
+    "RC": "0483",
+    "pattern": "(?:(?<!\\d)0?483(?!\\d)|echocardiology)"
+  },
+  "Education/training": {
+    "RC": "0942",
+    "pattern": "(?:(?<!\\d)0?942(?!\\d)|education|training)"
+  },
+  "EEG": {
+    "RC": "0986",
+    "pattern": "(?<!\\d)0?986(?!\\d)"
+  },
+  "EEG Electroencephalogram": {
+    "RC": "074X",
+    "pattern": "(?:(?<!\\d)(?:0?74[0-9]|0?74X)(?!\\d)|electroencephalogram)"
+  },
+  "EKG": {
+    "RC": "0985",
+    "pattern": "(?<!\\d)0?985(?!\\d)"
+  },
+  "EKG transmission": {
+    "RC": "0548",
+    "pattern": "(?:(?<!\\d)0?548(?!\\d)|transmission)"
+  },
+  "EKG/ECG Electrocardiogram": {
+    "RC": "073X",
+    "pattern": "(?:(?<!\\d)(?:0?73[0-9]|0?73X)(?!\\d)|electrocardiogram)"
+  },
+  "Electromyelogram": {
+    "RC": "0922",
+    "pattern": "(?:(?<!\\d)0?922(?!\\d)|electromyelogram)"
+  },
+  "Electroshock": {
+    "RC": "0901",
+    "pattern": "(?:(?<!\\d)0?901(?!\\d)|electroshock)"
+  },
+  "Emergency Room": {
+    "RC": "045X",
+    "pattern": "(?:(?<!\\d)(?:0?45[0-9]|0?45X)(?!\\d)|emergency|room)"
+  },
+  "Emergency room": {
+    "RC": "0981",
+    "pattern": "(?:(?<!\\d)0?981(?!\\d)|emergency|room)"
+  },
+  "EMTALA emergency medical screening services": {
+    "RC": "0451",
+    "pattern": "(?:(?<!\\d)0?451(?!\\d)|emtala|emergency|medical|screening|services)"
+  },
+  "ER beyond EMTALA screening": {
+    "RC": "0452",
+    "pattern": "(?:(?<!\\d)0?452(?!\\d)|beyond|emtala|screening)"
+  },
+  "Erythropoietin (EPO) 10,000 or more units": {
+    "RC": "0635",
+    "pattern": "(?:(?<!\\d)0?635(?!\\d)|erythropoietin|more|units)"
+  },
+  "Erythropoietin (EPO) less than 10,000 units": {
+    "RC": "0634",
+    "pattern": "(?:(?<!\\d)0?634(?!\\d)|erythropoietin|less|than|units)"
+  },
+  "Evaluation": {
+    "RC": "0693",
+    "pattern": "(?:(?<!\\d)0?693(?!\\d)|evaluation)"
+  },
+  "Evaluation or reevaluation": {
+    "RC": "0444",
+    "pattern": "(?:(?<!\\d)0?444(?!\\d)|evaluation|reevaluation)"
+  },
+  "experimental drugs": {
+    "RC": "0256",
+    "pattern": "(?:(?<!\\d)0?256(?!\\d)|experimental|drugs)"
+  },
+  "Extra-Corporeal Shock Wave Therapy (formerly Lithotripsy)": {
+    "RC": "079X",
+    "pattern": "(?:(?<!\\d)(?:0?79[0-9]|0?79X)(?!\\d)|extra|corporeal|shock|wave|therapy|formerly)"
+  },
+  "Family practice clinic": {
+    "RC": "0523",
+    "pattern": "(?:(?<!\\d)0?523(?!\\d)|family|practice|clinic)"
+  },
+  "Family therapy": {
+    "RC": "0916",
+    "pattern": "(?:(?<!\\d)0?916(?!\\d)|family|therapy)"
+  },
+  "FDA investigational devices": {
+    "RC": "0624",
+    "pattern": "(?:(?<!\\d)0?624(?!\\d)|investigational|devices)"
+  },
+  "Freestanding Clinic": {
+    "RC": "052X",
+    "pattern": "(?:(?<!\\d)(?:0?52[0-9]|0?52X)(?!\\d)|freestanding|clinic)"
+  },
+  "Full day": {
+    "RC": "0932",
+    "pattern": "(?:(?<!\\d)0?932(?!\\d)|full)"
+  },
+  "Gastrointestinal Services": {
+    "RC": "075X",
+    "pattern": "(?:(?<!\\d)(?:0?75[0-9]|0?75X)(?!\\d)|gastrointestinal|services)"
+  },
+  "General": {
+    "RC": "2100",
+    "pattern": "(?:(?<!\\d)2100(?!\\d)|general)"
+  },
+  "General inpatient care (non-respite)": {
+    "RC": "0656",
+    "pattern": "(?:(?<!\\d)0?656(?!\\d)|general|inpatient|care|respite)"
+  },
+  "Generic drugs": {
+    "RC": "0251",
+    "pattern": "(?:(?<!\\d)0?251(?!\\d)|generic|drugs)"
+  },
+  "Group Home": {
+    "RC": "1005",
+    "pattern": "(?:(?<!\\d)1005(?!\\d)|group|home)"
+  },
+  "Group rate": {
+    "RC": "0443",
+    "pattern": "(?:(?<!\\d)0?443(?!\\d)|group|rate)"
+  },
+  "Group therapy": {
+    "RC": "0915",
+    "pattern": "(?:(?<!\\d)0?915(?!\\d)|group|therapy)"
+  },
+  "Half day": {
+    "RC": "0931",
+    "pattern": "(?:(?<!\\d)0?931(?!\\d)|half)"
+  },
+  "Halfway House": {
+    "RC": "1004",
+    "pattern": "(?:(?<!\\d)1004(?!\\d)|halfway|house)"
+  },
+  "Head and neck": {
+    "RC": "0615",
+    "pattern": "(?:(?<!\\d)0?615(?!\\d)|head|neck)"
+  },
+  "Head scan": {
+    "RC": "0351",
+    "pattern": "(?:(?<!\\d)0?351(?!\\d)|head|scan)"
+  },
+  "Health Insurance Prospective Payment System (HIPPS)": {
+    "RC": "002X",
+    "pattern": "(?:(?<!\\d)(?:0?02[0-9]|0?02X)(?!\\d)|health|insurance|prospective|payment|system|hipps)"
+  },
+  "Heart mobile": {
+    "RC": "0543",
+    "pattern": "(?:(?<!\\d)0?543(?!\\d)|heart|mobile)"
+  },
+  "Heart Transplant": {
+    "RC": "0213",
+    "pattern": "(?:(?<!\\d)0?213(?!\\d)|heart|transplant)"
+  },
+  "Hematology": {
+    "RC": "0305",
+    "pattern": "(?:(?<!\\d)0?305(?!\\d)|hematology)"
+  },
+  "Hemodialysis - Outpatient or Home": {
+    "RC": "082X",
+    "pattern": "(?:(?<!\\d)(?:0?82[0-9]|0?82X)(?!\\d)|hemodialysis|outpatient|home)"
+  },
+  "Histology": {
+    "RC": "0312",
+    "pattern": "(?:(?<!\\d)0?312(?!\\d)|histology)"
+  },
+  "Holter monitor": {
+    "RC": "0731",
+    "pattern": "(?:(?<!\\d)0?731(?!\\d)|holter|monitor)"
+  },
+  "Home dialysis aid visit": {
+    "RC": "0882",
+    "pattern": "(?:(?<!\\d)0?882(?!\\d)|home|dialysis|visit)"
+  },
+  "Home equipment": {
+    "RC": "0853",
+    "pattern": "(?:(?<!\\d)0?853(?!\\d)|home|equipment)"
+  },
+  "Home Health Aide": {
+    "RC": "057X",
+    "pattern": "(?:(?<!\\d)(?:0?57[0-9]|0?57X)(?!\\d)|home|health|aide)"
+  },
+  "Home Health Medical Social Services": {
+    "RC": "056X",
+    "pattern": "(?:(?<!\\d)(?:0?56[0-9]|0?56X)(?!\\d)|home|health|medical|social|services)"
+  },
+  "Home Health Other Visits": {
+    "RC": "058X",
+    "pattern": "(?:(?<!\\d)(?:0?58[0-9]|0?58X)(?!\\d)|home|health|other|visits)"
+  },
+  "Home Health Oxygen": {
+    "RC": "060X",
+    "pattern": "(?:(?<!\\d)(?:0?60[0-9]|0?60X)(?!\\d)|home|health|oxygen)"
+  },
+  "Home Health PPS": {
+    "RC": "0023",
+    "pattern": "(?:(?<!\\d)0?023(?!\\d)|home|health)"
+  },
+  "Home Health Units of Service": {
+    "RC": "059X",
+    "pattern": "(?:(?<!\\d)(?:0?59[0-9]|0?59X)(?!\\d)|home|health|units|service)"
+  },
+  "Home IV Therapy Services": {
+    "RC": "064X",
+    "pattern": "(?:(?<!\\d)(?:0?64[0-9]|0?64X)(?!\\d)|home|therapy|services)"
+  },
+  "Home supplies": {
+    "RC": "0852",
+    "pattern": "(?:(?<!\\d)0?852(?!\\d)|home|supplies)"
+  },
+  "Home visit by RHC/FQHC practitioner": {
+    "RC": "0522",
+    "pattern": "(?:(?<!\\d)0?522(?!\\d)|home|visit|fqhc|practitioner)"
+  },
+  "Hospice": {
+    "RC": "0235",
+    "pattern": "(?:(?<!\\d)0?235(?!\\d)|hospice)"
+  },
+  "Hospice room and board - nursing facility": {
+    "RC": "0658",
+    "pattern": "(?:(?<!\\d)0?658(?!\\d)|hospice|room|board|nursing|facility)"
+  },
+  "Hospice Service": {
+    "RC": "065X",
+    "pattern": "(?:(?<!\\d)(?:0?65[0-9]|0?65X)(?!\\d)|hospice|service)"
+  },
+  "Hospital at home, R&B/hospital at home (effective for claims received on or after July 1, 2022)": {
+    "RC": "0161",
+    "pattern": "(?:(?<!\\d)0?161(?!\\d)|hospital|home|hospital|home|effective|claims)"
+  },
+  "Hospital owned": {
+    "RC": "0671",
+    "pattern": "(?:(?<!\\d)0?671(?!\\d)|hospital|owned)"
+  },
+  "Hospital visit": {
+    "RC": "0987",
+    "pattern": "(?:(?<!\\d)0?987(?!\\d)|hospital|visit)"
+  },
+  "Hourly charge": {
+    "RC": "0692",
+    "pattern": "(?:(?<!\\d)0?692(?!\\d)|hourly|charge)"
+  },
+  "Hourly charge/aide/homemaker/companion": {
+    "RC": "0662",
+    "pattern": "(?:(?<!\\d)0?662(?!\\d)|hourly|charge|aide|homemaker|companion)"
+  },
+  "Hourly charge/nursing": {
+    "RC": "0661",
+    "pattern": "(?:(?<!\\d)0?661(?!\\d)|hourly|charge|nursing)"
+  },
+  "Hyperbaric oxygen therapy": {
+    "RC": "0413",
+    "pattern": "(?:(?<!\\d)0?413(?!\\d)|hyperbaric|oxygen|therapy)"
+  },
+  "Hypnosis": {
+    "RC": "2106",
+    "pattern": "(?:(?<!\\d)2106(?!\\d)|hypnosis)"
+  },
+  "ICU": {
+    "RC": "0233",
+    "pattern": "(?<!\\d)0?233(?!\\d)"
+  },
+  "Immunology": {
+    "RC": "0302",
+    "pattern": "(?:(?<!\\d)0?302(?!\\d)|immunology)"
+  },
+  "Incident to other diagnostic services": {
+    "RC": "0372",
+    "pattern": "(?:(?<!\\d)0?372(?!\\d)|incident|other|diagnostic|services)"
+  },
+  "Incident to Other Diagnostic services": {
+    "RC": "0622",
+    "pattern": "(?:(?<!\\d)0?622(?!\\d)|incident|other|diagnostic|services)"
+  },
+  "Incident to radiology": {
+    "RC": "0371",
+    "pattern": "(?:(?<!\\d)0?371(?!\\d)|incident|radiology)"
+  },
+  "Incident to Radiology": {
+    "RC": "0621",
+    "pattern": "(?:(?<!\\d)0?621(?!\\d)|incident|radiology)"
+  },
+  "Incremental Nursing Charge": {
+    "RC": "023X",
+    "pattern": "(?:(?<!\\d)(?:0?23[0-9]|0?23X)(?!\\d)|incremental|nursing|charge)"
+  },
+  "Individual therapy": {
+    "RC": "0914",
+    "pattern": "(?:(?<!\\d)0?914(?!\\d)|individual|therapy)"
+  },
+  "Infusion of Modified Cells (Effective 4/1/19)": {
+    "RC": "0874",
+    "pattern": "(?:(?<!\\d)0?874(?!\\d)|infusion|modified|cells|effective)"
+  },
+  "Infusion pump": {
+    "RC": "0261",
+    "pattern": "(?:(?<!\\d)0?261(?!\\d)|infusion|pump)"
+  },
+  "Inhalation services": {
+    "RC": "0412",
+    "pattern": "(?:(?<!\\d)0?412(?!\\d)|inhalation|services)"
+  },
+  "Injection of Modified Cells (Effective 4/1/19)": {
+    "RC": "0875",
+    "pattern": "(?:(?<!\\d)0?875(?!\\d)|injection|modified|cells|effective)"
+  },
+  "Inpatient care": {
+    "RC": "0695",
+    "pattern": "(?:(?<!\\d)0?695(?!\\d)|inpatient|care)"
+  },
+  "Inpatient Continuous Ambulatory Peritoneal Dialysis (CAPD)": {
+    "RC": "0803",
+    "pattern": "(?:(?<!\\d)0?803(?!\\d)|inpatient|continuous|ambulatory|peritoneal|dialysis|capd)"
+  },
+  "Inpatient Continuous Cycling Peritoneal Dialysis (CCPD)": {
+    "RC": "0804",
+    "pattern": "(?:(?<!\\d)0?804(?!\\d)|inpatient|continuous|cycling|peritoneal|dialysis|ccpd)"
+  },
+  "Inpatient hemodialysis": {
+    "RC": "0801",
+    "pattern": "(?:(?<!\\d)0?801(?!\\d)|inpatient|hemodialysis)"
+  },
+  "Inpatient peritoneal (non-CAPD)": {
+    "RC": "0802",
+    "pattern": "(?:(?<!\\d)0?802(?!\\d)|inpatient|peritoneal|capd)"
+  },
+  "Inpatient Rehabilitation Facility (IRF) PPS": {
+    "RC": "0024",
+    "pattern": "(?:(?<!\\d)0?024(?!\\d)|inpatient|rehabilitation|facility)"
+  },
+  "Inpatient Renal Dialysis": {
+    "RC": "080X",
+    "pattern": "(?:(?<!\\d)(?:0?80[0-9]|0?80X)(?!\\d)|inpatient|renal|dialysis)"
+  },
+  "Inpatient respite care": {
+    "RC": "0655",
+    "pattern": "(?:(?<!\\d)0?655(?!\\d)|inpatient|respite|care)"
+  },
+  "Intensive Care Unit": {
+    "RC": "020X",
+    "pattern": "(?:(?<!\\d)(?:0?20[0-9]|0?20X)(?!\\d)|intensive|care|unit)"
+  },
+  "Intensive outpatient services - psychiatric": {
+    "RC": "0905",
+    "pattern": "(?:(?<!\\d)0?905(?!\\d)|intensive|outpatient|services|psychiatric)"
+  },
+  "Intermediate CCU": {
+    "RC": "0214",
+    "pattern": "(?:(?<!\\d)0?214(?!\\d)|intermediate)"
+  },
+  "Intermediate ICU": {
+    "RC": "0206",
+    "pattern": "(?:(?<!\\d)0?206(?!\\d)|intermediate)"
+  },
+  "Intraocular lens": {
+    "RC": "0276",
+    "pattern": "(?:(?<!\\d)0?276(?!\\d)|intraocular|lens)"
+  },
+  "IV site care, central line": {
+    "RC": "0642",
+    "pattern": "(?:(?<!\\d)0?642(?!\\d)|site|care|central|line)"
+  },
+  "IV solutions": {
+    "RC": "0258",
+    "pattern": "(?:(?<!\\d)0?258(?!\\d)|solutions)"
+  },
+  "IV start/care, peripheral line": {
+    "RC": "0643",
+    "pattern": "(?:(?<!\\d)0?643(?!\\d)|start|care|peripheral|line)"
+  },
+  "IV Therapy": {
+    "RC": "026X",
+    "pattern": "(?:(?<!\\d)(?:0?26[0-9]|0?26X)(?!\\d)|therapy)"
+  },
+  "Kidney transplant": {
+    "RC": "0367",
+    "pattern": "(?:(?<!\\d)0?367(?!\\d)|kidney|transplant)"
+  },
+  "Labor": {
+    "RC": "0721",
+    "pattern": "(?:(?<!\\d)0?721(?!\\d)|labor)"
+  },
+  "Labor Room/Delivery": {
+    "RC": "072X",
+    "pattern": "(?:(?<!\\d)(?:0?72[0-9]|0?72X)(?!\\d)|labor|room|delivery)"
+  },
+  "Laboratory": {
+    "RC": "0971",
+    "pattern": "(?:(?<!\\d)0?971(?!\\d)|laboratory)"
+  },
+  "Laboratory Pathology": {
+    "RC": "031X",
+    "pattern": "(?:(?<!\\d)(?:0?31[0-9]|0?31X)(?!\\d)|laboratory|pathology)"
+  },
+  "Late Discharge - Medically Necessary": {
+    "RC": "0224",
+    "pattern": "(?:(?<!\\d)0?224(?!\\d)|late|discharge|medically|necessary)"
+  },
+  "Late discharge charge": {
+    "RC": "0996",
+    "pattern": "(?:(?<!\\d)0?996(?!\\d)|late|discharge|charge)"
+  },
+  "Leave of Absence": {
+    "RC": "018X",
+    "pattern": "(?:(?<!\\d)(?:0?18[0-9]|0?18X)(?!\\d)|leave|absence)"
+  },
+  "Leukocytes": {
+    "RC": "0385",
+    "pattern": "(?:(?<!\\d)0?385(?!\\d)|leukocytes)"
+  },
+  "Level I": {
+    "RC": "0681",
+    "pattern": "(?:(?<!\\d)0?681(?!\\d)|level)"
+  },
+  "Level II": {
+    "RC": "0682",
+    "pattern": "(?:(?<!\\d)0?682(?!\\d)|level)"
+  },
+  "Level III": {
+    "RC": "0683",
+    "pattern": "(?:(?<!\\d)0?683(?!\\d)|level)"
+  },
+  "Level IV": {
+    "RC": "0684",
+    "pattern": "(?:(?<!\\d)0?684(?!\\d)|level)"
+  },
+  "Living donor": {
+    "RC": "0811",
+    "pattern": "(?:(?<!\\d)0?811(?!\\d)|living|donor)"
+  },
+  "Lower extremities": {
+    "RC": "0616",
+    "pattern": "(?:(?<!\\d)0?616(?!\\d)|lower|extremities)"
+  },
+  "Magnetic Resonance Technology (MRT)": {
+    "RC": "061X",
+    "pattern": "(?:(?<!\\d)(?:0?61[0-9]|0?61X)(?!\\d)|magnetic|resonance|technology)"
+  },
+  "Magnetoencephalography": {
+    "RC": "086X",
+    "pattern": "(?:(?<!\\d)(?:0?86[0-9]|0?86X)(?!\\d)|magnetoencephalography)"
+  },
+  "Maintenance/100%": {
+    "RC": "0854",
+    "pattern": "(?:(?<!\\d)0?854(?!\\d)|maintenance)"
+  },
+  "Massage": {
+    "RC": "2103",
+    "pattern": "(?:(?<!\\d)2103(?!\\d)|massage)"
+  },
+  "Medical": {
+    "RC": "0202",
+    "pattern": "(?:(?<!\\d)0?202(?!\\d)|medical)"
+  },
+  "Medical Rehabilitation Day Program": {
+    "RC": "093X",
+    "pattern": "(?:(?<!\\d)(?:0?93[0-9]|0?93X)(?!\\d)|medical|rehabilitation|program)"
+  },
+  "Medical social services": {
+    "RC": "0984",
+    "pattern": "(?:(?<!\\d)0?984(?!\\d)|medical|social|services)"
+  },
+  "Medical transport": {
+    "RC": "0542",
+    "pattern": "(?:(?<!\\d)0?542(?!\\d)|medical|transport)"
+  },
+  "Medical/Surgical Supplies - Extension of 027X": {
+    "RC": "062X",
+    "pattern": "(?:(?<!\\d)(?:0?62[0-9]|0?62X)(?!\\d)|medical|surgical|supplies|extension)"
+  },
+  "Medical/Surgical Supplies and Devices (Also see 062X, an extension of 027X)": {
+    "RC": "027X",
+    "pattern": "(?:(?<!\\d)(?:0?27[0-9]|0?27X)(?!\\d)|medical|surgical|supplies|devices|also|extension)"
+  },
+  "Medical/Surgical/GYN": {
+    "RC": "0151",
+    "pattern": "(?:(?<!\\d)0?151(?!\\d)|medical|surgical)"
+  },
+  "MEG": {
+    "RC": "0861",
+    "pattern": "(?<!\\d)0?861(?!\\d)"
+  },
+  "Milieu therapy": {
+    "RC": "0902",
+    "pattern": "(?:(?<!\\d)0?902(?!\\d)|milieu|therapy)"
+  },
+  "Minor surgery": {
+    "RC": "0361",
+    "pattern": "(?:(?<!\\d)0?361(?!\\d)|minor|surgery)"
+  },
+  "Miscellaneous Dialysis": {
+    "RC": "088X",
+    "pattern": "(?:(?<!\\d)(?:0?88[0-9]|0?88X)(?!\\d)|miscellaneous|dialysis)"
+  },
+  "Multiple source drug": {
+    "RC": "0632",
+    "pattern": "(?:(?<!\\d)0?632(?!\\d)|multiple|source|drug)"
+  },
+  "Myocardial Infarction": {
+    "RC": "0211",
+    "pattern": "(?:(?<!\\d)0?211(?!\\d)|myocardial|infarction)"
+  },
+  "Neonatal ambulance": {
+    "RC": "0546",
+    "pattern": "(?:(?<!\\d)0?546(?!\\d)|neonatal|ambulance)"
+  },
+  "Newborn Level I": {
+    "RC": "0171",
+    "pattern": "(?:(?<!\\d)0?171(?!\\d)|newborn|level)"
+  },
+  "Newborn Level II": {
+    "RC": "0172",
+    "pattern": "(?:(?<!\\d)0?172(?!\\d)|newborn|level)"
+  },
+  "Newborn Level III": {
+    "RC": "0173",
+    "pattern": "(?:(?<!\\d)0?173(?!\\d)|newborn|level)"
+  },
+  "Newborn Level IV": {
+    "RC": "0174",
+    "pattern": "(?:(?<!\\d)0?174(?!\\d)|newborn|level)"
+  },
+  "Non-generic drugs": {
+    "RC": "0252",
+    "pattern": "(?:(?<!\\d)0?252(?!\\d)|generic|drugs)"
+  },
+  "Nonpatient room rentals": {
+    "RC": "0995",
+    "pattern": "(?:(?<!\\d)0?995(?!\\d)|nonpatient|room|rentals)"
+  },
+  "Nonprescription": {
+    "RC": "0257",
+    "pattern": "(?:(?<!\\d)0?257(?!\\d)|nonprescription)"
+  },
+  "Nonroutine dialysis": {
+    "RC": "0304",
+    "pattern": "(?:(?<!\\d)0?304(?!\\d)|nonroutine|dialysis)"
+  },
+  "Nonroutine nursing, central line": {
+    "RC": "0641",
+    "pattern": "(?:(?<!\\d)0?641(?!\\d)|nonroutine|nursing|central|line)"
+  },
+  "Nonroutine nursing, peripheral line": {
+    "RC": "0644",
+    "pattern": "(?:(?<!\\d)0?644(?!\\d)|nonroutine|nursing|peripheral|line)"
+  },
+  "Nonsterile": {
+    "RC": "0271",
+    "pattern": "(?:(?<!\\d)0?271(?!\\d)|nonsterile)"
+  },
+  "Nuclear Medicine": {
+    "RC": "034X",
+    "pattern": "(?:(?<!\\d)(?:0?34[0-9]|0?34X)(?!\\d)|nuclear|medicine)"
+  },
+  "Nuclear medicine": {
+    "RC": "0974",
+    "pattern": "(?:(?<!\\d)0?974(?!\\d)|nuclear|medicine)"
+  },
+  "Nursery": {
+    "RC": "0231",
+    "pattern": "(?:(?<!\\d)0?231(?!\\d)|nursery)"
+  },
+  "Nursing home (for hospitalization)": {
+    "RC": "0185",
+    "pattern": "(?:(?<!\\d)0?185(?!\\d)|nursing|home|hospitalization)"
+  },
+  "OB": {
+    "RC": "0232",
+    "pattern": "(?<!\\d)0?232(?!\\d)"
+  },
+  "OB/GYN clinic": {
+    "RC": "0514",
+    "pattern": "(?:(?<!\\d)0?514(?!\\d)|clinic)"
+  },
+  "Observation hours": {
+    "RC": "0762",
+    "pattern": "(?:(?<!\\d)0?762(?!\\d)|observation|hours)"
+  },
+  "Obstetrics (OB)": {
+    "RC": "0112",
+    "pattern": "(?:(?<!\\d)0?112(?!\\d)|obstetrics)"
+  },
+  "Occupational Therapy": {
+    "RC": "043X",
+    "pattern": "(?:(?<!\\d)(?:0?43[0-9]|0?43X)(?!\\d)|occupational|therapy)"
+  },
+  "Occupational therapy": {
+    "RC": "0978",
+    "pattern": "(?:(?<!\\d)0?978(?!\\d)|occupational|therapy)"
+  },
+  "Oncology": {
+    "RC": "028X",
+    "pattern": "(?:(?<!\\d)(?:0?28[0-9]|0?28X)(?!\\d)|oncology)"
+  },
+  "Operating room": {
+    "RC": "0975",
+    "pattern": "(?:(?<!\\d)0?975(?!\\d)|operating|room)"
+  },
+  "Operating Room Services": {
+    "RC": "036X",
+    "pattern": "(?:(?<!\\d)(?:0?36[0-9]|0?36X)(?!\\d)|operating|room|services)"
+  },
+  "Ophthalmology": {
+    "RC": "0962",
+    "pattern": "(?:(?<!\\d)0?962(?!\\d)|ophthalmology)"
+  },
+  "Organ transplant - other than kidney": {
+    "RC": "0362",
+    "pattern": "(?:(?<!\\d)0?362(?!\\d)|organ|transplant|other|than|kidney)"
+  },
+  "Osteopathic Services": {
+    "RC": "053X",
+    "pattern": "(?:(?<!\\d)(?:0?53[0-9]|0?53X)(?!\\d)|osteopathic|services)"
+  },
+  "Osteopathic therapy": {
+    "RC": "0531",
+    "pattern": "(?:(?<!\\d)0?531(?!\\d)|osteopathic|therapy)"
+  },
+  "Other": {
+    "RC": "3109",
+    "pattern": "(?:(?<!\\d)3109(?!\\d)|other)"
+  },
+  "Other components": {
+    "RC": "0386",
+    "pattern": "(?:(?<!\\d)0?386(?!\\d)|other|components)"
+  },
+  "Other Coronary CCU": {
+    "RC": "0219",
+    "pattern": "(?:(?<!\\d)0?219(?!\\d)|other|coronary)"
+  },
+  "Other derivatives (cryoprecipitates)": {
+    "RC": "0387",
+    "pattern": "(?:(?<!\\d)0?387(?!\\d)|other|derivatives|cryoprecipitates)"
+  },
+  "Other Diagnostic Services": {
+    "RC": "092X",
+    "pattern": "(?:(?<!\\d)(?:0?92[0-9]|0?92X)(?!\\d)|other|diagnostic|services)"
+  },
+  "Other equipment": {
+    "RC": "0299",
+    "pattern": "(?:(?<!\\d)0?299(?!\\d)|other|equipment)"
+  },
+  "Other Imaging Services": {
+    "RC": "040X",
+    "pattern": "(?:(?<!\\d)(?:0?40[0-9]|0?40X)(?!\\d)|other|imaging|services)"
+  },
+  "Other implants": {
+    "RC": "0278",
+    "pattern": "(?:(?<!\\d)0?278(?!\\d)|other|implants)"
+  },
+  "Other MRA": {
+    "RC": "0618",
+    "pattern": "(?:(?<!\\d)0?618(?!\\d)|other)"
+  },
+  "Other MRI": {
+    "RC": "0614",
+    "pattern": "(?:(?<!\\d)0?614(?!\\d)|other)"
+  },
+  "Other MRT": {
+    "RC": "0619",
+    "pattern": "(?:(?<!\\d)0?619(?!\\d)|other)"
+  },
+  "Other processing and storage": {
+    "RC": "0399",
+    "pattern": "(?:(?<!\\d)0?399(?!\\d)|other|processing|storage)"
+  },
+  "Other Room and Board": {
+    "RC": "016X",
+    "pattern": "(?:(?<!\\d)(?:0?16[0-9]|0?16X)(?!\\d)|other|room|board)"
+  },
+  "Other supplies/devices": {
+    "RC": "0279",
+    "pattern": "(?:(?<!\\d)0?279(?!\\d)|other|supplies|devices)"
+  },
+  "Other Therapeutic Services (Extension of 094X)": {
+    "RC": "095X",
+    "pattern": "(?:(?<!\\d)(?:0?95[0-9]|0?95X)(?!\\d)|other|therapeutic|services|extension)"
+  },
+  "Other Therapeutic Services - See also 095X": {
+    "RC": "094X",
+    "pattern": "(?:(?<!\\d)(?:0?94[0-9]|0?94X)(?!\\d)|other|therapeutic|services|also)"
+  },
+  "Outdoor/wilderness behavioral health (effective 7/1/17)": {
+    "RC": "1006",
+    "pattern": "(?:(?<!\\d)1006(?!\\d)|outdoor|wilderness|behavioral|health|effective)"
+  },
+  "Outpatient Services": {
+    "RC": "050X",
+    "pattern": "(?:(?<!\\d)(?:0?50[0-9]|0?50X)(?!\\d)|outpatient|services)"
+  },
+  "Outpatient services": {
+    "RC": "0982",
+    "pattern": "(?:(?<!\\d)0?982(?!\\d)|outpatient|services)"
+  },
+  "Outpatient Special Residence Charges": {
+    "RC": "067X",
+    "pattern": "(?:(?<!\\d)(?:0?67[0-9]|0?67X)(?!\\d)|outpatient|special|residence|charges)"
+  },
+  "Oxygen": {
+    "RC": "0544",
+    "pattern": "(?:(?<!\\d)0?544(?!\\d)|oxygen)"
+  },
+  "Pacemaker": {
+    "RC": "0275",
+    "pattern": "(?:(?<!\\d)0?275(?!\\d)|pacemaker)"
+  },
+  "Packed red cells": {
+    "RC": "0381",
+    "pattern": "(?:(?<!\\d)0?381(?!\\d)|packed|cells)"
+  },
+  "Pap smear": {
+    "RC": "0923",
+    "pattern": "(?:(?<!\\d)0?923(?!\\d)|smear)"
+  },
+  "Partial hospitalization - intensive": {
+    "RC": "0913",
+    "pattern": "(?:(?<!\\d)0?913(?!\\d)|partial|hospitalization|intensive)"
+  },
+  "Partial hospitalization - less intensive": {
+    "RC": "0912",
+    "pattern": "(?:(?<!\\d)0?912(?!\\d)|partial|hospitalization|less|intensive)"
+  },
+  "Patient convenience - charges billable": {
+    "RC": "0182",
+    "pattern": "(?:(?<!\\d)0?182(?!\\d)|patient|convenience|charges|billable)"
+  },
+  "Patient Convenience Items": {
+    "RC": "099X",
+    "pattern": "(?:(?<!\\d)(?:0?99[0-9]|0?99X)(?!\\d)|patient|convenience|items)"
+  },
+  "Payer Code": {
+    "RC": "001X",
+    "pattern": "(?:(?<!\\d)(?:0?01[0-9]|0?01X)(?!\\d)|payer|code)"
+  },
+  "Pediatric": {
+    "RC": "0203",
+    "pattern": "(?:(?<!\\d)0?203(?!\\d)|pediatric)"
+  },
+  "Pediatric clinic": {
+    "RC": "0515",
+    "pattern": "(?:(?<!\\d)0?515(?!\\d)|pediatric|clinic)"
+  },
+  "Peripheral vascular lab": {
+    "RC": "0921",
+    "pattern": "(?:(?<!\\d)0?921(?!\\d)|peripheral|vascular)"
+  },
+  "Peritoneal Dialysis - Outpatient or Home": {
+    "RC": "083X",
+    "pattern": "(?:(?<!\\d)(?:0?83[0-9]|0?83X)(?!\\d)|peritoneal|dialysis|outpatient|home)"
+  },
+  "Pharmacy": {
+    "RC": "0547",
+    "pattern": "(?:(?<!\\d)0?547(?!\\d)|pharmacy)"
+  },
+  "Pharmacy (Also see 063X, an extension of 250X)": {
+    "RC": "025X",
+    "pattern": "(?:(?<!\\d)(?:0?25[0-9]|0?25X)(?!\\d)|pharmacy|also|extension)"
+  },
+  "Pharmacy - Extension of 025X": {
+    "RC": "063X",
+    "pattern": "(?:(?<!\\d)(?:0?63[0-9]|0?63X)(?!\\d)|pharmacy|extension)"
+  },
+  "Pharmacy - Extension of 025X and 063X": {
+    "RC": "089X",
+    "pattern": "(?:(?<!\\d)(?:0?89[0-9]|0?89X)(?!\\d)|pharmacy|extension)"
+  },
+  "Pharmacy services": {
+    "RC": "0262",
+    "pattern": "(?:(?<!\\d)0?262(?!\\d)|pharmacy|services)"
+  },
+  "Physical Therapy": {
+    "RC": "042X",
+    "pattern": "(?:(?<!\\d)(?:0?42[0-9]|0?42X)(?!\\d)|physical|therapy)"
+  },
+  "Physical therapy": {
+    "RC": "0977",
+    "pattern": "(?:(?<!\\d)0?977(?!\\d)|physical|therapy)"
+  },
+  "Physician services": {
+    "RC": "0696",
+    "pattern": "(?:(?<!\\d)0?696(?!\\d)|physician|services)"
+  },
+  "Plasma": {
+    "RC": "0383",
+    "pattern": "(?:(?<!\\d)0?383(?!\\d)|plasma)"
+  },
+  "Platelets": {
+    "RC": "0384",
+    "pattern": "(?:(?<!\\d)0?384(?!\\d)|platelets)"
+  },
+  "Play therapy": {
+    "RC": "0903",
+    "pattern": "(?:(?<!\\d)0?903(?!\\d)|play|therapy)"
+  },
+  "Portable Add-on": {
+    "RC": "0604",
+    "pattern": "(?:(?<!\\d)0?604(?!\\d)|portable)"
+  },
+  "Positron Emission Tomography": {
+    "RC": "0404",
+    "pattern": "(?:(?<!\\d)0?404(?!\\d)|positron|emission|tomography)"
+  },
+  "Pre-Hospice/Palliative Care Services": {
+    "RC": "069X",
+    "pattern": "(?:(?<!\\d)(?:0?69[0-9]|0?69X)(?!\\d)|hospice|palliative|care|services)"
+  },
+  "Pregnancy test": {
+    "RC": "0925",
+    "pattern": "(?:(?<!\\d)0?925(?!\\d)|pregnancy|test)"
+  },
+  "Preventive Services": {
+    "RC": "077X",
+    "pattern": "(?:(?<!\\d)(?:0?77[0-9]|0?77X)(?!\\d)|preventive|services)"
+  },
+  "Private linen service": {
+    "RC": "0992",
+    "pattern": "(?:(?<!\\d)0?992(?!\\d)|private|linen|service)"
+  },
+  "Private-duty nurse": {
+    "RC": "0989",
+    "pattern": "(?:(?<!\\d)0?989(?!\\d)|private|duty|nurse)"
+  },
+  "Processing and storage": {
+    "RC": "0392",
+    "pattern": "(?:(?<!\\d)0?392(?!\\d)|processing|storage)"
+  },
+  "Professional Fees": {
+    "RC": "096X",
+    "pattern": "(?:(?<!\\d)(?:0?96[0-9]|0?96X)(?!\\d)|professional|fees)"
+  },
+  "Professional Fees (Extension of 096X and 097X)": {
+    "RC": "098X",
+    "pattern": "(?:(?<!\\d)(?:0?98[0-9]|0?98X)(?!\\d)|professional|fees|extension)"
+  },
+  "Professional Fees (Extension of 096X)": {
+    "RC": "097X",
+    "pattern": "(?:(?<!\\d)(?:0?97[0-9]|0?97X)(?!\\d)|professional|fees|extension)"
+  },
+  "Prosthetic/orthotic devices": {
+    "RC": "0274",
+    "pattern": "(?:(?<!\\d)0?274(?!\\d)|prosthetic|orthotic|devices)"
+  },
+  "Psychiatric": {
+    "RC": "0961",
+    "pattern": "(?:(?<!\\d)0?961(?!\\d)|psychiatric)"
+  },
+  "Psychiatric clinic": {
+    "RC": "0513",
+    "pattern": "(?:(?<!\\d)0?513(?!\\d)|psychiatric|clinic)"
+  },
+  "Pulmonary Care": {
+    "RC": "0212",
+    "pattern": "(?:(?<!\\d)0?212(?!\\d)|pulmonary|care)"
+  },
+  "Pulmonary Function": {
+    "RC": "046X",
+    "pattern": "(?:(?<!\\d)(?:0?46[0-9]|0?46X)(?!\\d)|pulmonary|function)"
+  },
+  "Pulmonary rehabilitation": {
+    "RC": "0948",
+    "pattern": "(?:(?<!\\d)0?948(?!\\d)|pulmonary|rehabilitation)"
+  },
+  "Purchase of new DME": {
+    "RC": "0292",
+    "pattern": "(?:(?<!\\d)0?292(?!\\d)|purchase)"
+  },
+  "Purchase of used DME": {
+    "RC": "0293",
+    "pattern": "(?:(?<!\\d)0?293(?!\\d)|purchase|used)"
+  },
+  "Radiation therapy": {
+    "RC": "0333",
+    "pattern": "(?:(?<!\\d)0?333(?!\\d)|radiation|therapy)"
+  },
+  "Radiology - diagnostic": {
+    "RC": "0972",
+    "pattern": "(?:(?<!\\d)0?972(?!\\d)|radiology|diagnostic)"
+  },
+  "Radiology - therapeutic": {
+    "RC": "0973",
+    "pattern": "(?:(?<!\\d)0?973(?!\\d)|radiology|therapeutic)"
+  },
+  "Radiology Diagnostic": {
+    "RC": "032X",
+    "pattern": "(?:(?<!\\d)(?:0?32[0-9]|0?32X)(?!\\d)|radiology|diagnostic)"
+  },
+  "Radiology Therapeutic and/of Chemotherapy Administration": {
+    "RC": "033X",
+    "pattern": "(?:(?<!\\d)(?:0?33[0-9]|0?33X)(?!\\d)|radiology|therapeutic|chemotherapy|administration)"
+  },
+  "Recovery Room": {
+    "RC": "071X",
+    "pattern": "(?:(?<!\\d)(?:0?71[0-9]|0?71X)(?!\\d)|recovery|room)"
+  },
+  "Recreational": {
+    "RC": "0941",
+    "pattern": "(?:(?<!\\d)0?941(?!\\d)|recreational)"
+  },
+  "Reflexology": {
+    "RC": "2104",
+    "pattern": "(?:(?<!\\d)2104(?!\\d)|reflexology)"
+  },
+  "Rehabilitation": {
+    "RC": "0911",
+    "pattern": "(?:(?<!\\d)0?911(?!\\d)|rehabilitation)"
+  },
+  "Renal patient (home)": {
+    "RC": "0303",
+    "pattern": "(?:(?<!\\d)0?303(?!\\d)|renal|patient|home)"
+  },
+  "Rental": {
+    "RC": "0291",
+    "pattern": "(?:(?<!\\d)0?291(?!\\d)|rental)"
+  },
+  "Reserved (Use 0250 For General Classification) (Effective 4/1/19)": {
+    "RC": "0890",
+    "pattern": "(?:(?<!\\d)0?890(?!\\d)|reserved|general|classification|effective)"
+  },
+  "Residential treatment - chemical dependency": {
+    "RC": "1002",
+    "pattern": "(?:(?<!\\d)1002(?!\\d)|residential|treatment|chemical|dependency)"
+  },
+  "Residential treatment - psychiatric": {
+    "RC": "1001",
+    "pattern": "(?:(?<!\\d)1001(?!\\d)|residential|treatment|psychiatric)"
+  },
+  "Respiratory Services": {
+    "RC": "041X",
+    "pattern": "(?:(?<!\\d)(?:0?41[0-9]|0?41X)(?!\\d)|respiratory|services)"
+  },
+  "Respiratory therapy": {
+    "RC": "0976",
+    "pattern": "(?:(?<!\\d)0?976(?!\\d)|respiratory|therapy)"
+  },
+  "Respite Care": {
+    "RC": "066X",
+    "pattern": "(?:(?<!\\d)(?:0?66[0-9]|0?66X)(?!\\d)|respite|care)"
+  },
+  "Restrictive prescription": {
+    "RC": "0633",
+    "pattern": "(?:(?<!\\d)0?633(?!\\d)|restrictive|prescription)"
+  },
+  "Room and Board (3 and 4 beds)": {
+    "RC": "013X",
+    "pattern": "(?:(?<!\\d)(?:0?13[0-9]|0?13X)(?!\\d)|room|board|beds)"
+  },
+  "Room and Board Deluxe Private": {
+    "RC": "014X",
+    "pattern": "(?:(?<!\\d)(?:0?14[0-9]|0?14X)(?!\\d)|room|board|deluxe|private)"
+  },
+  "Room and Board Private (one bed)": {
+    "RC": "011X",
+    "pattern": "(?:(?<!\\d)(?:0?11[0-9]|0?11X)(?!\\d)|room|board|private)"
+  },
+  "Room and Board Semi-private (two beds)": {
+    "RC": "012X",
+    "pattern": "(?:(?<!\\d)(?:0?12[0-9]|0?12X)(?!\\d)|room|board|semi|private|beds)"
+  },
+  "Room and Board Ward": {
+    "RC": "015X",
+    "pattern": "(?:(?<!\\d)(?:0?15[0-9]|0?15X)(?!\\d)|room|board|ward)"
+  },
+  "Routine home care": {
+    "RC": "0651",
+    "pattern": "(?:(?<!\\d)0?651(?!\\d)|routine|home|care)"
+  },
+  "Screening mammography": {
+    "RC": "0403",
+    "pattern": "(?:(?<!\\d)0?403(?!\\d)|screening|mammography)"
+  },
+  "Self-administered drugs": {
+    "RC": "0637",
+    "pattern": "(?:(?<!\\d)0?637(?!\\d)|self|administered|drugs)"
+  },
+  "Self-care": {
+    "RC": "0167",
+    "pattern": "(?:(?<!\\d)0?167(?!\\d)|self|care)"
+  },
+  "Single source drug": {
+    "RC": "0631",
+    "pattern": "(?:(?<!\\d)0?631(?!\\d)|single|source|drug)"
+  },
+  "Skilled Nursing": {
+    "RC": "055X",
+    "pattern": "(?:(?<!\\d)(?:0?55[0-9]|0?55X)(?!\\d)|skilled|nursing)"
+  },
+  "Skilled Nursing Facility PPS": {
+    "RC": "0022",
+    "pattern": "(?:(?<!\\d)0?022(?!\\d)|skilled|nursing|facility)"
+  },
+  "Special Charges": {
+    "RC": "022X",
+    "pattern": "(?:(?<!\\d)(?:0?22[0-9]|0?22X)(?!\\d)|special|charges)"
+  },
+  "Special Processed Drugs - FDA Approved Cell Therapy (Effective 4/1/19)": {
+    "RC": "0891",
+    "pattern": "(?:(?<!\\d)0?891(?!\\d)|special|processed|drugs|approved|cell|therapy)"
+  },
+  "Special Processed Drugs – FDA Approved Gene Therapy (Effective 4/1/20)": {
+    "RC": "0892",
+    "pattern": "(?:(?<!\\d)0?892(?!\\d)|special|processed|drugs|approved|gene|therapy)"
+  },
+  "Specialized Biologic Processing and Storage - Prior To Transport": {
+    "RC": "0872",
+    "pattern": "(?:(?<!\\d)0?872(?!\\d)|specialized|biologic|processing|storage|prior|transport)"
+  },
+  "Specialty": {
+    "RC": "0243",
+    "pattern": "(?:(?<!\\d)0?243(?!\\d)|specialty)"
+  },
+  "Specialty Services": {
+    "RC": "076X",
+    "pattern": "(?:(?<!\\d)(?:0?76[0-9]|0?76X)(?!\\d)|specialty|services)"
+  },
+  "Speech pathology": {
+    "RC": "0979",
+    "pattern": "(?:(?<!\\d)0?979(?!\\d)|speech|pathology)"
+  },
+  "Speech Therapy Language Pathology": {
+    "RC": "044X",
+    "pattern": "(?:(?<!\\d)(?:0?44[0-9]|0?44X)(?!\\d)|speech|therapy|language|pathology)"
+  },
+  "Spinal cord/spine": {
+    "RC": "0612",
+    "pattern": "(?:(?<!\\d)0?612(?!\\d)|spinal|cord|spine)"
+  },
+  "Stat/Equip Over 4 LPM": {
+    "RC": "0603",
+    "pattern": "(?:(?<!\\d)0?603(?!\\d)|stat|equip|over)"
+  },
+  "Stat/Equip/Supply or contents": {
+    "RC": "0601",
+    "pattern": "(?:(?<!\\d)0?601(?!\\d)|stat|equip|supply|contents)"
+  },
+  "Stat/Equip/Supply Under 1 LPM": {
+    "RC": "0602",
+    "pattern": "(?:(?<!\\d)0?602(?!\\d)|stat|equip|supply|under)"
+  },
+  "Stem cells - allogeneic (effective 1/1/17)": {
+    "RC": "0815",
+    "pattern": "(?:(?<!\\d)0?815(?!\\d)|stem|cells|allogeneic|effective)"
+  },
+  "Sterile": {
+    "RC": "0272",
+    "pattern": "(?:(?<!\\d)0?272(?!\\d)|sterile)"
+  },
+  "Storage and Processing After Receipt of Cells from Manufacturer": {
+    "RC": "0873",
+    "pattern": "(?:(?<!\\d)0?873(?!\\d)|storage|processing|after|receipt|cells|from)"
+  },
+  "Stress test": {
+    "RC": "0482",
+    "pattern": "(?:(?<!\\d)0?482(?!\\d)|stress|test)"
+  },
+  "Subacute Care": {
+    "RC": "019X",
+    "pattern": "(?:(?<!\\d)(?:0?19[0-9]|0?19X)(?!\\d)|subacute|care)"
+  },
+  "Supervised living": {
+    "RC": "1003",
+    "pattern": "(?:(?<!\\d)1003(?!\\d)|supervised|living)"
+  },
+  "Supplies": {
+    "RC": "0541",
+    "pattern": "(?:(?<!\\d)0?541(?!\\d)|supplies)"
+  },
+  "Supplies/Drugs for DME": {
+    "RC": "0294",
+    "pattern": "(?:(?<!\\d)0?294(?!\\d)|supplies|drugs)"
+  },
+  "Support Services": {
+    "RC": "0855",
+    "pattern": "(?:(?<!\\d)0?855(?!\\d)|support|services)"
+  },
+  "Surgical": {
+    "RC": "0201",
+    "pattern": "(?:(?<!\\d)0?201(?!\\d)|surgical)"
+  },
+  "Surgical Dressings": {
+    "RC": "0623",
+    "pattern": "(?:(?<!\\d)0?623(?!\\d)|surgical|dressings)"
+  },
+  "Take-home drugs": {
+    "RC": "0253",
+    "pattern": "(?:(?<!\\d)0?253(?!\\d)|take|home|drugs)"
+  },
+  "Take-home oxygen": {
+    "RC": "0277",
+    "pattern": "(?:(?<!\\d)0?277(?!\\d)|take|home|oxygen)"
+  },
+  "Take-home supplies": {
+    "RC": "0273",
+    "pattern": "(?:(?<!\\d)0?273(?!\\d)|take|home|supplies)"
+  },
+  "Technical Support Charge": {
+    "RC": "0222",
+    "pattern": "(?:(?<!\\d)0?222(?!\\d)|technical|support|charge)"
+  },
+  "Telemedicine": {
+    "RC": "078X",
+    "pattern": "(?:(?<!\\d)(?:0?78[0-9]|0?78X)(?!\\d)|telemedicine)"
+  },
+  "Telemetry": {
+    "RC": "0732",
+    "pattern": "(?:(?<!\\d)0?732(?!\\d)|telemetry)"
+  },
+  "Telephone/telegraph": {
+    "RC": "0993",
+    "pattern": "(?:(?<!\\d)0?993(?!\\d)|telephone|telegraph)"
+  },
+  "Testing": {
+    "RC": "0918",
+    "pattern": "(?:(?<!\\d)0?918(?!\\d)|testing)"
+  },
+  "Therapeutic": {
+    "RC": "0342",
+    "pattern": "(?:(?<!\\d)0?342(?!\\d)|therapeutic)"
+  },
+  "Therapeutic leave": {
+    "RC": "0183",
+    "pattern": "(?:(?<!\\d)0?183(?!\\d)|therapeutic|leave)"
+  },
+  "Therapeutic radiopharmaceuticals": {
+    "RC": "0344",
+    "pattern": "(?:(?<!\\d)0?344(?!\\d)|therapeutic|radiopharmaceuticals)"
+  },
+  "Total Charge": {
+    "RC": "0001",
+    "pattern": "(?:(?<!\\d)0?001(?!\\d)|total|charge)"
+  },
+  "Training disabled patient, central line": {
+    "RC": "0646",
+    "pattern": "(?:(?<!\\d)0?646(?!\\d)|training|disabled|patient|central|line)"
+  },
+  "Training disabled patient, peripheral line": {
+    "RC": "0648",
+    "pattern": "(?:(?<!\\d)0?648(?!\\d)|training|disabled|patient|peripheral|line)"
+  },
+  "Training patient/caregiver, central line": {
+    "RC": "0645",
+    "pattern": "(?:(?<!\\d)0?645(?!\\d)|training|patient|caregiver|central|line)"
+  },
+  "Training patient/caregiver, peripheral line": {
+    "RC": "0647",
+    "pattern": "(?:(?<!\\d)0?647(?!\\d)|training|patient|caregiver|peripheral|line)"
+  },
+  "Trauma": {
+    "RC": "0208",
+    "pattern": "(?:(?<!\\d)0?208(?!\\d)|trauma)"
+  },
+  "Trauma Response": {
+    "RC": "068X",
+    "pattern": "(?:(?<!\\d)(?:0?68[0-9]|0?68X)(?!\\d)|trauma|response)"
+  },
+  "Treatment": {
+    "RC": "0472",
+    "pattern": "(?:(?<!\\d)0?472(?!\\d)|treatment)"
+  },
+  "Treatment room": {
+    "RC": "0761",
+    "pattern": "(?:(?<!\\d)0?761(?!\\d)|treatment|room)"
+  },
+  "TV/radio": {
+    "RC": "0994",
+    "pattern": "(?:(?<!\\d)0?994(?!\\d)|radio)"
+  },
+  "U.R. Service Charge": {
+    "RC": "0223",
+    "pattern": "(?:(?<!\\d)0?223(?!\\d)|service|charge)"
+  },
+  "Ultrafiltration": {
+    "RC": "0881",
+    "pattern": "(?:(?<!\\d)0?881(?!\\d)|ultrafiltration)"
+  },
+  "Ultrasound": {
+    "RC": "0402",
+    "pattern": "(?:(?<!\\d)0?402(?!\\d)|ultrasound)"
+  },
+  "Unknown donor": {
+    "RC": "0813",
+    "pattern": "(?:(?<!\\d)0?813(?!\\d)|unknown|donor)"
+  },
+  "Unsuccessful organ search - donor bank charges": {
+    "RC": "0814",
+    "pattern": "(?:(?<!\\d)0?814(?!\\d)|unsuccessful|organ|search|donor|bank|charges)"
+  },
+  "Urgent care": {
+    "RC": "0456",
+    "pattern": "(?:(?<!\\d)0?456(?!\\d)|urgent|care)"
+  },
+  "Urgent care clinic": {
+    "RC": "0526",
+    "pattern": "(?:(?<!\\d)0?526(?!\\d)|urgent|care|clinic)"
+  },
+  "Urology": {
+    "RC": "0307",
+    "pattern": "(?:(?<!\\d)0?307(?!\\d)|urology)"
+  },
+  "Vaccine administration": {
+    "RC": "0771",
+    "pattern": "(?:(?<!\\d)0?771(?!\\d)|vaccine|administration)"
+  },
+  "Visit by RHC/FQHC practitioner to member in a Part A covered stay in SNF": {
+    "RC": "0524",
+    "pattern": "(?:(?<!\\d)0?524(?!\\d)|visit|fqhc|practitioner|member|part|covered)"
+  },
+  "Visit by RHC/FQHC practitioner to member in a stay not covered by Part A in a": {
+    "RC": "0525",
+    "pattern": "(?:(?<!\\d)0?525(?!\\d)|visit|fqhc|practitioner|member|stay|covered)"
+  },
+  "Visit by RHC/FQHC practitioner to other non-RHC/FQHC site (e.g., scene of accident)": {
+    "RC": "0528",
+    "pattern": "(?:(?<!\\d)0?528(?!\\d)|visit|fqhc|practitioner|other|fqhc|site)"
+  },
+  "Visit charge": {
+    "RC": "0691",
+    "pattern": "(?:(?<!\\d)0?691(?!\\d)|visit|charge)"
+  },
+  "Visiting nurse services to member's home in a home health shortage area": {
+    "RC": "0527",
+    "pattern": "(?:(?<!\\d)0?527(?!\\d)|visiting|nurse|services|member|home|home)"
+  },
+  "Whole blood and blood products": {
+    "RC": "0382",
+    "pattern": "(?:(?<!\\d)0?382(?!\\d)|whole|blood|blood|products)"
+  }
+}

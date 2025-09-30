@@ -129,9 +129,29 @@ def get_matches(df, verbose=False, cols_to_drop=None):
     # Merge all matched DataFrames into a single DataFrame
     merged_df = pd.concat(matched_dfs, axis=0)
 
-    # Remove code_# and code_#_type columns but keep plain 'code' column
-    code_type_cols = [col for col in merged_df.columns if re.match(r'code_\d+(_type)?$', col)]
-    merged_df = merged_df.drop(columns=code_type_cols, errors='ignore')
+    # Remove code_# and code_#_type columns but keep plain 'code' column, and column containing RC codes if present
+    # First check which code_type_# cols contain 'RC' string
+    rc_code_type_cols = [col for col in merged_df.columns if re.match(r'code_\d+_type$', col) and 'RC' in merged_df[col].values]
+    
+    if rc_code_type_cols:
+        # Find the code_# col that corresponds to the RC code_type col
+        rc_code_cols = [col.replace('_type', '') for col in rc_code_type_cols]
+        
+        if verbose:
+            print(f"Found RC code columns: {rc_code_cols}")
+        
+        # Rename the RC code column to 'rc_code'
+        for rc_col in rc_code_cols:
+            merged_df = merged_df.rename(columns={rc_col: 'rc_code'})
+        
+        # Drop all code_# and code_#_type columns
+        code_type_cols = [col for col in merged_df.columns if re.match(r'code_\d+(_type)?$', col)]
+        merged_df = merged_df.drop(columns=code_type_cols, errors='ignore')
+    else:
+        # No RC codes found, drop all code_# and code_#_type columns
+        code_type_cols = [col for col in merged_df.columns if re.match(r'code_\d+(_type)?$', col)]
+        merged_df = merged_df.drop(columns=code_type_cols, errors='ignore')
+    
     if verbose:
         print(f"Dropped code/type columns: {code_type_cols}")
         print(f"Merged DataFrame shape before dropping duplicates: {merged_df.shape}")
