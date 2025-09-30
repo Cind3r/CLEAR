@@ -26,12 +26,14 @@ These are the hospital's which data has been gathered and processed for thus far
 
 These are the hospital's which data has been gathered and processed for thus far:
 
-| State    | Hospital Name                     | Zipcode     | Date                 | File Size    | Link                                                            |
-|----------|--------------------------------|-------------|-------------------|-------------|------------------------------------------------|
-| NC        | Duke University Hospital     |     27710    |      09/2025      |   3.32 GB   |    [Link](https://www.dukehealth.org/paying-for-care/what-duke-charges-services) |
-| NC        | AdventHealth (Hendersonville)   |     28792   |   09/2025    |      1.48 GB           |                                                                 |
+| State    | Hospital Name                     | Zipcode     | Date                 | File Size    | Link  |
+|----------|--------------------------------|-------------|-------------------|-------------|-------|
+| NC | Duke University Hospital | 27710 | 09/2025 | 3.32 GB |    [Link](https://www.dukehealth.org/paying-for-care/what-duke-charges-services) |
+| NC | AdventHealth (Hendersonville) | 28792 | 09/2025 | 1.48 GB |  |
+| NC | UNC Medical Center | 27514 | 09/2025 | 201 MB | [Link](https://rca.centaurihs.com/ptapp/#d4ccc071fab9c79f17e52dc5b243ef668affc5e569aafa907c5b4c81f0a89284) |
 | NC | UNC Rex Hospital | 27606 | 09/2025 | 121 MB | [Link](https://www.unchealth.org/records-insurance/standard-charges) |
-| SC        | MUSC Health-University Medical Center (Charleston) |   29425   | 09/2025 | 11.8 MB |  [Link](https://muschealth.org/patients-visitors/billing/price-transparency) |
+| NC | WakeMed North Hospital | 27614 | 09/2025 | 56.1 MB | [Link](https://www.wakemed.org/sites/default/files/PricingTransparency/566017737_wakemed-raleigh-campus-and-north-hospital_standardcharges.csv) |
+| SC | MUSC Health-University Medical Center (Charleston) | 29425 | 09/2025 | 11.8 MB |  [Link](https://muschealth.org/patients-visitors/billing/price-transparency) |
 | VA | Inova Fairfax Hospital (Falls Church) | 22042 | 09/2025 | 11.3 MB | [Link](https://www.inova.org/patient-and-visitor-information/hospital-charges) |
 
 ## Data Processing
