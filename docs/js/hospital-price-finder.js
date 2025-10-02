@@ -571,21 +571,23 @@ async function getUniquePayers(hospitalList) {
 }
 
 /**
- * Populate the payer dropdown with unique payers from search results
+ * Populate the payer dropdown with unique payers and their result counts
  * @param {Array} payers - Array of payer names
+ * @param {Object} payerCounts - Object mapping payer names to counts
  */
-function populatePayerDropdown(payers) {
+function populatePayerDropdown(payers, payerCounts) {
   // Save the currently selected payer
   const currentSelection = $payer.value;
   
   // Clear existing options except "All Payers"
   $payer.innerHTML = '<option value="">All Payers</option>';
   
-  // Add unique payers
+  // Add unique payers with counts
   payers.forEach(payer => {
     const option = document.createElement('option');
     option.value = payer;
-    option.textContent = payer;
+    const count = payerCounts[payer] || 0;
+    option.textContent = `${payer} (${count})`;
     $payer.appendChild(option);
   });
   
@@ -896,6 +898,7 @@ function updateVisualizations(hospitalList, hitsById) {
 // Store current data for visualization updates
 let currentHospitalList = [];
 let currentHitsById = new Map();
+let currentPayerCounts = {};
 
 /**
  * Toggle function for expanding/collapsing hospital price display
@@ -1094,7 +1097,7 @@ async function go(){
   // Load unique payers from hospitals in radius
   try {
     const uniquePayers = await getUniquePayers(nearby);
-    populatePayerDropdown(uniquePayers);
+    populatePayerDropdown(uniquePayers, currentPayerCounts || {});
     const searchDesc = svcName || q;
     const statusMsg = miles >= 500 
       ? `Showing all ${nearby.length} hospitals. ${searchDesc ? "Querying prices..." : "(select a service or enter a procedure to search prices)"}`
@@ -1109,20 +1112,55 @@ async function go(){
     setStatus(statusMsg);
   }
 
-  // Query price data from hospital JSON files in parallel
-  const hitsById = new Map();
+  // Query price data from hospital JSON files in parallel (without payer filter for counts)
+  const allHitsById = new Map();
   const pool = 4; let i = 0;
   async function worker(){
     while(i < nearby.length){
       const h = nearby[i++];
-      const hits = (ENABLE_PRICES && searchPattern && h.json_path) ? await queryHospitalJSON(h.json_path, searchPattern, selectedPayer) : [];
-      hitsById.set(h.id, hits);
+      const hits = (ENABLE_PRICES && searchPattern && h.json_path) ? await queryHospitalJSON(h.json_path, searchPattern, null) : [];
+      allHitsById.set(h.id, hits);
     }
   }
   await Promise.all(Array.from({length: pool}, worker));
+
+  // Calculate payer counts from all hits (before any payer filtering)
+  const payerCounts = {};
+  const payerSet = new Set();
+  for (const hospital of nearby) {
+    const hits = allHitsById.get(hospital.id) || [];
+    for (const hit of hits) {
+      if (hit.payer_name && hit.payer_name.trim()) {
+        const name = hit.payer_name.trim();
+        payerCounts[name] = (payerCounts[name] || 0) + 1;
+        payerSet.add(name);
+      }
+    }
+  }
+  const uniquePayers = Array.from(payerSet).sort();
+
+  // Store payer counts globally
+  currentPayerCounts = payerCounts;
+
+  // Update payer dropdown with counts
+  populatePayerDropdown(uniquePayers, payerCounts);
+
+  // Filter hits by selected payer if one is selected
+  const filteredHitsById = new Map();
+  if (selectedPayer) {
+    for (const [hospitalId, hits] of allHitsById) {
+      const filteredHits = hits.filter(hit => hit.payer_name && hit.payer_name.trim() === selectedPayer);
+      filteredHitsById.set(hospitalId, filteredHits);
+    }
+  } else {
+    // Use all hits if no payer filter
+    for (const [hospitalId, hits] of allHitsById) {
+      filteredHitsById.set(hospitalId, hits);
+    }
+  }
   
   // Render results
-  renderHospitals(nearby, hitsById);
+  renderHospitals(nearby, filteredHitsById);
   const searchDesc = svcName || q;
   const doneMsg = miles >= 500 
     ? `Done. All ${nearby.length} hospitals searched${searchDesc ? ` for "${searchDesc}"` : ""}.`
