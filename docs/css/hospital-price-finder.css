@@ -1,0 +1,444 @@
+/*
+ * Hospital Price Finder - Main Stylesheet
+ * 
+ * This stylesheet contains all the visual styling for the Hospital Price Finder application.
+ * It includes responsive design, dark theme, and custom styling for interactive elements.
+ * 
+ * Main Sections:
+ * - CSS Variables and Base Styles
+ * - Header and Navigation
+ * - Main Layout and Grid
+ * - Map and Visualization Styles
+ * - Sidebar and Hospital Cards
+ * - Price Display Tables
+ * - Information Section
+ * - Interactive Elements and Animations
+ */
+
+/* ========================================
+ * CSS VARIABLES AND BASE STYLES
+ * ======================================== */
+
+:root {
+  --bg: #0f172a;           /* Primary background - dark slate */
+  --ink: #e2e8f0;          /* Primary text - light slate */
+  --muted: #9aa6b2;        /* Muted text - gray blue */
+}
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px system-ui, Segoe UI, Roboto, Helvetica, Arial;
+}
+
+/* ========================================
+ * HEADER AND NAVIGATION
+ * ======================================== */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  padding: .6rem .8rem;
+  background: rgba(15, 23, 42, .95);
+  backdrop-filter: blur(8px);
+  flex-wrap: wrap;
+}
+
+/* Form elements in header */
+input, select, button {
+  background: #111827;
+  color: var(--ink);
+  border: 1px solid #1f2937;
+  border-radius: .5rem;
+  padding: .45rem .55rem;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+#status {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ========================================
+ * MAIN LAYOUT AND GRID
+ * ======================================== */
+
+main {
+  display: flex;
+  height: calc(100vh - 56px);
+}
+
+.map-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ========================================
+ * MAP AND VISUALIZATION STYLES
+ * ======================================== */
+
+svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Reset zoom button */
+.reset-zoom-btn {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: #1f2937;
+  color: var(--ink);
+  border: 1px solid #374151;
+  border-radius: .5rem;
+  padding: .5rem .75rem;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 5;
+  transition: all 0.2s ease;
+}
+
+.reset-zoom-btn:hover {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+/* Map elements */
+.state {
+  fill: #1e293b;
+  stroke: #94a3b8;
+  stroke-width: .6px;
+}
+
+.graticule {
+  fill: none;
+  stroke: #334155;
+  stroke-opacity: .35;
+}
+
+.circle {
+  fill: rgba(99, 102, 241, .12);
+  stroke: #8b5cf6;
+  stroke-width: 1.5px;
+}
+
+.marker-zip {
+  fill: #f43f5e;
+  stroke: #fff;
+  stroke-width: 1.2px;
+}
+
+.marker-hosp {
+  fill: #22c55e;
+  stroke: #0b1325;
+  stroke-width: 1px;
+}
+
+/* ========================================
+ * SIDEBAR AND HOSPITAL CARDS
+ * ======================================== */
+
+aside {
+  border-left: 1px solid #1f2937;
+  width: 360px;
+  height: 100%;
+  overflow: auto;
+  padding: .6rem;
+}
+
+aside h3 {
+  margin: .25rem 0 .5rem;
+}
+
+.card {
+  border: 1px solid #1f2937;
+  background: #0b1325;
+  border-radius: .6rem;
+  padding: .55rem;
+  margin-bottom: .55rem;
+}
+
+.card code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.small {
+  font-size: 12px;
+  color: #93a4b3;
+}
+
+.badge {
+  display: inline-block;
+  padding: .1rem .35rem;
+  border: 1px solid #334155;
+  border-radius: .4rem;
+  margin-left: .3rem;
+  color: #cbd5e1;
+}
+
+/* Hospital card interactions */
+.hospital-header {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.hospital-header:hover {
+  background: rgba(15, 23, 42, .5);
+}
+
+.hospital-prices {
+  display: none;
+  margin-top: .5rem;
+  border-top: 1px solid #1f2937;
+  padding-top: .5rem;
+}
+
+.hospital-prices.expanded {
+  display: block;
+}
+
+.toggle-indicator {
+  float: right;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.toggle-indicator.expanded {
+  transform: rotate(90deg);
+}
+
+/* Price items */
+.price-item {
+  border: 1px solid #1f2937;
+  border-radius: .4rem;
+  padding: .35rem;
+  margin-top: .35rem;
+  transition: all 0.2s ease;
+}
+
+.price-item:hover {
+  border-color: #334155;
+  background: rgba(15, 23, 42, .3);
+}
+
+.payer-info {
+  font-weight: bold;
+  margin-bottom: .3rem;
+  color: #cbd5e1;
+}
+
+/* ========================================
+ * PRICE DISPLAY TABLES
+ * ======================================== */
+
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: .3rem;
+  font-size: 12px;
+}
+
+.price-table th {
+  background: #1f2937;
+  color: #e2e8f0;
+  padding: .3rem .5rem;
+  text-align: left;
+  border: 1px solid #374151;
+  font-weight: 600;
+}
+
+.price-table td {
+  padding: .25rem .5rem;
+  border: 1px solid #374151;
+  color: #d1d5db;
+}
+
+.price-table tr:nth-child(even) {
+  background: rgba(31, 41, 55, .3);
+}
+
+.price-table .price-type {
+  font-weight: 500;
+  color: #93c5fd;
+}
+
+/* ========================================
+ * VISUALIZATION CHARTS
+ * ======================================== */
+
+.visualization-section {
+  border-top: 1px solid #1f2937;
+  padding: .8rem;
+  height: 70vh;
+}
+
+.viz-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  height: 100%;
+}
+
+.viz-panel {
+  border: 1px solid #1f2937;
+  border-radius: .6rem;
+  padding: .6rem;
+  background: #0b1325;
+}
+
+.viz-panel h3 {
+  margin: 0 0 .5rem;
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.viz-svg {
+  width: 100%;
+  height: calc(100% - 2rem);
+}
+
+/* Chart elements */
+.axis {
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.axis line, .axis path {
+  stroke: #94a3b8;
+}
+
+.distribution-bar {
+  fill: #8b5cf6;
+  opacity: 0.7;
+}
+
+.distribution-bar:hover {
+  opacity: 1;
+}
+
+.slope-dot {
+  fill: #22c55e;
+  stroke: #fff;
+  stroke-width: 1;
+}
+
+.hospital-label {
+  fill: #e2e8f0;
+  font-size: 9px;
+}
+
+/* ========================================
+ * INFORMATION SECTION
+ * ======================================== */
+
+.info-section {
+  border-top: 1px solid #1f2937;
+  padding: 2rem;
+  background: #0a0f1c;
+}
+
+.info-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.info-section h2 {
+  color: #e2e8f0;
+  font-size: 24px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.info-section h3 {
+  color: #cbd5e1;
+  font-size: 18px;
+  margin: 1.5rem 0 .75rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.info-section h4 {
+  color: #9ca3af;
+  font-size: 14px;
+  margin: 1rem 0 .5rem;
+}
+
+.info-section p {
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.info-section ol {
+  color: #d1d5db;
+  padding-left: 1.5rem;
+}
+
+.info-section li {
+  margin-bottom: .5rem;
+}
+
+/* Plot explanations layout */
+.plot-explanations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.plot-explanation {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: .8rem;
+  padding: 1.5rem;
+}
+
+/* Technical notes */
+.technical-note {
+  background: #1e293b;
+  border-left: 3px solid #3b82f6;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0 .5rem .5rem 0;
+}
+
+.technical-note ul {
+  margin: .5rem 0;
+  padding-left: 1.5rem;
+}
+
+.technical-note li {
+  margin-bottom: .25rem;
+}
+
+/* Usage guide */
+.usage-guide {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: .8rem;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
