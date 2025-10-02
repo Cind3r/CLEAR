@@ -4,6 +4,9 @@ Chargemaster Location-based Exploration for Affordability &amp; Reform
 NOTE: Some hospitals are not fully transparant about pricing policy, they only provide estimates and insurance names for APC codes (bundled HCPCS codes), so a cross-walk using `Addendum B` published by CMS needs to be used in order to map codes to prices. Even then this is a poor method that doesn't grab all the matches needed (causing dupe issues needed to be reviewed by hand). 
 
 ## About This Tool
+
+Hospital “machine-readable files” (MRFs) list gross charges, discounted cash, and payer-specific negotiated rates, yet most analyses treat codes (CPT/HCPCS/DRG) in isolation. In practice, encounters are bundles facility, professional, anesthesia, and pathology components that co-occur and jointly drive cost. This project will (1) mine code co-occurrence patterns across a focused hospital set to infer de-facto code families for several shoppable services; (2) quantify which components explain price variance within and across hospitals; and (3) deliver an interactive explorable that reveals bundle structure with clear, reproducible encodings. The work emphasizes principled visualization, transparent methods, and careful communication that standard charges do not equal patient out-of-pocket.
+
 The Hospital Price Finder helps you discover and compare healthcare procedure costs across hospitals within a specified radius of any ZIP code. Search by procedure codes (CPT, HCPCS) or custom patterns to find pricing transparency data from hospital charge masters.
 
 ## How to Use
