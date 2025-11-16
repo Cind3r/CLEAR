@@ -442,3 +442,27 @@ aside h3 {
   padding: 1.5rem;
   margin-top: 2rem;
 }
+
+/* Read More button */
+.read-more-btn {
+  display: inline-block;
+  padding: .75rem 2rem;
+  background: #3b82f6;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: .5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+}
+
+.read-more-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(59, 130, 246, 0.4);
+}
+
+.read-more-btn:active {
+  transform: translateY(0);
+}

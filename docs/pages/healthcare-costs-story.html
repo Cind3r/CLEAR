@@ -1,0 +1,1522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Insurance vs Cost — A Scroll Story with Smooth Transitions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://unpkg.com/intersection-observer"></script>
+<script src="https://unpkg.com/stickyfilljs@2.1.0/dist/stickyfill.min.js"></script>
+<script src="https://unpkg.com/scrollama"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<style>
+  :root{
+    --bg:#0b0f14; --fg:#e9f0f7; --muted:#9fb0c3; --accent:#58c0ff;
+    --card:#111826; --grid:#243246; --good:#2b8a3e; --warn:#cd8b3a; --shock:#cc4949;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  
+  /* Scroll snap for smooth section-by-section scrolling */
+  html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+  }
+  
+  a{color:var(--accent);text-decoration:none}
+
+  /* Intro (centered) */
+  #intro{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:0 24px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .intro-wrap{max-width:min(900px,72ch)}
+  h1{margin:0 0 .6rem;font-weight:800}
+  p{line-height:1.65;color:var(--muted)}
+
+  /* Subtle reveal animations for copy */
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+  }
+
+  /* Scrolly: LEFT text, RIGHT chart (like the reference demo) */
+  #scrolly{
+    position:relative;
+    display:grid;
+    grid-template-columns: min(520px,34vw) 1fr; /* left text, right viz */
+    column-gap:18px;
+    align-items:start;
+    padding:0 16px;
+  }
+  #scrolly article{
+    order:1;
+    position:relative;
+    border-right:1px solid #1e2a3a;
+  }
+  .step{
+    height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:24px 10px;
+    opacity:.6; transition:opacity .25s ease;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .step h2{margin:0 0 .4rem; font-weight:700; color:#e9f0f7}
+  .step p{margin:.25rem 0}
+  .step.is-active{opacity:1}
+
+  #scrolly figure{
+    order:2;
+    position:sticky; top:0;
+    height:100vh; margin:0; padding:0;
+    background:var(--card); border-left:1px solid #1e2a3a;
+  }
+
+  .viz{ position:absolute; inset:16px; }
+  svg{ width:100%; height:100%; display:block; }
+  .x-axis .tick text,.y-axis .tick text{ fill:#c3cfdb }
+  .x-axis .domain,.y-axis .domain,.x-axis .tick line,.y-axis .tick line{ stroke:var(--grid) }
+  .legend{
+    position:absolute; right:12px; top:16px;
+    background:rgba(15,21,32,.86); border:1px solid #1f2a3c; border-radius:12px;
+    padding:8px 10px; font-size:12px; color:#cfe0ff;
+  }
+  /* Hide the floating legend box on plots */
+  #legend{ display:none; }
+  .tooltip{
+    position:fixed; pointer-events:none; background:#0f1520; border:1px solid #223247;
+    color:var(--fg); padding:8px 10px; border-radius:10px; font-size:12px; opacity:0;
+    max-width:320px; box-shadow:0 8px 30px rgba(0,0,0,.35); z-index:1000;
+  }
+
+  .generic{ 
+    padding:20vh 24px; max-width:min(900px,72ch); margin:0 auto; text-align:center;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-height: 100vh;
+  }
+
+  /* Globe section */
+  #globe-section{ 
+    min-height:100vh; display:grid; grid-template-columns: 1fr; align-items:center; 
+    padding:0 16px 16vh; opacity:1; transition:opacity .6s ease;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  #globe-section.is-active{ opacity:1; }
+  .globe-wrap{ position:relative; height:70vh; max-height:720px; background:var(--card); border:1px solid #1e2a3a; border-radius:12px; overflow:hidden; }
+  #globe-canvas{ width:100%; height:100%; display:block; cursor:pointer; }
+  .globe-callout{
+    position:absolute; right:20px; top:50%; transform:translateY(-50%);
+    background:rgba(15,21,32,.95); border:1px solid #324155; border-radius:12px;
+    padding:16px 20px; min-width:220px; box-shadow:0 8px 30px rgba(0,0,0,.4);
+    opacity:0; transition:opacity .3s ease; pointer-events:none;
+  }
+  .globe-callout.visible{ opacity:1; }
+  .globe-callout .callout-country{ font-size:18px; font-weight:700; color:#e9f0f7; margin-bottom:8px; }
+  .globe-callout .callout-cost{ font-size:24px; font-weight:800; color:#58c0ff; }
+  .globe-legend{ margin-top:12px; font-size:12px; color:#cfe0ff; }
+  .globe-legend canvas{ width:100%; height:48px; display:block; margin-top:6px; }
+  .globe-legend .cbar-label{ display:block; font-size:12px; color:#a9b8c9; margin-bottom:6px; }
+  
+
+  
+  #scrolly.fade-out{ opacity:0; transition:opacity .6s ease; pointer-events:none; }
+  #scrolly.fade-in{ opacity:1; transition:opacity .6s ease; }
+
+  @media (max-width: 980px){
+    #scrolly{ grid-template-columns: 1fr; }
+    #scrolly article{ border-right:none; border-bottom:1px solid #1e2a3a; }
+    #scrolly figure{ position:relative; height:60vh; border-left:none; border-top:1px solid #1e2a3a; }
+    .step{ height:80vh; }
+  }
+</style>
+</head>
+<body>
+
+<section class="generic" id="intro">
+  <div class="intro-wrap">
+    <h1 class="reveal">Insurance Decides the Bill</h1>
+    <p class="reveal">Same service. Same hospital. Very different out-of-pocket bills. What you pay often depends less on the treatment and more on the contract behind your insurance card.</p>
+    <p class="reveal">In this short scroll story, we explore how <strong>Medicare Advantage</strong>, <strong>Managed Medicaid</strong>, <strong>TRICARE</strong>, and <strong>Commercial</strong> plans compare with <strong>Cash (self‑pay)</strong> and the hospital’s <strong>Sticker (gross)</strong> price. We’ll start with averages, then look at the spread, how duration plays a role, and where “sticker shock” shows up.</p>
+    <p class="reveal"><small>Source: Hospital price transparency file (<code>29a8pin7.json</code>). Values shown are estimated patient liabilities or comparable amounts extracted from the file.</small></p>
+  </div>
+</section>
+
+
+
+<section id="scrolly">
+  <article id="steps">
+    <div class="step" data-view="bars">
+      <h2 class="reveal">Who pays less on average?</h2>
+      <p class="reveal">We start with the averages. Each bar represents the mean patient bill for a broad insurance bucket. Cash and Sticker are added for context.</p>
+      <p class="reveal">Averages can hide a lot, but they give us a first impression: some buckets reliably reduce what patients owe; others don’t move the needle nearly as much.</p>
+    </div>
+    <div class="step" data-view="swarm">
+      <h2 class="reveal">Not everyone gets the average</h2>
+      <p class="reveal">The beeswarm reveals the distribution behind those averages. Each dot is a payer/plan/service combination. The spread and outliers matter—they’re the real bills people see.</p>
+      <p class="reveal">Wide spreads suggest inconsistent negotiations or benefit designs. Tighter clusters suggest more predictable costs for patients.</p>
+    </div>
+    <div class="step" data-view="durations">
+      <h2 class="reveal">Duration matters</h2>
+      <p class="reveal">Services that span more hours or days generally cost more. Here we compare medians for three duration groups: ≤48 hours, 48 hours–7 days, and 7–15 days.</p>
+      <p class="reveal">Longer stays aren’t the whole story, but they amplify differences between insurance buckets. As duration increases, the median patient bill tends to rise.</p>
+    </div>
+    <div class="step" data-view="shock">
+      <h2 class="reveal">Sticker shock</h2>
+      <p class="reveal">Now we compare global medians: the typical insured bill, the discounted cash price, and the hospital’s sticker (gross) charge.</p>
+      <p class="reveal">The gap between cash discounts and sticker prices illustrates how list prices can be far from what patients actually pay—but those high stickers can still influence what some insured patients owe.</p>
+    </div>
+    <div class="step" data-view="policy2026">
+      <h2 class="reveal">2026 outlook: Big Beautiful Bill</h2>
+      <p class="reveal">Policy changes enacted in 2025 under the <strong>Big Beautiful Bill</strong> are projected to influence negotiated rates and patient liabilities in 2026. Below, we compare baseline 2025 medians with <strong>projected 2026</strong> values using the legislation’s published uplifts.</p>
+      <p class="reveal"><em>Method:</em> We apply the published bucket‑level uplift percentages to 2025 medians for each insurance bucket. Cash and Sticker are included for context and can be set if projections exist. </p>
+    </div>
+  </article>
+
+  <figure>
+    <div class="viz" id="viz-wrap">
+      <svg id="viz"></svg>
+      <div id="legend" class="legend" role="region" aria-label="Legend"></div>
+      <div id="tip" class="tooltip"></div>
+    </div>
+  </figure>
+</section>
+
+<section class="generic" id="globe-section">
+  <div class="intro-wrap">
+    <h2 class="reveal">Beyond One Hospital: A Global Glance</h2>
+    <p class="reveal">Healthcare costs vary widely across countries. Below, each country is shaded by an indicative average patient bill. For the United States, we apply the <strong>2026 projected</strong> level under the Big Beautiful Bill; other countries use reference values where available.</p>
+  </div>
+  <div class="globe-wrap" aria-label="Rotating globe showing country cost levels">
+    <canvas id="globe-canvas"></canvas>
+    <div id="globe-callout" class="globe-callout" style="display:none;">
+      <div class="callout-country"></div>
+      <div class="callout-cost"></div>
+    </div>
+  </div>
+  <div class="globe-legend">
+    <span class="cbar-label">Average patient bill</span>
+    <div id="globe-cbar-wrap"></div>
+</section>
+
+<section class="generic" id="country-comparison-wrap" style="margin:60px auto 40px; max-width:900px;">
+    <h3 style="text-align:center; margin-bottom:30px; color:#e9f0f7; font-weight:600;">The Cost Gap: U.S. vs. The World</h3>
+    <p class="reveal">Comparisons are not apples‑to‑apples—coverage models, benefit design, and what counts as a “bill” differ. But the map provides context: the U.S. remains among the highest, even with negotiated discounts.</p>
+    <svg id="country-comparison-svg" style="width:100%; display:block;"></svg>
+</section>
+
+<section class="generic" id="outro">
+  <p class="reveal">Takeaway: the same service can lead to very different bills. Insurance type—and the contract it reflects—acts as a powerful lever on patient liability.</p>
+  <p class="reveal">Price transparency makes these differences visible. For patients, predictability matters; for hospitals and payers, clarity and consistency can reduce unpleasant surprises. There’s more work to do, but better data is a start.</p>
+</section>
+
+<script>
+/* ============================================================================
+   Scrollama + D3 with staged scene transitions:
+   1) Collapse marks (plot layer scales to baseline)
+   2) Collapse axes/grid (fade out)
+   3) Draw new scene, axes fade in while marks grow from baseline
+   Also: scene switch is delayed until a step passes 50% progress.
+   ============================================================================ */
+(function(){
+  const DATA_URL = './29a8pin7.json';
+  const scroller = scrollama();
+
+  // D3 scaffolding
+  const svg = d3.select('#viz');
+  const gRoot = svg.append('g');     // container for margins
+  const gGrid = gRoot.append('g').attr('class','grid');
+  const gx    = gRoot.append('g').attr('class','x-axis');
+  const gy    = gRoot.append('g').attr('class','y-axis');
+  const gMain = gRoot.append('g').attr('class','main');  // plotting layer we collapse
+  const legend = d3.select('#legend');
+  const tip = d3.select('#tip');
+
+  const S = {
+    width:0, height:0, margin:{top:36,right:20,bottom:62,left:86},
+    view:'bars',
+    targetView:null,
+    progressGate:0.5,
+    animating:false,
+    pendingView:null,
+    policy:null,
+    rows:[], data:[],
+    scales: { x:null, y:null }, // last used scales (for labeling)
+    policy2026Played: false, // track if 2026 animation has played
+    scrollLocked: false // track if scroll is currently locked
+  };
+
+  const fmt = d3.format('$,.0f');
+  const nice = s => (s||'').trim();
+  const normPct = p => {
+    if (p==null || !isFinite(p)) return 0;
+    // Accept decimals (e.g., 0.032) or percentages (e.g., 3.2 or 320 or 272.74)
+    // Heuristic: values > 1.5 are treated as percentages and divided by 100
+    return p > 1.5 ? p/100 : p;
+  };
+  function asNum(v){ if(v==null)return null; if(typeof v==='number')return Number.isFinite(v)?v:null; const n=+String(v).replace(/[$,\s]/g,''); return Number.isFinite(n)?n:null; }
+  function parseFlexible(text){
+    const s=text.replace(/^\uFEFF/,'').trim();
+    try{ const j=JSON.parse(s); return Array.isArray(j)?j:(j.data||j.items||j.records||j.rows||[]);}catch{}
+    return s.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !/^(#|\/\/)/.test(l)).map(JSON.parse);
+  }
+  function bucketOf(payer, plan){
+    payer=(payer||'').toUpperCase(); plan=(plan||'').toUpperCase();
+    if (payer.includes('MANAGED MEDICAID')) return 'Managed Medicaid';
+    if (payer.includes('TRICARE')) return 'TRICARE';
+    if (plan.includes('MEDICARE ADVANTAGE')) return 'Medicare Advantage';
+    return 'Commercial';
+  }
+  function durationOf(desc){
+    const d=(desc||'').toLowerCase();
+    if (d.includes('up to 48')) return '≤48 hrs';
+    if (d.includes('greater than 48') || d.includes('48') || d.includes('up to 7')) return '48 hrs–7 d';
+    if (d.includes('more than 7') || d.includes('greater than 7') || d.includes('7') || d.includes('15')) return '7–15 d';
+    return 'Other';
+  }
+  function mapRow(r){
+    const payer=nice(r.payer_name||r.payer||r.insurer);
+    const plan =nice(r.plan_name ||r.plan);
+    const gross=asNum(r.standard_charge_gross);
+    const cash =asNum(r.standard_charge_discounted_cash);
+    const est  =asNum(r.estimated_amount);
+    const desc =r.description||r.service_description||'';
+    const dur  =durationOf(desc);
+    const bucket=bucketOf(payer,plan);
+    const patient = est ?? cash ?? asNum(r.standard_charge_min) ?? null;
+    return { key:[payer,plan,desc,r.code ?? r.rc_code ?? r.hcpcs ?? ''].join('|'),
+      payer,plan,desc,dur,bucket,gross,cash,est,patient };
+  }
+
+  /* ---------- sizing ---------- */
+  function resize(){
+    const r = svg.node().parentNode.getBoundingClientRect();
+    S.width  = Math.max(260, r.width  - S.margin.left - S.margin.right);
+    S.height = Math.max(220, r.height - S.margin.top  - S.margin.bottom);
+    svg.attr('viewBox', `0 0 ${r.width} ${r.height}`);
+    gRoot.attr('transform', `translate(${S.margin.left},${S.margin.top})`);
+    // keep current scene drawn crisply on resize (no animation)
+    drawScene(S.view, false, true);
+    scroller.resize();
+  }
+
+  /* ---------- legend, labels ---------- */
+  function legendLines(title, lines=[]){
+    legend.html('');
+    if (title) legend.append('div').style('font-weight','700').style('margin-bottom','6px').text(title);
+    const ul = legend.append('ul').style('margin','6px 0 0').style('padding','0 0 0 18px');
+    lines.forEach(t=>ul.append('li').text(t));
+  }
+  function labels(xLab,yLab){
+    gRoot.selectAll('text.xlab').data([xLab||'']).join('text')
+      .attr('class','xlab').attr('x', S.width/2).attr('y', S.height+46)
+      .attr('text-anchor','middle').attr('fill','#a9b8c9').text(d=>d);
+    gRoot.selectAll('text.ylab').data([yLab||'']).join('text')
+      .attr('class','ylab').attr('x', -70).attr('y', -10)
+      .attr('text-anchor','start').attr('fill','#a9b8c9').text(d=>d);
+  }
+
+  /* =========================================================================
+     SCENES — each returns {x, y} scales used (for axis draw), and draws marks
+     IMPORTANT: we DO NOT clear axes or main layer here; that’s done in the
+     orchestrator (changeScene) to control the collapse→axes→grow order.
+     ========================================================================= */
+  function sceneBars(transitionIn){
+    const order=['Managed Medicaid','TRICARE','Medicare Advantage','Commercial','Cash (Self-pay)','Sticker (Gross)'];
+    const roll=d3.rollups(
+      S.data.filter(d=>['patient','cash','gross'].includes(d.type)),
+      v=>d3.mean(v,d=>d.value),
+      d=>d.showBucket
+    );
+    const m=new Map(roll);
+    const data=order.map(b=>({bucket:b, avg:m.get(b)??null})).filter(d=>d.avg!=null);
+
+    const x=d3.scaleBand().domain(data.map(d=>d.bucket)).range([0,S.width]).padding(0.25);
+    const y=d3.scaleLinear().domain([0, d3.max(data,d=>d.avg)||1]).nice().range([S.height,0]);
+
+    // Draw marks at final geometry; layer will be collapsed initially then grown
+    const bars = gMain.selectAll('rect.bar').data(data, d=>d.bucket);
+    bars.enter().append('rect').attr('class','bar')
+      .attr('x', d=>x(d.bucket)).attr('width', x.bandwidth())
+      .attr('y', d=>y(d.avg)).attr('height', d=>y(0)-y(d.avg))
+      .attr('rx',8).attr('fill', d=> d.bucket.includes('Sticker')?'var(--shock)'
+                              : d.bucket.includes('Cash') ? 'var(--good)'
+                              : 'var(--warn)');
+    bars.exit().remove();
+
+    // labels
+    const vals = gMain.selectAll('text.val').data(data, d=>d.bucket);
+    vals.enter().append('text').attr('class','val')
+      .attr('x', d=>x(d.bucket)+x.bandwidth()/2)
+      .attr('y', d=>y(d.avg)-8)
+      .attr('text-anchor','middle').attr('fill','#cfe0ff')
+      .text(d=>fmt(d.avg));
+    vals.exit().remove();
+
+    labels('Insurance bucket','Avg. patient bill');
+    legendLines('Average by bucket',['Bars: mean patient bill','Cash & Sticker for context']);
+    return {x,y};
+  }
+
+  function sceneSwarm(transitionIn){
+    const buckets=['Managed Medicaid','TRICARE','Medicare Advantage','Commercial'];
+    const data=S.data.filter(d=>d.type==='patient' && buckets.includes(d.showBucket));
+    const x=d3.scaleBand().domain(buckets).range([0,S.width]).padding(0.2);
+    const y=d3.scaleLinear().domain([0, d3.max(data,d=>d.value)||1]).nice().range([S.height,0]);
+
+    const pts=data.map(d=>({
+      ...d,
+      cx:x(d.showBucket)+x.bandwidth()/2+(Math.random()-0.5)*x.bandwidth()*0.5,
+      cy:y(d.value)
+    }));
+    const r=Math.max(2,Math.min(5,Math.sqrt(5500/(pts.length+1))));
+
+    const dots=gMain.selectAll('circle.dot').data(pts, d=>d.key);
+    dots.enter().append('circle').attr('class','dot')
+      .attr('cx', d=>d.cx).attr('cy', d=>d.cy).attr('r', r)
+      .attr('fill','#4aa3ff').attr('opacity', .92)
+      .on('mousemove',(e,d)=>showTip(e,d)).on('mouseleave',hideTip)
+      .on('click',(e,d)=>{ /* optional pin */ });
+    dots.exit().remove();
+
+    labels('Insurance bucket','Patient bill (each dot)');
+    legendLines('Spread by bucket',['Each dot = payer/plan/service estimate']);
+    return {x,y};
+  }
+
+  function sceneDurations(transitionIn){
+    const buckets=['Managed Medicaid','TRICARE','Medicare Advantage','Commercial'];
+    const durations=['≤48 hrs','48 hrs–7 d','7–15 d'];
+    const med=d3.rollups(
+      S.data.filter(d=>d.type==='patient' && buckets.includes(d.showBucket) && durations.includes(d.dur)),
+      v=>d3.median(v,d=>d.value),
+      d=>d.dur, d=>d.showBucket
+    );
+    const rows=[];
+    med.forEach(([dur,list])=>{
+      const m=new Map(list);
+      buckets.forEach(b=>{ const v=m.get(b); if(v!=null) rows.push({dur,bucket:b,val:v}); });
+    });
+
+    const panels=durations.filter(dur=>rows.some(x=>x.dur===dur));
+    const pad=24;
+    const panelW=(S.width-(panels.length-1)*pad)/panels.length;
+    const yMax=d3.max(rows,d=>d.val)||1;
+    const y=d3.scaleLinear().domain([0,yMax]).nice().range([S.height,0]);
+    const xPanels = {}; // keep band scales per panel
+
+    // titles + grid
+    panels.forEach((dur,i)=>{
+      const x=d3.scaleBand().domain(buckets).range([i*(panelW+pad), i*(panelW+pad)+panelW]).padding(0.25);
+      xPanels[dur]=x;
+      gMain.append('text').attr('x', x.range()[0]+panelW/2).attr('y', -6).attr('text-anchor','middle')
+        .attr('fill','#cfe0ff').text(dur);
+
+      gGrid.selectAll(`line.h-${i}`).data(y.ticks(6)).join('line')
+        .attr('class',`h-${i}`)
+        .attr('x1', x.range()[0]).attr('x2', x.range()[1])
+        .attr('y1', d=>y(d)).attr('y2', d=>y(d)).attr('stroke','#1b2837');
+
+      const data=rows.filter(d=>d.dur===dur);
+      gMain.selectAll(`rect.bar-${i}`).data(data, d=>d.bucket).enter().append('rect')
+        .attr('class',`bar-${i}`)
+        .attr('x', d=>x(d.bucket)).attr('width', x.bandwidth())
+        .attr('y', d=>y(d.val)).attr('height', d=>y(0)-y(d.val))
+        .attr('rx',8).attr('fill','var(--warn)');
+
+      gMain.selectAll(`text.val-${i}`).data(data).enter().append('text')
+        .attr('class',`val-${i}`)
+        .attr('x', d=>x(d.bucket)+x.bandwidth()/2).attr('y', d=>y(d.val)-8)
+        .attr('text-anchor','middle').attr('fill','#cfe0ff').text(d=>fmt(d.val));
+    });
+
+    labels('', 'Median patient bill');
+    legendLines('Duration ↑ → Cost ↑ (medians)',['Three duration groups; panels read left→right']);
+    // Return a synthetic x scale spanning all panels for axis (we omit bottom axis here)
+    const x = d3.scaleLinear().domain([0,1]).range([0,S.width]);
+    return {x,y};
+  }
+
+  function sceneShock(transitionIn){
+    const medCash  = d3.median(S.data.filter(d=>d.type==='cash'), d=>d.value);
+    const medPat   = d3.median(S.data.filter(d=>d.type==='patient'), d=>d.value);
+    const medGross = d3.median(S.data.filter(d=>d.type==='gross'), d=>d.value);
+    const data=[
+      {k:'Cash (Self-pay)', v:medCash,  c:'var(--good)'},
+      {k:'Insured (typical)', v:medPat, c:'var(--warn)'},
+      {k:'Sticker (Gross)', v:medGross, c:'var(--shock)'}
+    ].filter(d=>d.v!=null);
+
+    const x=d3.scaleBand().domain(data.map(d=>d.k)).range([0,S.width]).padding(0.35);
+    const y=d3.scaleLinear().domain([0, d3.max(data,d=>d.v)||1]).nice().range([S.height,0]);
+
+    gMain.selectAll('rect.shock').data(data, d=>d.k).enter().append('rect').attr('class','shock')
+      .attr('x', d=>x(d.k)).attr('width', x.bandwidth())
+      .attr('y', d=>y(d.v)).attr('height', d=>y(0)-y(d.v))
+      .attr('rx',10).attr('fill', d=>d.c);
+
+    gMain.selectAll('text.shockv').data(data).enter().append('text').attr('class','shockv')
+      .attr('x', d=>x(d.k)+x.bandwidth()/2).attr('y', d=>y(d.v)-10)
+      .attr('text-anchor','middle').attr('fill','#cfe0ff').text(d=>fmt(d.v));
+
+    labels('', 'Median across all services');
+    legendLines('Sticker shock',['Cash discount vs typical insured bill vs sticker']);
+    return {x,y};
+  }
+
+  function scenePolicy2026(){
+    // Buckets to show; baseline from medians; apply illustrative 2026 uplifts
+    const bucketsAll=['Managed Medicaid','TRICARE','Medicare Advantage','Commercial','Cash (Self-pay)'];
+    const basePatient = d3.rollups(
+      S.data.filter(d=>d.type==='patient' && bucketsAll.includes(d.showBucket)),
+      v=>d3.median(v,d=>d.value),
+      d=>d.showBucket
+    );
+    const baseCash   = d3.median(S.data.filter(d=>d.type==='cash'), d=>d.value);
+
+    const baseMap = new Map(basePatient);
+    if (baseCash!=null) baseMap.set('Cash (Self-pay)', baseCash);
+
+    // Uplifts for 2026 from loaded projections (Big Beautiful Bill). Defaults to 0.
+    const UPLIFT_2026_RAW = S.policy && typeof S.policy === 'object' ? S.policy : {
+      'Managed Medicaid': 0.00,
+      'TRICARE': 0.00,
+      'Medicare Advantage': 0.00,
+      'Commercial': 0.00,
+      'Cash (Self-pay)': 0.00
+    };
+    // Normalize to decimals
+    const UPLIFT_2026 = Object.fromEntries(Object.entries(UPLIFT_2026_RAW).map(([k,v])=>[k, normPct(v)]));
+
+    const rows = bucketsAll
+      .filter(b=>baseMap.has(b))
+      .map(b=>{
+        const base = baseMap.get(b);
+        const pct = UPLIFT_2026[b] ?? 0;
+        const est = base * (1+pct);
+        return { bucket:b, base, est, pct };
+      });
+
+    const x0 = d3.scaleBand().domain(rows.map(d=>d.bucket)).range([0,S.width]).padding(0.22);
+  const x1 = d3.scaleBand().domain(['2025','2026 projected']).range([0, x0.bandwidth()]).padding(0.25);
+    const y  = d3.scaleLinear().domain([0, d3.max(rows,d=>Math.max(d.base,d.est))||1]).nice().range([S.height,0]);
+
+    const series = [];
+    rows.forEach(d=>{
+      series.push({bucket:d.bucket, k:'2025', v:d.base, c:'#5aa9ff'});
+      series.push({bucket:d.bucket, k:'2026 projected', v:d.est,  c:'#ffc861'});
+    });
+
+    // Separate 2025 and 2026 bars for different animations
+    const series2025 = series.filter(d => d.k === '2025');
+    const series2026 = series.filter(d => d.k === '2026 projected');
+
+    // Draw 2025 bars immediately (normal behavior)
+    const bars2025 = gMain.selectAll('rect.proj2025').data(series2025, d=>d.bucket+'|'+d.k);
+    bars2025.enter().append('rect').attr('class','proj proj2025')
+      .attr('x', d=>x0(d.bucket)+x1(d.k))
+      .attr('width', x1.bandwidth())
+      .attr('y', d=>y(d.v))
+      .attr('height', d=>y(0)-y(d.v))
+      .attr('rx',8)
+      .attr('fill', d=>d.c)
+      .on('mousemove',(e,d)=>showTip(e,{ bucket:d.bucket, value:d.v, type:d.k }))
+      .on('mouseleave', hideTip);
+
+    // Draw 2026 bars starting at baseline, then animate up after delay
+    const bars2026 = gMain.selectAll('rect.proj2026').data(series2026, d=>d.bucket+'|'+d.k);
+    bars2026.enter().append('rect').attr('class','proj proj2026')
+      .attr('x', d=>x0(d.bucket)+x1(d.k))
+      .attr('width', x1.bandwidth())
+      .attr('y', y(0))  // Start at x-axis
+      .attr('height', 0)  // Start with 0 height
+      .attr('rx',8)
+      .attr('fill', d=>d.c)
+      .on('mousemove',(e,d)=>showTip(e,{ bucket:d.bucket, value:d.v, type:d.k }))
+      .on('mouseleave', hideTip)
+      .transition()
+      .delay(1500)  // 1.5 second delay before animating up
+      .duration(800)  // 800ms animation
+      .ease(d3.easeCubicOut)
+      .attr('y', d=>y(d.v))
+      .attr('height', d=>y(0)-y(d.v));
+
+    // percent labels above 2026 bars - start invisible, then fade in after bars animate
+    const labelsPct = gMain.selectAll('text.projpct').data(rows, d=>d.bucket);
+    labelsPct.enter().append('text').attr('class','projpct')
+      .attr('x', d=>x0(d.bucket)+x1('2026 projected')+x1.bandwidth()/2)
+      .attr('y', d=>y(d.est)-10)
+      .attr('text-anchor','middle')
+      .attr('fill','#ffe9b0')
+      .attr('opacity', 0)  // Start invisible
+      .text(d=>'+'+d3.format('.1%')(d.pct))
+      .transition()
+      .delay(2500)  // 2.5 second delay (after bars finish animating)
+      .duration(600)  // 600ms fade-in
+      .attr('opacity', 1)
+      .on('end', function() {
+        // Animation complete - release scroll lock
+        if (!S.policy2026Played) {
+          S.policy2026Played = true;
+          S.scrollLocked = false;
+          lockedScrollPosition = null; // Reset locked position
+        }
+      });
+
+    labels('2025 vs 2026 (projected)','Median patient bill');
+    const leg = ['Projected uplifts (Big Beautiful Bill) applied to 2025 medians'];
+    if (!S.policy) leg.push('Missing policy_2026.json — defaults used (0%).');
+    legendLines('2026 projections', leg);
+    return { x: x0, y };
+  }
+
+  /* =========================================================================
+     ORCHESTRATION — changeScene(nextView)
+     Sequence: 1) collapse marks -> 2) collapse axes -> 3) draw new scene with
+     axes fade-in and marks grow (by scaling the plotting group)
+     ========================================================================= */
+  const DUR = { collapseMarks: 400, collapseAxes: 250, grow: 800 };
+
+  function collapseMarks(){
+    // collapse plotting layer vertically to baseline (y = S.height)
+    return new Promise(resolve=>{
+      gMain.interrupt()
+        .transition().duration(DUR.collapseMarks).ease(d3.easeCubicInOut)
+        .attr('transform', `translate(0, ${S.height}) scale(1, 0)`)
+        .on('end', resolve);
+    });
+  }
+  function collapseAxes(){
+    return new Promise(resolve=>{
+      gx.interrupt(); gy.interrupt(); gGrid.interrupt();
+      const t = d3.transition().duration(DUR.collapseAxes).ease(d3.easeCubicInOut);
+      gx.transition(t).style('opacity', 0);
+      gy.transition(t).style('opacity', 0);
+      gGrid.transition(t).style('opacity', 0).on('end', resolve);
+    });
+  }
+  function resetForNewScene(){
+    // Clear all and set starting states: axes invisible, plot collapsed
+    gMain.selectAll('*').remove();
+    gGrid.selectAll('*').remove();
+    // axes will be redrawn in drawScene()
+    gx.selectAll('*').remove();
+    gy.selectAll('*').remove();
+    gx.style('opacity', 0);
+    gy.style('opacity', 0);
+    gGrid.style('opacity', 0);
+    // start collapsed
+    gMain.attr('transform', `translate(0, ${S.height}) scale(1, 0)`);
+  }
+  function growAxesAndMarks(scales){
+    // draw axes with opacity 0 (already), then fade them in
+    if (scales && scales.x) gx.attr('transform',`translate(0,${S.height})`).call(d3.axisBottom(scales.x).tickSizeOuter(0));
+    if (scales && scales.y) gy.call(d3.axisLeft(scales.y).ticks(6).tickSizeOuter(0));
+    // grid lines (horizontal)
+    if (scales && scales.y){
+      gGrid.selectAll('line.h').data(scales.y.ticks(6)).join('line')
+        .attr('class','h').attr('x1',0).attr('x2',S.width)
+        .attr('y1',d=>scales.y(d)).attr('y2',d=>scales.y(d)).attr('stroke','#1b2837');
+    }
+    // fade axes/grid in
+    const tAxis = d3.transition().duration(DUR.grow*0.6).ease(d3.easeCubicInOut);
+    gx.transition(tAxis).style('opacity',1);
+    gy.transition(tAxis).style('opacity',1);
+    gGrid.transition(tAxis).style('opacity',1);
+
+    // grow plotting layer from baseline
+    return new Promise(resolve=>{
+      gMain.transition().duration(DUR.grow).ease(d3.easeCubicInOut)
+        .attr('transform', 'translate(0,0) scale(1,1)')
+        .on('end', resolve);
+    });
+  }
+
+  function drawScene(view, animate=false, resizing=false){
+    // draw marks for the given scene (axes drawn in growAxesAndMarks)
+    let scales = null;
+    if (view==='bars')      scales = sceneBars();
+    else if (view==='swarm')     scales = sceneSwarm();
+    else if (view==='durations') scales = sceneDurations();
+    else if (view==='shock')     scales = sceneShock();
+    else if (view==='policy2026') scales = scenePolicy2026();
+    S.scales = scales;
+    if (!animate && !resizing){
+      // when called without orchestration (e.g., on first load), ensure axes visible and plot expanded
+      gx.style('opacity',1); gy.style('opacity',1); gGrid.style('opacity',1);
+      if (scales && scales.x) gx.attr('transform',`translate(0,${S.height})`).call(d3.axisBottom(scales.x).tickSizeOuter(0));
+      if (scales && scales.y) gy.call(d3.axisLeft(scales.y).ticks(6).tickSizeOuter(0));
+      if (scales && scales.y){
+        gGrid.selectAll('line.h').data(scales.y.ticks(6)).join('line')
+          .attr('class','h').attr('x1',0).attr('x2',S.width)
+          .attr('y1',d=>scales.y(d)).attr('y2',d=>scales.y(d)).attr('stroke','#1b2837');
+      }
+      gMain.attr('transform', 'translate(0,0) scale(1,1)');
+    }
+    return scales;
+  }
+
+  /* ---------------------- Globe (lazy init on view) ---------------------- */
+let globe = {
+  ready:false, world:null, costs:null, costsBase:null, countries:null,
+  ctx:null, proj:null, path:null, width:0, height:0,
+  sphere:null, graticule:null, baseScale:1,
+  // rotation + autorun clock
+  rotation:[0,-10], currentRotation:[0,-10], defaultRotation:[0,-10],
+  autoAngle:0, lastTickTime: null, rotSpeed: 0.015, // deg per ms
+  rotationLocked:false,
+  // color scale domain animation
+  domain:[0,1], animatedDomain:[0,1],
+  animating:false, animationLocked:false,
+  usBase:0, usTarget:0
+  };
+
+  async function initGlobe(){
+    if (globe.ready) return;
+    const WORLD_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
+    const COSTS_URL = './country_costs.json';
+    const [world, costs] = await Promise.all([
+      d3.json(WORLD_URL),
+      d3.json(COSTS_URL).catch(()=>null)
+    ]);
+    globe.world = world;
+    globe.costsBase = JSON.parse(JSON.stringify(costs || {})); // keep original
+    globe.costs = JSON.parse(JSON.stringify(costs || {}));     // working copy
+    // US will be animated after a delay; don't adjust yet
+    // Store the baseline US and target US
+    const baseUS = globe.costsBase['840'] || 0;
+    const pctInc = computeUSPercentIncrease2026();
+    globe.usBase = baseUS;
+    globe.usTarget = baseUS * (1 + pctInc); // e.g., 650 * (1 + 2.7274) = 650 * 3.7274 = ~2423
+
+    const canvas = document.getElementById('globe-canvas');
+    const rect = canvas.getBoundingClientRect();
+    globe.width = Math.max(320, rect.width);
+    globe.height = Math.max(320, rect.height);
+    canvas.width = globe.width * (window.devicePixelRatio||1);
+    canvas.height = globe.height * (window.devicePixelRatio||1);
+    globe.ctx = canvas.getContext('2d');
+    globe.ctx.scale(window.devicePixelRatio||1, window.devicePixelRatio||1);
+
+    globe.baseScale = Math.min(globe.width,globe.height)*0.46;
+    globe.proj = d3.geoOrthographic().translate([globe.width/2, globe.height/2]).scale(globe.baseScale);
+    globe.path = d3.geoPath(globe.proj, globe.ctx);
+
+    const countries = topojson.feature(world, world.objects.countries).features;
+    globe.countries = countries;
+    const sphere = {type:'Sphere'};
+    const graticule = d3.geoGraticule10();
+    globe.sphere = sphere;
+    globe.graticule = graticule;
+
+    // Initial scale (before animation)
+    updateGlobeScaleAndDraw();
+
+    globe.lastTickTime = performance.now();
+    globe.rotation = [0, -10];
+    globe.currentRotation = [0, -10];
+    globe.defaultRotation = [0, -10];
+
+    globe.timer = d3.timer(now => {
+      const dt = now - globe.lastTickTime;         // ms since last frame
+      globe.lastTickTime = now;
+
+      if (!globe.rotationLocked){
+        globe.autoAngle = (globe.autoAngle + dt * globe.rotSpeed) % 360;
+        globe.rotation = [globe.autoAngle, -10];
+        globe.currentRotation = [globe.autoAngle, -10];
+      }
+      globe.proj.rotate(globe.rotation);
+      drawGlobeFrame();
+    });
+
+    // handle resize of canvas when globe section visible
+    const ro = new ResizeObserver(()=>{
+      const r = canvas.getBoundingClientRect();
+      globe.width = Math.max(320, r.width);
+      globe.height = Math.max(320, r.height);
+      canvas.width = globe.width * (window.devicePixelRatio||1);
+      canvas.height = globe.height * (window.devicePixelRatio||1);
+      globe.ctx.setTransform(1,0,0,1,0,0);
+      globe.ctx.scale(window.devicePixelRatio||1, window.devicePixelRatio||1);
+      globe.baseScale = Math.min(globe.width,globe.height)*0.46;
+      globe.proj.translate([globe.width/2, globe.height/2]).scale(globe.baseScale);
+    });
+    ro.observe(canvas);
+
+    // Add click handler for country selection (only after animation completes)
+    canvas.addEventListener('click', (event) => {
+      if (!globe.animationLocked) return; // Only allow clicks after animation finishes
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const coords = globe.proj.invert([x, y]);
+      
+      if (!coords) {
+        // Click outside the sphere - hide callout
+        hideCountryCallout();
+        return;
+      }
+      
+      // Find the country at this point
+      let clickedCountry = null;
+      for (const country of globe.countries) {
+        if (d3.geoContains(country, coords)) {
+          clickedCountry = country;
+          break;
+        }
+      }
+      
+      if (clickedCountry) {
+        showCountryCallout(clickedCountry);
+      } else {
+        // Clicked on ocean or non-country area - hide callout
+        hideCountryCallout();
+      }
+    });
+
+    globe.ready = true;
+    // Initialize animatedDomain to match the actual domain
+    globe.animatedDomain = globe.domain ? [...globe.domain] : [0, 1];
+    drawGlobeColorbar();
+  }
+
+  // Country ID to name mapping (common countries)
+  const countryNames = {
+    '840': 'United States', '124': 'Canada', '826': 'United Kingdom', '276': 'Germany',
+    '250': 'France', '380': 'Italy', '724': 'Spain', '528': 'Netherlands', '756': 'Switzerland',
+    '040': 'Austria', '056': 'Belgium', '208': 'Denmark', '246': 'Finland', '372': 'Ireland',
+    '578': 'Norway', '752': 'Sweden', '620': 'Portugal', '196': 'Cyprus', '300': 'Greece',
+    '203': 'Czech Republic', '348': 'Hungary', '616': 'Poland', '642': 'Romania', '100': 'Bulgaria',
+    '191': 'Croatia', '705': 'Slovenia', '703': 'Slovakia', '233': 'Estonia', '428': 'Latvia',
+    '440': 'Lithuania', '470': 'Malta', '036': 'Australia', '554': 'New Zealand', '392': 'Japan',
+    '410': 'South Korea', '156': 'China', '356': 'India', '704': 'Vietnam', '764': 'Thailand',
+    '458': 'Malaysia', '702': 'Singapore', '360': 'Indonesia', '608': 'Philippines', '096': 'Brunei',
+    '076': 'Brazil', '484': 'Mexico', '152': 'Chile', '170': 'Colombia', '032': 'Argentina',
+    '604': 'Peru', '862': 'Venezuela', '858': 'Uruguay', '076': 'Brazil', '218': 'Ecuador',
+    '710': 'South Africa', '818': 'Egypt', '566': 'Nigeria', '404': 'Kenya', '012': 'Algeria',
+    '504': 'Morocco', '788': 'Tunisia', '434': 'Libya', '643': 'Russia', '804': 'Ukraine',
+    '112': 'Belarus', '398': 'Kazakhstan', '792': 'Turkey', '376': 'Israel', '682': 'Saudi Arabia',
+    '784': 'United Arab Emirates', '634': 'Qatar', '414': 'Kuwait', '048': 'Bahrain', '512': 'Oman'
+  };
+
+  function showCountryCallout(country) {
+    const countryId = String(country.id);
+    const countryName = country.properties?.name || countryNames[countryId] || `Country ${countryId}`;
+    const cost = globe.costs[countryId];
+    
+    const callout = document.getElementById('globe-callout');
+    const countryEl = callout.querySelector('.callout-country');
+    const costEl = callout.querySelector('.callout-cost');
+    
+    countryEl.textContent = countryName;
+    if (cost != null && isFinite(cost)) {
+      costEl.textContent = d3.format('$,.0f')(cost);
+    } else {
+      costEl.textContent = 'No data';
+    }
+    
+    callout.style.display = 'block';
+    // Trigger reflow for transition
+    callout.offsetHeight;
+    callout.classList.add('visible');
+  }
+
+  function hideCountryCallout() {
+    const callout = document.getElementById('globe-callout');
+    callout.classList.remove('visible');
+    // Hide after transition completes
+    setTimeout(() => {
+      if (!callout.classList.contains('visible')) {
+        callout.style.display = 'none';
+      }
+    }, 300); // Match the CSS transition duration
+  }
+
+  function computeUSProjected2026(){
+    // Build per-row uplift based on S.policy by bucket, then take median of adjusted patient values
+    try{
+  const polRaw = (S.policy && typeof S.policy==='object') ? S.policy : {};
+  const pol = Object.fromEntries(Object.entries(polRaw).map(([k,v])=>[k, normPct(v)]));
+      const vals = S.rows
+        .filter(d=>d.patient!=null)
+        .map(d=>{
+          const b = d.bucket;
+          const pct = pol[b] ?? 0;
+          return d.patient * (1+pct);
+        })
+        .filter(v=>v!=null && isFinite(v));
+      const m = vals.length ? d3.median(vals) : d3.median(S.data.filter(x=>x.type==='patient'), x=>x.value);
+      return m || 0;
+    }catch(e){ return 0; }
+  }
+
+  function computeUSPercentIncrease2026(){
+    // Percent change between 2025 baseline median patient bill and 2026 projected median (policy‑adjusted)
+    try{
+      const baseVals = S.rows.filter(d=>d.patient!=null).map(d=>d.patient).filter(v=>isFinite(v));
+      const baseMed = baseVals.length ? d3.median(baseVals) : d3.median(S.data.filter(x=>x.type==='patient'), x=>x.value);
+      if (!baseMed || !isFinite(baseMed) || baseMed<=0) return 0;
+
+      const polRaw = (S.policy && typeof S.policy==='object') ? S.policy : {};
+      const pol = Object.fromEntries(Object.entries(polRaw).map(([k,v])=>[k, normPct(v)]));
+      const projVals = S.rows
+        .filter(d=>d.patient!=null)
+        .map(d=>{
+          const pct = pol[d.bucket] ?? 0;
+          return d.patient * (1+pct);
+        })
+        .filter(v=>isFinite(v));
+      const projMed = projVals.length ? d3.median(projVals) : baseMed;
+      return (projMed/baseMed) - 1;
+    }catch(e){ return 0; }
+  }
+
+  function updateGlobeScaleAndDraw(){
+    // Recompute color scale based on current globe.costs
+    if (!globe.countries) return;
+    const values = globe.countries.map(f=>globe.costs[String(f.id)]).filter(v=>v!=null && isFinite(v));
+    const vmin = values.length? d3.quantile(values, 0.05) : 0;
+    // Use 99th percentile or max to ensure US value is visible
+    const vmax = values.length? Math.max(d3.quantile(values, 0.99), d3.max(values)) : 1;
+    const color = d3.scaleSequential(d3.interpolateMagma).domain([vmin, vmax]);
+    globe.values = values; 
+    globe.domain = [vmin, vmax]; 
+    globe.color = color;
+  }
+
+  function drawGlobeFrame(){
+    // Draw one frame of the globe using current globe.costs and globe.color
+    const ctx = globe.ctx; ctx.clearRect(0,0,globe.width,globe.height);
+    // ocean
+    ctx.beginPath(); globe.path(globe.sphere); ctx.fillStyle = '#0c1320'; ctx.fill();
+    // graticule
+    ctx.beginPath(); globe.path(globe.graticule); ctx.strokeStyle = '#1b2837'; ctx.lineWidth = 0.7; ctx.stroke();
+    // countries
+    globe.countries.forEach(f=>{
+      const v = globe.costs[String(f.id)];
+      ctx.beginPath(); globe.path(f);
+      ctx.fillStyle = (v!=null && isFinite(v)) ? globe.color(v) : '#2a3a55';
+      ctx.fill();
+      ctx.strokeStyle = '#0f1a2a'; ctx.lineWidth = 0.4; ctx.stroke();
+    });
+  }
+
+  // Smooth, synchronized count-up of colorbar tick labels
+  function animateUSIncrease(){
+    if (globe.animationLocked) return;
+    globe.animating = true;
+
+    const duration = 5000; // 5s
+    const startT = performance.now();
+
+    // 1) snapshot start state
+    const usStart = globe.usBase;
+    const usEnd   = globe.usTarget;
+
+    // 2) compute start & final color domains
+    updateGlobeScaleAndDraw();
+    const startDomain = [...globe.domain];
+
+    // Temporarily set US to final to get the *final* domain, then revert
+    const prevUS = globe.costs['840'];
+    globe.costs['840'] = usEnd;
+    updateGlobeScaleAndDraw();
+    const finalDomain = [...globe.domain];
+    globe.costs['840'] = prevUS;
+    updateGlobeScaleAndDraw(); // restore
+
+    function step(now){
+      const t = Math.min((now - startT)/duration, 1);
+      const eased = d3.easeCubicInOut(t);
+
+      // update the US value
+      const current = usStart + (usEnd - usStart) * eased;
+      globe.costs['840'] = current;
+
+      // colors follow the true (instant) domain for smooth color transitions…
+      updateGlobeScaleAndDraw();
+
+      // …but tick labels use an explicit tween from start→final (clean counter-up)
+      globe.animatedDomain = [
+        startDomain[0] + (finalDomain[0]-startDomain[0]) * eased,
+        startDomain[1] + (finalDomain[1]-startDomain[1]) * eased
+      ];
+
+      drawGlobeFrame();
+      drawGlobeColorbar();
+
+      if (t < 1) requestAnimationFrame(step);
+      else{
+        globe.animating = false;
+        globe.animationLocked = true;
+        globe.costs['840'] = usEnd;
+        updateGlobeScaleAndDraw();
+        globe.animatedDomain = [...finalDomain];
+        drawGlobeFrame();
+        drawGlobeColorbar();
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+
+  function calculateRotationToUS(){
+    // Calculate the rotation needed from current rotation to center on US
+    const usLon = -95; // US longitude (west is negative in standard coordinates)
+    const usLat = 38;  // US latitude
+    
+    // Current rotation
+    const currentLon = globe.currentRotation[0] % 360;
+    const currentLat = globe.currentRotation[1];
+    
+    // For orthographic projection, to center a point at [lon, lat]:
+    // we need to rotate by [-lon, -lat] (negatives to bring point to [0,0] view center)
+    const targetLon = -usLon; // -(-95) = 95
+    const targetLat = -usLat;  // -38 to center US vertically
+    
+    // Calculate shortest angular distance for longitude (handle wrapping)
+    let deltaLon = targetLon - currentLon;
+    // Normalize to [-180, 180]
+    while (deltaLon > 180) deltaLon -= 360;
+    while (deltaLon < -180) deltaLon += 360;
+    
+    return {
+      from: [currentLon, currentLat],
+      to: [currentLon + deltaLon, targetLat],
+      target: [targetLon, targetLat]
+    };
+  }
+
+  function startGlobeAnimationSequence(){
+    if (globe.animationLocked) return;
+    
+    // Calculate rotation needed from current position
+    const rotInfo = calculateRotationToUS();
+    globe.rotationLocked = true;
+    
+    // Store where we started for smooth return
+    const startRotation = [...rotInfo.from];
+
+    // Sequence: rotate to US, zoom in slightly, animate increase (longer), zoom out, rotate back, resume rotation
+    const zoomScale = globe.baseScale * 1.2; // reduced from 1.5 to 1.2 for better view
+    const rotDuration = 2000; // 2s to rotate
+    const zoomDuration = 800; // 0.8s to zoom in
+    const increaseDuration = 5000; // 5s for price increase (was 3s)
+    const zoomOutDuration = 800; // 0.8s to zoom out
+    const rotBackDuration = 2000; // 2s to rotate back to starting position
+
+    // Step 1: rotate to US from current position
+    animateRotation(rotInfo.from, rotInfo.to, rotDuration, ()=>{
+      // Step 2: zoom in
+      animateZoom(globe.baseScale, zoomScale, zoomDuration, ()=>{
+        // Step 3: animate US increase
+        animateUSIncrease();
+        setTimeout(()=>{
+          // Step 4: zoom out
+          animateZoom(zoomScale, globe.baseScale, zoomOutDuration, ()=>{
+            // Step 5: rotate back to starting position smoothly
+            animateRotation(rotInfo.to, startRotation, rotBackDuration, ()=>{
+              // Step 6: Update rotation offset to continue from current position
+              // Normalize the current rotation to [0, 360)
+              const currentLon = (startRotation[0] % 360 + 360) % 360;
+              globe.rotationOffset = currentLon;
+              // Resume rotation from where we left off
+              globe.rotationLocked = false;
+            });
+          });
+        }, increaseDuration);
+      });
+    });
+  }
+
+  function animateRotation(from, to, duration, onComplete){
+    const start = performance.now();
+    function step(now){
+      const t = Math.min((now-start)/duration, 1);
+      const eased = d3.easeCubicInOut(t);
+      globe.rotation = [
+        from[0] + (to[0]-from[0])*eased,
+        from[1] + (to[1]-from[1])*eased
+      ];
+      globe.currentRotation = [...globe.rotation]; // keep current updated
+      if (t < 1) requestAnimationFrame(step);
+      else if (onComplete) onComplete();
+    }
+    requestAnimationFrame(step);
+  }
+
+  function animateZoom(fromScale, toScale, duration, onComplete){
+    const start = performance.now();
+    function step(now){
+      const t = Math.min((now-start)/duration, 1);
+      const eased = d3.easeCubicInOut(t);
+      const scale = fromScale + (toScale-fromScale)*eased;
+      globe.proj.scale(scale);
+      if (t < 1) requestAnimationFrame(step);
+      else if (onComplete) onComplete();
+    }
+    requestAnimationFrame(step);
+  }
+
+  function drawGlobeColorbar(){
+    try{
+      const wrap = document.getElementById('globe-cbar-wrap');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      const c = document.createElement('canvas');
+      c.id = 'globe-cbar';
+      wrap.appendChild(c);
+
+      const DPR = window.devicePixelRatio||1;
+      const w = Math.max(260, wrap.getBoundingClientRect().width);
+      const h = 80;
+      c.width = Math.floor(w*DPR); c.height = Math.floor(h*DPR);
+      c.style.width = w+'px'; c.style.height = h+'px';
+      const ctx = c.getContext('2d');
+      ctx.scale(DPR, DPR);
+
+      const padL = 50, padR = 50, barH = 24, barY = 16;
+      const barW = w - padL - padR;
+
+      // Use the live color scale (globe.domain) for the gradient
+      const [dv0, dv1] = globe.domain || [0,1];
+      const color = globe.color || d3.scaleSequential(d3.interpolateMagma).domain([dv0, dv1]);
+
+      // Use animated domain for tick labels (smooth counter effect)
+      const [tv0, tv1] = globe.animatedDomain || globe.domain || [0,1];
+      
+      // Create scale for the actual domain (for positioning)
+      const xActual = d3.scaleLinear().domain([dv0, dv1]).range([padL, padL+barW]);
+      
+      // gradient - always based on actual domain
+      const steps = Math.max(100, Math.floor(barW));
+      for(let i=0;i<steps;i++){
+        const t = i/(steps-1);
+        const xv = padL + t*barW;
+        const v = dv0 + t*(dv1 - dv0);
+        ctx.fillStyle = color(v);
+        ctx.fillRect(Math.round(xv), barY, Math.ceil(barW/steps)+1, barH);
+      }
+      ctx.strokeStyle = '#1f2a3c'; ctx.strokeRect(padL, barY, barW, barH);
+
+      // ticks - use animated values at fixed relative positions
+      ctx.fillStyle = '#a9b8c9'; ctx.font = '18px Inter, sans-serif';
+      ctx.textAlign='center'; ctx.textBaseline='top';
+      ctx.strokeStyle = '#324155';
+      
+      // Generate 5 evenly spaced positions and interpolate tick values
+      const numTicks = 5;
+      for(let i = 0; i < numTicks; i++){
+        const t = i / (numTicks - 1); // 0, 0.25, 0.5, 0.75, 1
+        const tickValue = tv0 + t * (tv1 - tv0); // interpolated value
+        const xx = padL + t * barW; // position along bar
+        
+        ctx.beginPath(); 
+        ctx.moveTo(xx, barY+barH); 
+        ctx.lineTo(xx, barY+barH+4); 
+        ctx.stroke();
+        ctx.fillText(d3.format('$,.0f')(tickValue), xx, barY+barH+6);
+      }
+    }catch(e){ console.error('drawGlobeColorbar error:', e); }
+  }
+
+  // Draw radial country comparison visualization
+  function drawCountryComparison() {
+    const svg = d3.select('#country-comparison-svg');
+    svg.selectAll('*').remove();
+    
+    // Get container width for responsive sizing
+    const container = document.getElementById('country-comparison-wrap');
+    const containerWidth = container ? container.getBoundingClientRect().width : 900;
+    const width = Math.min(containerWidth, 900);
+    const height = Math.min(width * 0.7, 600); // Maintain aspect ratio
+    
+    // Set SVG viewBox for responsiveness
+    svg.attr('viewBox', `0 0 ${width} ${height}`)
+       .attr('preserveAspectRatio', 'xMidYMid meet')
+       .style('height', height + 'px');
+    
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    // Sample data - top healthcare systems vs US
+    const usValue = globe.usTarget || 2400; // Use the animated US value
+    const countries = [
+      { name: 'Canada', value: 550, id: '124' },
+      { name: 'UK', value: 450, id: '826' },
+      { name: 'Germany', value: 580, id: '276' },
+      { name: 'France', value: 480, id: '250' },
+      { name: 'Japan', value: 420, id: '392' },
+      { name: 'Australia', value: 620, id: '036' },
+      { name: 'Switzerland', value: 850, id: '756' },
+      { name: 'Netherlands', value: 520, id: '528' }
+    ];
+    
+    // Update with actual values from globe.costs if available
+    countries.forEach(c => {
+      if (globe.costs && globe.costs[c.id]) {
+        c.value = globe.costs[c.id];
+      }
+    });
+    
+    // Create groups
+    const g = svg.append('g').attr('transform', `translate(${centerX},${centerY})`);
+    
+    // Draw US center circle
+    const usRadius = 60;
+    const usCircle = g.append('circle')
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('r', 0)
+      .attr('fill', '#cc4949')
+      .attr('stroke', '#ff6b6b')
+      .attr('stroke-width', 3)
+      .attr('opacity', 0.9);
+    
+    // Animate US circle
+    usCircle.transition()
+      .duration(1000)
+      .attr('r', usRadius);
+    
+    // US label
+    g.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('y', -5)
+      .attr('fill', '#fff')
+      .attr('font-size', '14px')
+      .attr('font-weight', '700')
+      .attr('opacity', 0)
+      .text('USA')
+      .transition().delay(500).duration(500)
+      .attr('opacity', 1);
+    
+    g.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('y', 12)
+      .attr('fill', '#ffe9b0')
+      .attr('font-size', '16px')
+      .attr('font-weight', '800')
+      .attr('opacity', 0)
+      .text(d3.format('$,.0f')(usValue))
+      .transition().delay(500).duration(500)
+      .attr('opacity', 1);
+    
+    // Calculate positions for other countries in a circle
+    const angleStep = (2 * Math.PI) / countries.length;
+    const orbitRadius = 180;
+    
+    countries.forEach((country, i) => {
+      const angle = i * angleStep - Math.PI / 2; // Start from top
+      const x = Math.cos(angle) * orbitRadius;
+      const y = Math.sin(angle) * orbitRadius;
+      
+      // Size based on cost (smaller = cheaper)
+      const radius = 15 + (country.value / usValue) * 30;
+      
+      // Draw connecting line
+      const line = g.append('line')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 0)
+        .attr('stroke', '#324155')
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '3,3')
+        .attr('opacity', 0.4);
+      
+      line.transition()
+        .delay(800 + i * 100)
+        .duration(600)
+        .attr('x2', x)
+        .attr('y2', y);
+      
+      // Draw country circle
+      const circle = g.append('circle')
+        .attr('cx', x)
+        .attr('cy', y)
+        .attr('r', 0)
+        .attr('fill', '#2b8a3e')
+        .attr('stroke', '#4ade80')
+        .attr('stroke-width', 2)
+        .attr('opacity', 0.85);
+      
+      circle.transition()
+        .delay(1000 + i * 100)
+        .duration(500)
+        .attr('r', radius);
+      
+      // Country name
+      g.append('text')
+        .attr('x', x)
+        .attr('y', y + radius + 15)
+        .attr('text-anchor', 'middle')
+        .attr('fill', '#cfe0ff')
+        .attr('font-size', '11px')
+        .attr('font-weight', '600')
+        .attr('opacity', 0)
+        .text(country.name)
+        .transition().delay(1200 + i * 100).duration(400)
+        .attr('opacity', 1);
+      
+      // Country value
+      g.append('text')
+        .attr('x', x)
+        .attr('y', y + 4)
+        .attr('text-anchor', 'middle')
+        .attr('fill', '#fff')
+        .attr('font-size', '10px')
+        .attr('opacity', 0)
+        .text(d3.format('$,.0f')(country.value))
+        .transition().delay(1200 + i * 100).duration(400)
+        .attr('opacity', 1);
+    });
+    
+    // Add legend
+    const legend = svg.append('g')
+      .attr('transform', `translate(20, ${height - 60})`);
+    
+    legend.append('text')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('fill', '#a9b8c9')
+      .attr('font-size', '12px')
+      .text('Circle size represents relative cost')
+      .attr('opacity', 0)
+      .transition().delay(2000).duration(500)
+      .attr('opacity', 1);
+    
+    legend.append('circle')
+      .attr('cx', 10)
+      .attr('cy', 20)
+      .attr('r', 6)
+      .attr('fill', '#cc4949')
+      .attr('opacity', 0)
+      .transition().delay(2000).duration(500)
+      .attr('opacity', 0.9);
+    
+    legend.append('text')
+      .attr('x', 22)
+      .attr('y', 24)
+      .attr('fill', '#a9b8c9')
+      .attr('font-size', '11px')
+      .text('U.S. (2026 projected)')
+      .attr('opacity', 0)
+      .transition().delay(2000).duration(500)
+      .attr('opacity', 1);
+    
+    legend.append('circle')
+      .attr('cx', 200)
+      .attr('cy', 20)
+      .attr('r', 6)
+      .attr('fill', '#2b8a3e')
+      .attr('opacity', 0)
+      .transition().delay(2000).duration(500)
+      .attr('opacity', 0.85);
+    
+    legend.append('text')
+      .attr('x', 212)
+      .attr('y', 24)
+      .attr('fill', '#a9b8c9')
+      .attr('font-size', '11px')
+      .text('Other countries')
+      .attr('opacity', 0)
+      .transition().delay(2000).duration(500)
+      .attr('opacity', 1);
+  }
+
+
+  async function changeScene(nextView){
+    if (!nextView || nextView === S.view){ S.pendingView=null; return; }
+    // if an animation is in-flight, queue the request and exit
+    if (S.animating){ S.pendingView = nextView; return; }
+    S.animating = true; S.pendingView = null;
+    // Phase 1: collapse marks
+    await collapseMarks();
+    // Phase 2: collapse axes
+    await collapseAxes();
+    // Phase 3: clear → draw new marks (collapsed) → grow axes & marks
+    resetForNewScene();
+    const scales = drawScene(nextView, true);
+    await growAxesAndMarks(scales);
+    S.view = nextView;
+    S.animating = false;
+    // if another scene was requested while animating, play it now (one-step lookahead)
+    if (S.pendingView && S.pendingView !== S.view){
+      const pv = S.pendingView; S.pendingView = null; changeScene(pv);
+    }
+  }
+
+  /* ---------- tooltip ---------- */
+  function showTip(evt,d){
+    tip.style('opacity',1).style('left',(evt.clientX)+'px').style('top',(evt.clientY)+'px')
+      .html(`
+        <div style="font-weight:700">${d.payer || d.bucket}</div>
+        <div>${d.plan || ''}</div>
+        <div>${d.desc || ''}</div>
+        <hr style="border:none;border-top:1px solid #223246;margin:6px 0"/>
+        <div>Value: <strong>${fmt(d.value)}</strong>${d.type?' • '+d.type:''}</div>
+        <div>${d.showBucket? 'Bucket: '+d.showBucket : ''}${d.dur? ' • '+d.dur : ''}</div>
+      `);
+  }
+  const hideTip = ()=> tip.style('opacity',0);
+
+  /* ---------- scrollama (left text, right chart; 50% delay) ---------- */
+  let lockedScrollPosition = null;
+  
+  function handleStepEnter(resp){
+    document.querySelectorAll('.step').forEach(s=>s.classList.remove('is-active'));
+    resp.element.classList.add('is-active');
+    const target = resp.element.getAttribute('data-view');
+    if (target && target !== S.view){ changeScene(target); }
+  }
+  
+  function preventScroll(e) {
+    if (S.scrollLocked && lockedScrollPosition !== null) {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }
+  }
+  
+  function initScrollama(){
+    Stickyfill.add(document.querySelector('#scrolly figure'));
+    scroller.setup({
+      step: "#steps .step",
+      offset: 0.72,    // trigger slightly later for more stable scene changes
+      progress: false, // rely on enter only to avoid jitter
+      debug: false
+    })
+    .onStepEnter(handleStepEnter);
+    
+    // Set up intersection observer for policy2026 section
+    const policy2026Step = document.querySelector('[data-view="policy2026"]');
+    if (policy2026Step) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          // With scroll snap, when section is in view, lock scroll if animation hasn't played
+          if (entry.isIntersecting && !S.policy2026Played && !S.scrollLocked) {
+            S.scrollLocked = true;
+            lockedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Force activate the policy2026 step
+            document.querySelectorAll('.step').forEach(s=>s.classList.remove('is-active'));
+            policy2026Step.classList.add('is-active');
+            if (S.view !== 'policy2026') {
+              changeScene('policy2026');
+            }
+          }
+        });
+      }, { 
+        threshold: 0.5 // Simple threshold - section is in view or not
+      });
+      
+      observer.observe(policy2026Step);
+    }
+    
+    // Add scroll lock event listeners
+    window.addEventListener('wheel', preventScroll, { passive: false });
+    window.addEventListener('touchmove', preventScroll, { passive: false });
+    window.addEventListener('scroll', () => {
+      if (S.scrollLocked && lockedScrollPosition !== null) {
+        window.scrollTo(0, lockedScrollPosition);
+      }
+    }, { passive: false });
+    window.addEventListener('keydown', (e) => {
+      if (S.scrollLocked && (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'PageDown' || e.key === 'PageUp' || e.key === ' ')) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    // debounce resize via rAF to reduce thrash on mobile
+    let resizeQueued=false;
+    window.addEventListener('resize', ()=>{
+      if (resizeQueued) return; resizeQueued=true;
+      requestAnimationFrame(()=>{ resizeQueued=false; resize(); });
+    });
+
+    // Observer to fade out scrolly and show globe section
+    const globeSec = document.getElementById('globe-section');
+    const scrollySec = document.getElementById('scrolly');
+    if (globeSec){
+      let comparisonDrawn = false;
+      const obs = new IntersectionObserver(async (entries)=>{
+        entries.forEach(async e=>{
+          if (e.isIntersecting){
+            scrollySec.classList.add('fade-out');
+            scrollySec.classList.remove('fade-in');
+            globeSec.classList.add('is-active');
+            await initGlobe();
+            // With scroll snap, when visible start animation immediately (section is in full view)
+            if (!globe.animationLocked){
+              startGlobeAnimationSequence();
+            }
+            // Draw country comparison after a delay (let globe animation play first)
+            if (!comparisonDrawn) {
+              setTimeout(() => {
+                drawCountryComparison();
+                comparisonDrawn = true;
+              }, 6000); // Start after globe animation completes
+            }
+          }else{
+            scrollySec.classList.remove('fade-out');
+            scrollySec.classList.add('fade-in');
+            // Don't set to is-active false - keep globe visible once shown
+          }
+        });
+      }, { threshold: 0.1 }); // Lower threshold to trigger earlier
+      obs.observe(globeSec);
+    }
+  }
+
+  /* ---------- load data, boot ---------- */
+  const POLICY_URL = './policy_2026.json';
+  Promise.all([
+    d3.text(DATA_URL),
+    d3.json(POLICY_URL).catch(()=>null)
+  ]).then(([raw, policy])=>{
+    const arr=parseFlexible(raw);
+    S.rows = arr.map(mapRow).filter(d=>d.patient!=null || d.cash!=null || d.gross!=null);
+    const long=[];
+    for(const d of S.rows){
+      if(d.patient!=null) long.push({...d, show:'Insurance', showBucket:d.bucket, value:d.patient, type:'patient'});
+      if(d.cash!=null)    long.push({...d, show:'Cash',      showBucket:'Cash (Self-pay)', value:d.cash, type:'cash'});
+      if(d.gross!=null)   long.push({...d, show:'Sticker',   showBucket:'Sticker (Gross)', value:d.gross, type:'gross'});
+    }
+    S.data=long;
+    S.policy = policy; // may be null; scene handles defaults
+
+    initScrollama();
+    resize();                        // size & draw initial scene instantly
+    // ensure plotting layer starts expanded for the first view
+    gMain.attr('transform', 'translate(0,0) scale(1,1)');
+
+    // text reveal observer
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if (e.isIntersecting) e.target.classList.add('is-visible');
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }).catch(err=>{
+    d3.select('body').append('div')
+      .style('position','fixed').style('left','12px').style('bottom','12px')
+      .style('padding','8px 10px').style('background','#3b0d0d').style('border','1px solid #5a1a1a').style('border-radius','10px')
+      .text('Failed to load data: ' + (err && err.message ? err.message : err));
+  });
+
+})();
+</script>
+</body>
+</html>
