@@ -1,0 +1,13 @@
+docs/data/bundles_out/bundle_discrepancy_ranking.pdf
+docs/data/bundles_out/bundle_hospital_log_ratio_matrix.csv
+docs/data/bundles_out/heatmap_bundle_discrepancy_annot.pdf
+docs/data/bundles_out/heatmap_bundle_discrepancy_annot.png
+docs/data/bundles_out/heatmap_max_payer_plan_comparison.pdf
+docs/data/bundles_out/heatmap_max_payer_plan_comparison.png
+docs/data/bundles_out/heatmap_max_payer_plan_log_ratio_matrix.csv
+docs/data/bundles_out/heatmap_min_payer_plan_comparison.pdf
+docs/data/bundles_out/heatmap_min_payer_plan_comparison.png
+docs/data/bundles_out/heatmap_min_payer_plan_log_ratio_matrix.csv
+docs/data/bundles_out/heatmap_payer_plan_comparison.pdf
+docs/data/bundles_out/heatmap_payer_plan_comparison.png
+docs/data/bundles_out/payer_plan_log_ratio_matrix.csv

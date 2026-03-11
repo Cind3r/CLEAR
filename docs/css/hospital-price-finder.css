@@ -466,3 +466,10 @@ aside h3 {
 .read-more-btn:active {
   transform: translateY(0);
 }
+
+.resource-links {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
