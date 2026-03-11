@@ -19,12 +19,19 @@ const NODE_COLORS = {
   rec_item: "#98D8C8",
   monitor_item: "#F7DC6F",
   rationale_item: "#BB8FCE",
-  reference: "#85C1E2"
+  reference: "#85C1E2",
+  reference_item: "#85C1E2"
 };
 
 function shorten(text, maxLen = 26) {
   if (!text) return "(untitled)";
   return text.length <= maxLen ? text : `${text.slice(0, maxLen - 3)}...`;
+}
+
+function clampBlurb(text, maxLen = 220) {
+  if (!text) return "";
+  const normalized = String(text).replace(/\s+/g, " ").trim();
+  return normalized.length <= maxLen ? normalized : `${normalized.slice(0, maxLen - 3)}...`;
 }
 
 function escapeHtml(text) {
@@ -34,6 +41,12 @@ function escapeHtml(text) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function makeTooltip(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div;
 }
 
 function inferJsonPath() {
@@ -55,7 +68,8 @@ function normalizeNode(node) {
   if (!node || !node.id) return null;
 
   const title = node.title || node.id;
-  const body = node.text ? `<br><b>Text:</b> ${escapeHtml(node.text)}` : "";
+  const blurb = clampBlurb(node.text, 220);
+  const body = blurb ? `<br><b>Blurb:</b> ${escapeHtml(blurb)}` : "";
   const type = node.type || "node";
 
   return {
@@ -64,28 +78,31 @@ function normalizeNode(node) {
     shape: "dot",
     size: 18,
     color: NODE_COLORS[type] || "#7F8C8D",
-    title: `<b>${escapeHtml(title)}</b><br><b>ID:</b> ${escapeHtml(node.id)}<br><b>Type:</b> ${escapeHtml(type)}${body}`
+    title: makeTooltip(`<b>${escapeHtml(title)}</b><br><b>ID:</b> ${escapeHtml(node.id)}<br><b>Type:</b> ${escapeHtml(type)}${body}`)
   };
 }
 
 function normalizeEdge(edge, validNodeIds) {
   if (!edge) return null;
 
-  const from = edge.from || edge.source;
-  const to = edge.to || edge.target;
+  const from = edge.from || edge.source || edge.src;
+  const to = edge.to || edge.target || edge.dst;
   if (!from || !to) return null;
   if (!validNodeIds.has(from) || !validNodeIds.has(to)) return null;
 
-  const relation = edge.logical_type || edge.type || "RELATED_TO";
+  const relation = edge.logical_type || edge.final_type || edge.type || "RELATED_TO";
+  const scoreText = typeof edge.score === "number" ? edge.score.toFixed(3) : "n/a";
+  const schemaType = edge.schema_type || "n/a";
+  const strength = edge.strength || "n/a";
 
   return {
     from,
     to,
     arrows: "to",
     label: relation,
-    color: TYPE_COLORS[relation] || "#95A5A6",
+    color: TYPE_COLORS[relation] || TYPE_COLORS[edge.type] || "#95A5A6",
     width: 1.6,
-    title: `<b>${escapeHtml(relation)}</b>`
+    title: makeTooltip(`<b>${escapeHtml(relation)}</b><br><b>Source:</b> ${escapeHtml(from)}<br><b>Target:</b> ${escapeHtml(to)}<br><b>Schema Type:</b> ${escapeHtml(schemaType)}<br><b>Score:</b> ${escapeHtml(scoreText)}<br><b>Strength:</b> ${escapeHtml(strength)}`)
   };
 }
 
@@ -167,7 +184,7 @@ async function init() {
   new vis.Network(container, data, options);
 
   graphTitle.textContent = `Network Graph (${raw.doc_id || jsonPath.replace(/\.json$/i, "")})`;
-  status.textContent = `Loaded ${nodes.length} nodes and ${edges.length} edges from ${jsonPath}`;
+  status.textContent = `Loaded ${nodes.length} nodes and ${edges.length} linked edges (${rawEdges.length} raw edges) from ${jsonPath}`;
 }
 
 init();
